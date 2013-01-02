@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<h:head>
+	<title>ICEfaces 3</title>
+	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
+</h:head>
+<h:body>
+	<h:form>
+		<ace:tabSet id="sampleTabSet" clientSide="false">
+
+			<ace:tabPane id="schedulings" label="Schedulings">
+				<ace:accordion id="accordion" collapsible="true" autoHeight="false">
+					<ace:accordionPane id="addScheduling" title="Add Scheduling">
+						<ace:textEntry label="Name" labelPosition="left"
+							value="#{sessionBean.builder.name}" />
+						<ace:textEntry label="Description" labelPosition="left"
+							value="#{sessionBean.builder.description}" />
+						<ace:textEntry label="CRON" labelPosition="left"
+							value="#{sessionBean.builder.cron}" />
+						<ace:textEntry label="Service Id" labelPosition="left"
+							value="#{sessionBean.builder.serviceID}" />
+						<ace:textEntry label="Status Id" labelPosition="left"
+							value="#{sessionBean.builder.statusID}" />
+						<ace:textEntry label="Bank Holiday" labelPosition="left"
+							value="#{sessionBean.builder.bankHolidayOnly}" />
+
+						<ice:outputText value="#{sessionBean.builder.name}" />
+
+						<ace:pushButton value="Add Scheduling"
+							action="#{sessionBean.addScheduling}" />
+					</ace:accordionPane>
+				</ace:accordion>
+				<ace:dataTable id="scheduleTable"
+					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
+					paginatorPosition="bottom" rows="10">
+
+					<ace:column id="id" headerText="ID" sortBy="#{schedule.id}"
+						filterBy="#{schedule.id}" filterMatchMode="contains">
+						<ace:cellEditor>
+							<f:facet name="output">
+								<h:outputText id="idCell" value="#{schedule.id}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:inputText disabled="true" id="idInput" value="#{schedule.id}" />
+							</f:facet>
+						</ace:cellEditor>
+					</ace:column>
+
+					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
+						filterBy="#{schedule.name}" filterMatchMode="contains">
+						<ace:cellEditor>
+							<f:facet name="output">
+								<h:outputText id="nameCell" value="#{schedule.name}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:inputText id="nameInput" value="#{schedule.name}" />
+							</f:facet>
+						</ace:cellEditor>
+
+					</ace:column>
+
+					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
+						filterBy="#{schedule.cron}" filterMatchMode="contains">
+						<ace:cellEditor>
+							<f:facet name="output">
+								<h:outputText id="timeCell" value="#{schedule.cron}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:inputText id="timeInput" value="#{schedule.cron}" />
+							</f:facet>
+						</ace:cellEditor>
+					</ace:column>
+					<ace:column id="description" headerText="Description"
+						sortBy="#{schedule.description}"
+						filterBy="#{schedule.description}" filterMatchMode="contains">
+						<ace:cellEditor>
+							<f:facet name="output">
+								<h:outputText id="descCell" value="#{schedule.description}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:inputText id="descInput" value="#{schedule.description}" />
+							</f:facet>
+						</ace:cellEditor>
+					</ace:column>
+					<ace:column id="server" headerText="Service ID"
+						sortBy="#{schedule.serviceID}" filterBy="#{schedule.serviceID}"
+						filterMatchMode="contains">
+						<ace:cellEditor>
+							<f:facet name="output">
+								<h:outputText id="serviceIDCell" value="#{schedule.serviceID}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:inputText id="serviceIDInput" value="#{schedule.serviceID}" />
+							</f:facet>
+						</ace:cellEditor>
+					</ace:column>
+
+					<!-- 			<ace:column id="options" headerText="Options"> -->
+					<!--                    <ace:rowEditor id="editor" rowEditListener="#{sessionBean.edit}"> -->
+
+					<!--                    </ace:rowEditor> -->
+					<!--             </ace:column> -->
+
+					<ace:column id="edit" headerText="Options">
+						<ace:expansionToggler></ace:expansionToggler>
+					</ace:column>
+					<ace:panelExpansion>
+						<ace:panel id="edit_panel" header="Edit" style="height=300px;">
+							<h:form>
+								<h:panelGrid id="configGrid" columns="4"
+									styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+									<h:outputLabel id="nameLabel" for="nameInput"
+										value="Name: " />
+									<h:inputText id="nameInput" value="#{schedule.name}" />
+									<h:outputLabel id="descLabel" for="descInput"
+										value="Description: " />
+									<h:inputText id="descInput" value="#{schedule.description}" />
+								</h:panelGrid>
+							</h:form>
+						</ace:panel>
+
+					</ace:panelExpansion>
+				</ace:dataTable>
+
+
+
+			</ace:tabPane>
+
+			<ace:tabPane id="scheduling_log" label="Scheduling Log">
+
+			</ace:tabPane>
+
+			<ace:tabPane id="audit_log" label="Audit Log">
+
+			</ace:tabPane>
+
+		</ace:tabSet>
+
+	</h:form>
+</h:body>
+</html>

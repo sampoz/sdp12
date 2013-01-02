@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+	version="2.1">
+
+	<managed-bean>
+		<managed-bean-name>menuBarBean</managed-bean-name>
+		<managed-bean-class>MenuBarBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>param</property-name>
+			<property-class>java.lang.String</property-class>
+			<value>./index.jsf</value>
+		</managed-property>
+		<managed-property>
+			<property-name>param1</property-name>
+			<property-class>java.lang.String</property-class>
+			<value>./second.jsf</value>
+		</managed-property>
+		<managed-property>
+			<property-name>param2</property-name>
+			<property-class>java.lang.String</property-class>
+			<value>./third.jsf</value>
+		</managed-property>
+		<managed-property>
+			<property-name>param3</property-name>
+			<property-class>java.lang.String</property-class>
+			<value>./fourth.jsf</value>
+		</managed-property>
+	</managed-bean>
+	
+	<navigation-rule>
+		<from-view-id>/index.xhtml</from-view-id>
+<!-- 		<navigation-case> -->
+<!-- 			<from-outcome>goto1</from-outcome> -->
+<!-- 			<to-view-id>/index.xhtml</to-view-id> -->
+<!-- 		</navigation-case> -->
+<!-- 		<navigation-case> -->
+<!-- 			<from-outcome>goto2</from-outcome> -->
+<!-- 			<to-view-id>/second.xhtml</to-view-id> -->
+<!-- 		</navigation-case> -->
+		<navigation-case>
+			<from-outcome>goto3</from-outcome>
+			<to-view-id>/third.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto4</from-outcome>
+			<to-view-id>/fourth.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/second.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>goto1</from-outcome>
+			<to-view-id>/index.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto2</from-outcome>
+			<to-view-id>/second.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto3</from-outcome>
+			<to-view-id>/third.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto4</from-outcome>
+			<to-view-id>/fourth.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+		<navigation-rule>
+		<from-view-id>/third.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>goto1</from-outcome>
+			<to-view-id>/index.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto2</from-outcome>
+			<to-view-id>/second.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto3</from-outcome>
+			<to-view-id>/third.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto4</from-outcome>
+			<to-view-id>/fourth.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+		<navigation-rule>
+		<from-view-id>/fourth.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>goto1</from-outcome>
+			<to-view-id>/index.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto2</from-outcome>
+			<to-view-id>/second.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto3</from-outcome>
+			<to-view-id>/third.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>goto4</from-outcome>
+			<to-view-id>/fourth.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+</faces-config>
