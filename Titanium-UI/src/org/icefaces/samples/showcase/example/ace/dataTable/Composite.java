@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "SCHEDULING_SERVICE")
-public class SchedulingService implements Serializable{
+public class Composite implements Serializable{
 
 	@Id
 	private int id;

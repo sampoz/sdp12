@@ -2,26 +2,31 @@ package org.icefaces.samples.showcase.example.ace.dataTable;
 import org.icefaces.ace.model.table.RowStateMap;
 import org.icefaces.ace.model.table.RowState;
 
-import java.awt.Event;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.FacesListener;
 
 import org.icefaces.ace.event.ExpansionChangeEvent;
-import org.icefaces.ace.event.RowEditEvent;
 
 @ManagedBean (name = SessionBean.BEAN_NAME, eager=true)
 @SessionScoped
 public class SessionBean {
 	
 	public static final String BEAN_NAME = "sessionBean";
+	private List<Composite> composites;
+	public static final HashMap<Integer,Mode> MODES = new HashMap<Integer, Mode>();
 	
 	public SessionBean(){
 		this.scheduleData = this.connector.getSchedulings();
+		this.composites = this.connector.getAllComposites();
+		
+		List<Mode> tempModes = this.connector.getAllModes();
+		for (Mode mode : tempModes) {
+			MODES.put(mode.getId(), mode);
+		}
 	}
 	
 	private SchedulingBuilder builder = new SchedulingBuilder();
@@ -64,6 +69,7 @@ public class SessionBean {
 	public void setEditBuffer(HashMap<Integer, SchedulingBuilder> editBuffer) {
 		this.editBuffer = editBuffer;
 	}
+	
 	
 	public void addScheduling(){
 		Scheduling s = this.builder.build();
@@ -110,6 +116,7 @@ public class SessionBean {
         }
 		System.out.println("All rows un-selected");
 	}
+	
 	public void StopSelected(){
 		System.out.println("pamp");
 	      for (Object rowData : stateMap.getSelected()) {
@@ -118,5 +125,7 @@ public class SessionBean {
 	    	  //edit(s); ?
 	        }
 	}
+	
+	
 	
 }

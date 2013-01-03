@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="SCHEDULING_STATUS")
-public class SchedulingStatus implements Serializable {
+public class Mode implements Serializable {
 	
 	
 	@Id

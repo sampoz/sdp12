@@ -6,8 +6,8 @@
    <persistence-unit name="manager1" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <class>org.icefaces.samples.showcase.example.ace.dataTable.Scheduling</class>
-      <class>org.icefaces.samples.showcase.example.ace.dataTable.SchedulingService</class>
-      <class>org.icefaces.samples.showcase.example.ace.dataTable.SchedulingStatus</class>
+      <class>org.icefaces.samples.showcase.example.ace.dataTable.Composite</class>
+      <class>org.icefaces.samples.showcase.example.ace.dataTable.Mode</class>
       <properties>
       <property name="hibernate.connection.provider_class" value="org.hibernate.connection.DriverManagerConnectionProvider" />
          <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

@@ -26,14 +26,24 @@ public class DatabaseConnector {
 		this.manager.getTransaction().begin();
 		Query q = this.manager.createQuery("from Scheduling");
 		List<Scheduling> result = q.getResultList();
-		for (Scheduling scheduling : result) {
-			
-			if(scheduling.getService()!= null) 
-				System.out.println(scheduling.getServiceID() + " : " + scheduling.getService().getId() +" : " + scheduling.getService().getOutputText());
-			
-			if(scheduling.getStatus()!= null) 
-				System.out.println(scheduling.getStatusID() + " : " + scheduling.getStatus().getId() +" : " + scheduling.getStatus().getLabel());
-		}
+		this.manager.getTransaction().commit();
+		return result;
+	}
+	
+	public List<Mode> getAllModes(){
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from Mode");
+		List<Mode> result = q.getResultList();
+		this.manager.getTransaction().commit();
+		return result;
+	}
+	
+	public List<Composite> getAllComposites(){
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from Composite");
+		List<Composite> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;
 	}

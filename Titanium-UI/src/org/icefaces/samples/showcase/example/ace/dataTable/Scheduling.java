@@ -6,7 +6,6 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.icefaces.ace.event.ExpansionChangeEvent;
 
 import javax.persistence.Id;
 
@@ -22,13 +21,37 @@ public class Scheduling implements Serializable  {
 	@GenericGenerator(name="increment", strategy = "increment")
 	private int id;
 	
-	@ManyToOne
-	@JoinColumn(name="SERVICEID", insertable=false, updatable=false)
-	private SchedulingService service;
+	@Transient
+	private String modeLabel;
 	
-	@ManyToOne
-	@JoinColumn(name="STATUSID", insertable=false, updatable=false)
-	private SchedulingStatus status;
+//	@ManyToOne
+//	@JoinColumn(name="SERVICEID", insertable=false, updatable=false)
+//	private SchedulingService service;
+//	
+//	@ManyToOne
+//	@JoinColumn(name="STATUSID", insertable=false, updatable=false)
+//	private SchedulingStatus status;
+
+
+
+
+
+
+	public String getModeLabel() {
+		if(this.modeLabel == null)
+			this.modeLabel = SessionBean.MODES.get(this.statusID).getLabel();
+		return modeLabel;
+	}
+
+
+
+
+	public void setModeLabel(String modeLabel) {
+		this.modeLabel = modeLabel;
+	}
+
+
+
 
 	@Column(name = "NAME")
 	private String name;
@@ -68,6 +91,7 @@ public class Scheduling implements Serializable  {
 		this.serviceID = serviceID;
 		this.statusID = statusID;
 		this.bankHolidayOnly = 0;
+		this.modeLabel = SessionBean.MODES.get(this.serviceID).getLabel();
 	}
 
 
@@ -162,18 +186,6 @@ public class Scheduling implements Serializable  {
 		this.javaAgentPollable = javaAgentPollable;
 	}
 	
-	public SchedulingService getService() {
-		return service;
-	}
-
-
-
-
-	public void setService(SchedulingService service) {
-		this.service = service;
-	}
-
-
 
 
 	public void setBankHolidayOnly(Integer bankHolidayOnly) {
@@ -201,16 +213,6 @@ public class Scheduling implements Serializable  {
 		this.javaAgentPollable = javaAgentPollable;
 	}
 	
-	public SchedulingStatus getStatus() {
-		return status;
-	}
-
-
-
-
-	public void setStatus(SchedulingStatus status) {
-		this.status = status;
-	}
 	
 	
 }

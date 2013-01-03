@@ -123,17 +123,12 @@
 							</f:facet>
 						</ace:cellEditor>
 					</ace:column>
-					<ace:column id="server" headerText="Service ID"
-						sortBy="#{schedule.serviceID}" filterBy="#{schedule.serviceID}"
-						filterMatchMode="contains">
-						<ace:cellEditor>
-							<f:facet name="output">
-								<h:outputText id="serviceIDCell" value="#{schedule.serviceID}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText id="serviceIDInput" value="#{schedule.serviceID}" />
-							</f:facet>
-						</ace:cellEditor>
+					<ace:column id="mode" headerText="Mode"
+						sortBy="#{schedule.modeLabel}"
+						filterBy="#{schedule.modeLabel}" filterMatchMode="contains">
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}"/>
+							
+						
 					</ace:column>
 
 					<!-- 			<ace:column id="options" headerText="Options"> -->
