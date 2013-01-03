@@ -51,9 +51,15 @@
 
 					</ace:accordionPane>
 				</ace:accordion>
+				 <h:commandButton id="SelectAll" value="Select All"
+                        actionListener="#{sessionBean.SelectAll}"/>
+                 <h:commandButton id="DeSelectAll" value="Deselect All"
+                        actionListener="#{sessionBean.DeSelectAll}"/>
+                 <h:commandButton id="StopSelected" value="Stop Selected"
+                        actionListener="#{sessionBean.StopSelected}"/><br/>
 				<ace:dataTable id="scheduleTable"
 					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
-					paginatorPosition="bottom" rows="10">
+					paginatorPosition="bottom" rows="10" stateMap="#{sessionBean.stateMap}" selectionMode="multiple">
 
 					<ace:column id="id" headerText="ID" sortBy="#{schedule.id}"
 						filterBy="#{schedule.id}" filterMatchMode="contains">

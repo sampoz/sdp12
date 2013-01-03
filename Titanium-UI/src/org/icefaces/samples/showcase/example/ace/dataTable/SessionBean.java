@@ -1,6 +1,9 @@
 package org.icefaces.samples.showcase.example.ace.dataTable;
+import org.icefaces.ace.model.table.RowStateMap;
+import org.icefaces.ace.model.table.RowState;
 
 import java.awt.Event;
+import java.util.Collection;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -24,7 +27,11 @@ public class SessionBean {
 	private DatabaseConnector connector = new DatabaseConnector();
 	private List<Scheduling> scheduleData;
 	private Scheduling stored;
+	private RowStateMap stateMap = new RowStateMap();
 
+	public RowStateMap getStateMap() { return stateMap; }
+	public void setStateMap(RowStateMap stateMap) { this.stateMap = stateMap; }
+	
 	public List<Scheduling> getScheduleData() {
 		return scheduleData;
 	}
@@ -72,4 +79,29 @@ public class SessionBean {
 		else
 			System.out.println("Close");
 	}
+	public void SelectAll(){
+		Collection<RowState> allRows = stateMap.values();
+        
+        for (RowState s : allRows) {
+            s.setSelected(true);
+        }
+		System.out.println("All rows selected");
+	}
+	public void DeSelectAll(){
+		Collection<RowState> allRows = stateMap.values();
+        
+        for (RowState s : allRows) {
+            s.setSelected(false);
+        }
+		System.out.println("All rows un-selected");
+	}
+	public void StopSelected(){
+		System.out.println("pamp");
+	      for (Object rowData : stateMap.getSelected()) {
+	    	  Scheduling s = (Scheduling) rowData;
+	    	  s.setStatusID(0);
+	    	  //edit(s); ?
+	        }
+	}
+	
 }
