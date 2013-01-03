@@ -60,7 +60,8 @@
 				<ace:dataTable id="scheduleTable"
 					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
 					paginatorPosition="bottom" rows="10" stateMap="#{sessionBean.stateMap}" selectionMode="multiple">
-
+					<ace:ajax event="select" execute="@this" />
+					
 					<ace:column id="id" headerText="ID" sortBy="#{schedule.id}"
 						filterBy="#{schedule.id}" filterMatchMode="contains">
 						<ace:cellEditor>
