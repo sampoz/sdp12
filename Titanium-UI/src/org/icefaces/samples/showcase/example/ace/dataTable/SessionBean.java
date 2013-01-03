@@ -17,12 +17,18 @@ public class SessionBean {
 	
 	public static final String BEAN_NAME = "sessionBean";
 	private List<Composite> composites;
+	public static final HashMap<Integer, Backend> BACKENDS = new HashMap<Integer, Backend>();  
 	public static final HashMap<Integer,Mode> MODES = new HashMap<Integer, Mode>();
 	
 	public SessionBean(){
 		this.scheduleData = this.connector.getSchedulings();
 		this.composites = this.connector.getAllComposites();
 		
+		List<Backend> tempBackends = this.connector.getAllBackends();
+		for(Backend b: tempBackends){
+			BACKENDS.put(b.getId(), b);
+			System.out.println(b.getDescription());
+		}
 		List<Mode> tempModes = this.connector.getAllModes();
 		for (Mode mode : tempModes) {
 			MODES.put(mode.getId(), mode);
@@ -84,9 +90,7 @@ public class SessionBean {
 		//System.out.println(this.connector.updateScheduling(s));
 	}
 	
-	public void sysout(){
-		System.out.println("DERP");
-	}
+	
 	
 	public void expansion(ExpansionChangeEvent e){
 		if(e.isExpanded())

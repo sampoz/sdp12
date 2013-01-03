@@ -75,17 +75,6 @@
 					paginatorPosition="bottom" rows="10" stateMap="#{sessionBean.stateMap}" selectionMode="multiple">
 					<ace:ajax event="select" execute="@this" />
 					
-					<ace:column id="id" headerText="ID" sortBy="#{schedule.id}"
-						filterBy="#{schedule.id}" filterMatchMode="contains">
-						<ace:cellEditor>
-							<f:facet name="output">
-								<h:outputText id="idCell" value="#{schedule.id}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText disabled="true" id="idInput" value="#{schedule.id}" />
-							</f:facet>
-						</ace:cellEditor>
-					</ace:column>
 
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
 						filterBy="#{schedule.name}" filterMatchMode="contains">
@@ -99,7 +88,13 @@
 						</ace:cellEditor>
 
 					</ace:column>
-
+					<ace:column id="mode" headerText="Mode"
+						sortBy="#{schedule.modeLabel}"
+						filterBy="#{schedule.modeLabel}" filterMatchMode="contains">
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}"/>
+							
+						
+					</ace:column>
 					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
 						filterBy="#{schedule.cron}" filterMatchMode="contains">
 						<ace:cellEditor>
@@ -111,6 +106,19 @@
 							</f:facet>
 						</ace:cellEditor>
 					</ace:column>
+					<ace:column id="cron_variables" headerText="Vars" >
+						<h:outputText id="bank_cell" value="#{schedule.bankHolidayOnly}" />
+						<h:outputText id="java_cell" value="#{schedule.javaAgentPollable}" />
+					</ace:column>
+					<ace:column id="source" headerText="Source">
+					
+					<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
+					</ace:column>
+					
+					<ace:column id="target" headerText="Target">
+						<h:outputText id="targetCell" value="#{schedule.targetName}" />
+					</ace:column>
+					
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
@@ -123,13 +131,8 @@
 							</f:facet>
 						</ace:cellEditor>
 					</ace:column>
-					<ace:column id="mode" headerText="Mode"
-						sortBy="#{schedule.modeLabel}"
-						filterBy="#{schedule.modeLabel}" filterMatchMode="contains">
-						<h:outputText id="modeCell" value="#{schedule.modeLabel}"/>
-							
-						
-					</ace:column>
+					
+					
 
 					<!-- 			<ace:column id="options" headerText="Options"> -->
 					<!--                    <ace:rowEditor id="editor" rowEditListener="#{sessionBean.edit}"> -->
@@ -137,7 +140,7 @@
 					<!--                    </ace:rowEditor> -->
 					<!--             </ace:column> -->
 
-					<ace:column id="edit" headerText="Options">
+					<ace:column id="edit" headerText="Edit">
 						<ace:expansionToggler changeListener="#{sessionBean.expansion}" />
 					</ace:column>
 					<ace:panelExpansion>

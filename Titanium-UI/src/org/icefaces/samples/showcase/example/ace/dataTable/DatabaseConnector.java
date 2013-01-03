@@ -75,6 +75,15 @@ public class DatabaseConnector {
 		}
 		return true;
 	}
+
+	public List<Backend> getAllBackends() {
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from Backend");
+		List<Backend> result = q.getResultList();
+		this.manager.getTransaction().commit();
+		return result;
+	}
 	
 	
 	
