@@ -1,11 +1,13 @@
 package org.icefaces.samples.showcase.example.ace.dataTable;
 
+import java.awt.Event;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.FacesListener;
 
+import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.event.RowEditEvent;
 
 @ManagedBean (name = SessionBean.BEAN_NAME, eager=true)
@@ -21,6 +23,7 @@ public class SessionBean {
 	private SchedulingBuilder builder = new SchedulingBuilder();
 	private DatabaseConnector connector = new DatabaseConnector();
 	private List<Scheduling> scheduleData;
+	private Scheduling stored;
 
 	public List<Scheduling> getScheduleData() {
 		return scheduleData;
@@ -52,9 +55,21 @@ public class SessionBean {
 		this.scheduleData = this.connector.getSchedulings();
 	}
 	
-	public void edit(RowEditEvent e){
-		Scheduling s = (Scheduling) e.getObject();
-		System.out.println(this.connector.updateScheduling(s));
+	public void edit(Scheduling e){
+		
+		System.out.println(this.connector.updateScheduling(e));
 	}
 	
+	public void sysout(){
+		System.out.println("DERP");
+	}
+	
+	public void openRow(ExpansionChangeEvent e){
+		
+		if(e.isExpanded())
+			
+			System.out.println(((Scheduling)e.getRowData()).getName());
+		else
+			System.out.println("Close");
+	}
 }

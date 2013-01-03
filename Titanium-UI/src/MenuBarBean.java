@@ -7,6 +7,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.util.Map;
 
+
 /**
  * <p>The MenuBarBean class determines which menu item fired the ActionEvent and
  * stores the modified id information in a String. MenuBarBean also controls the

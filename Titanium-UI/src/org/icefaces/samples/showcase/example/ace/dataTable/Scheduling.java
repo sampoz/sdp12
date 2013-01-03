@@ -6,6 +6,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.icefaces.ace.event.ExpansionChangeEvent;
+
 import javax.persistence.Id;
 
 
@@ -209,5 +211,6 @@ public class Scheduling implements Serializable  {
 	public void setStatus(SchedulingStatus status) {
 		this.status = status;
 	}
+	
 	
 }

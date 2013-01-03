@@ -16,25 +16,39 @@
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
 			<ace:tabPane id="schedulings" label="Schedulings">
-				<ace:accordion id="accordion" collapsible="true" autoHeight="false">
+				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
+					activeIndex="1">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
-						<ace:textEntry label="Name" labelPosition="left"
-							value="#{sessionBean.builder.name}" />
-						<ace:textEntry label="Description" labelPosition="left"
-							value="#{sessionBean.builder.description}" />
-						<ace:textEntry label="CRON" labelPosition="left"
-							value="#{sessionBean.builder.cron}" />
-						<ace:textEntry label="Service Id" labelPosition="left"
-							value="#{sessionBean.builder.serviceID}" />
-						<ace:textEntry label="Status Id" labelPosition="left"
-							value="#{sessionBean.builder.statusID}" />
-						<ace:textEntry label="Bank Holiday" labelPosition="left"
-							value="#{sessionBean.builder.bankHolidayOnly}" />
 
-						<ice:outputText value="#{sessionBean.builder.name}" />
+						<h:panelGrid id="addGrid" columns="6"
+							styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
+							<h:inputText id="nameInput" value="#{sessionBean.builder.name}" />
+							<h:outputLabel id="descLabel" for="descInput"
+								value="Description: " />
+							<h:inputText id="descInput"
+								value="#{sessionBean.builder.description}" />
+							<h:outputLabel id="cronLabel" for="cronInput" value="CRON: " />
+							<h:inputText id="cronInput" value="#{sessionBean.builder.cron}" />
+							<h:outputLabel id="serviceLabel" for="serviceInput"
+								value="Service Id: " />
+							<h:inputText id="serviceInput"
+								value="#{sessionBean.builder.serviceID}" />
+							<h:outputLabel id="statusLabel" for="statusInput"
+								value="Status Id: " />
+							<h:inputText id="statusInput"
+								value="#{sessionBean.builder.statusID}" />
+							<h:outputLabel id="bankLabel" for="bankInput"
+								value="Bank Holiday: " />
+							<h:inputText id="bankInput"
+								value="#{sessionBean.builder.bankHolidayOnly}" />
 
-						<ace:pushButton value="Add Scheduling"
-							action="#{sessionBean.addScheduling}" />
+						</h:panelGrid>
+
+						<ice:commandButton id="add_scheduling" value="Add Scheduling"
+							actionListener="#{sessionBean.addScheduling}" />
+
+
 					</ace:accordionPane>
 				</ace:accordion>
 				<ace:dataTable id="scheduleTable"
@@ -109,21 +123,43 @@
 					<!--             </ace:column> -->
 
 					<ace:column id="edit" headerText="Options">
-						<ace:expansionToggler></ace:expansionToggler>
+						<ace:expansionToggler changeListener="#{sessionBean.openRow}" />
 					</ace:column>
 					<ace:panelExpansion>
-						<ace:panel id="edit_panel" header="Edit" style="height=300px;">
-							<h:form>
-								<h:panelGrid id="configGrid" columns="4"
-									styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
-									<h:outputLabel id="nameLabel" for="nameInput"
-										value="Name: " />
-									<h:inputText id="nameInput" value="#{schedule.name}" />
-									<h:outputLabel id="descLabel" for="descInput"
-										value="Description: " />
-									<h:inputText id="descInput" value="#{schedule.description}" />
-								</h:panelGrid>
-							</h:form>
+						<ace:panel id="edit_panel" header="Edit">
+
+							<h:panelGrid id="editGrid" columns="6"
+								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+								<h:outputLabel id="editNameLabel" for="editNameInput"
+									value="Name: " />
+								<h:inputText id="editNameInput" value="#{schedule.name}" />
+								<h:outputLabel id="editDescLabel" for="editDescInput"
+									value="Description: " />
+								<h:inputText id="editDescInput" value="#{schedule.description}" />
+								<h:outputLabel id="editCronLabel" for="editCronInput"
+									value="CRON: " />
+								<h:inputText id="editCronInput" value="#{schedule.cron}" />
+								<h:outputLabel id="editServiceLabel" for="editServiceInput"
+									value="Service Id: " />
+								<h:inputText id="editServiceInput" value="#{schedule.serviceID}" />
+								<h:outputLabel id="editStatusLabel" for="editStatusInput"
+									value="Status Id: " />
+								<h:inputText id="editStatusInput" value="#{schedule.statusID}" />
+								<h:outputLabel id="editBankLabel" for="editBankInput"
+									value="Bank Holiday: " />
+								<h:inputText id="editBankInput"
+									value="#{schedule.bankHolidayOnly}" />
+
+
+							</h:panelGrid>
+
+							<br />
+							<ice:commandButton id="confirm_edit" value="Confirm"
+								 />
+							
+							<ice:commandButton id="reset_edit" value="Reset"
+								 />
+
 						</ace:panel>
 
 					</ace:panelExpansion>
