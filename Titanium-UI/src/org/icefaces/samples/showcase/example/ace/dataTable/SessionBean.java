@@ -122,7 +122,7 @@ public class SessionBean {
 	}
 	
 	public void StopSelected(){
-		System.out.println("pamp");
+		
 	      for (Object rowData : stateMap.getSelected()) {
 	    	  Scheduling s = (Scheduling) rowData;
 	    	  s.setStatusID(0);
