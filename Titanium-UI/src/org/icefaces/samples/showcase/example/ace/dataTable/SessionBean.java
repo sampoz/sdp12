@@ -4,6 +4,7 @@ import org.icefaces.ace.model.table.RowState;
 
 import java.awt.Event;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -26,7 +27,7 @@ public class SessionBean {
 	private SchedulingBuilder builder = new SchedulingBuilder();
 	private DatabaseConnector connector = new DatabaseConnector();
 	private List<Scheduling> scheduleData;
-	private Scheduling stored;
+	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 	private RowStateMap stateMap = new RowStateMap();
 
 	public RowStateMap getStateMap() { return stateMap; }
@@ -56,29 +57,43 @@ public class SessionBean {
 		this.builder = builder;
 	}
 	
+	public HashMap<Integer, SchedulingBuilder> getEditBuffer() {
+		return editBuffer;
+	}
+	
+	public void setEditBuffer(HashMap<Integer, SchedulingBuilder> editBuffer) {
+		this.editBuffer = editBuffer;
+	}
+	
 	public void addScheduling(){
 		Scheduling s = this.builder.build();
 		this.connector.addScheduling(s);
 		this.scheduleData = this.connector.getSchedulings();
 	}
 	
-	public void edit(Scheduling e){
+	public void confirmEdit(Scheduling s){
 		
-		System.out.println(this.connector.updateScheduling(e));
+		this.editBuffer.get(s.getId()).sync(s);
+		
+		//System.out.println(this.connector.updateScheduling(s));
 	}
 	
 	public void sysout(){
 		System.out.println("DERP");
 	}
 	
-	public void openRow(ExpansionChangeEvent e){
-		
+	public void expansion(ExpansionChangeEvent e){
 		if(e.isExpanded())
-			
-			System.out.println(((Scheduling)e.getRowData()).getName());
+			this.editBuffer.put(((Scheduling)e.getRowData()).getId(),new SchedulingBuilder((Scheduling)e.getRowData()));
 		else
-			System.out.println("Close");
+			this.editBuffer.remove(((Scheduling)e.getRowData()).getId());
 	}
+	
+	public void resetEdit(Scheduling s){
+		this.editBuffer.put(s.getId(), new SchedulingBuilder(s));
+	}
+	
+	
 	public void SelectAll(){
 		Collection<RowState> allRows = stateMap.values();
         

@@ -16,6 +16,23 @@
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
 			<ace:tabPane id="schedulings" label="Schedulings">
+				<ace:menuBar>
+					 <ace:menuItem id="select_all"
+                                          value="Select All"
+                                          actionListener="#{sessionBean.SelectAll}">
+                                <ace:ajax event="activate" execute="@this" />
+                        </ace:menuItem>
+                        <ace:menuItem id="deselect_all"
+                                          value="Deselect All"
+                                          actionListener="#{sessionBean.DeSelectAll}">
+                                <ace:ajax event="activate" execute="@this" />
+                        </ace:menuItem>
+                        <ace:menuItem id="stop_selected"
+                                          value="Stop Selected"
+                                          actionListener="#{sessionBean.StopSelected}">
+                                <ace:ajax event="activate" execute="@this" />
+                        </ace:menuItem>
+				</ace:menuBar>
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
@@ -47,16 +64,12 @@
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{sessionBean.addScheduling}" />
-
+						
+						
 
 					</ace:accordionPane>
 				</ace:accordion>
-				 <h:commandButton id="SelectAll" value="Select All"
-                        actionListener="#{sessionBean.SelectAll}"/>
-                 <h:commandButton id="DeSelectAll" value="Deselect All"
-                        actionListener="#{sessionBean.DeSelectAll}"/>
-                 <h:commandButton id="StopSelected" value="Stop Selected"
-                        actionListener="#{sessionBean.StopSelected}"/><br/>
+				 
 				<ace:dataTable id="scheduleTable"
 					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
 					paginatorPosition="bottom" rows="10" stateMap="#{sessionBean.stateMap}" selectionMode="multiple">
@@ -130,7 +143,7 @@
 					<!--             </ace:column> -->
 
 					<ace:column id="edit" headerText="Options">
-						<ace:expansionToggler changeListener="#{sessionBean.openRow}" />
+						<ace:expansionToggler changeListener="#{sessionBean.expansion}" />
 					</ace:column>
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit">
@@ -139,33 +152,33 @@
 								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
-								<h:inputText id="editNameInput" value="#{schedule.name}" />
+								<h:inputText id="editNameInput" value="#{sessionBean.editBuffer.get(schedule.id).name}" />
 								<h:outputLabel id="editDescLabel" for="editDescInput"
 									value="Description: " />
-								<h:inputText id="editDescInput" value="#{schedule.description}" />
+								<h:inputText id="editDescInput" value="#{sessionBean.editBuffer.get(schedule.id).description}" />
 								<h:outputLabel id="editCronLabel" for="editCronInput"
 									value="CRON: " />
-								<h:inputText id="editCronInput" value="#{schedule.cron}" />
+								<h:inputText id="editCronInput" value="#{sessionBean.editBuffer.get(schedule.id).cron}" />
 								<h:outputLabel id="editServiceLabel" for="editServiceInput"
 									value="Service Id: " />
-								<h:inputText id="editServiceInput" value="#{schedule.serviceID}" />
+								<h:inputText id="editServiceInput" value="#{sessionBean.editBuffer.get(schedule.id).serviceID}" />
 								<h:outputLabel id="editStatusLabel" for="editStatusInput"
 									value="Status Id: " />
-								<h:inputText id="editStatusInput" value="#{schedule.statusID}" />
+								<h:inputText id="editStatusInput" value="#{sessionBean.editBuffer.get(schedule.id).statusID}" />
 								<h:outputLabel id="editBankLabel" for="editBankInput"
 									value="Bank Holiday: " />
 								<h:inputText id="editBankInput"
-									value="#{schedule.bankHolidayOnly}" />
+									value="#{sessionBean.editBuffer.get(schedule.id).bankHolidayOnly}" />
 
 
 							</h:panelGrid>
 
 							<br />
 							<ice:commandButton id="confirm_edit" value="Confirm"
-								 />
+								actionListener="#{sessionBean.confirmEdit(schedule)}"/> 
 							
 							<ice:commandButton id="reset_edit" value="Reset"
-								 />
+								 actionListener="#{sessionBean.resetEdit(schedule)}"/>
 
 						</ace:panel>
 

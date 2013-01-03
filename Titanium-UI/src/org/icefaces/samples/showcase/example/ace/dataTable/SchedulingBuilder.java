@@ -11,32 +11,46 @@ public class SchedulingBuilder {
 	
 	
 	private String name;
-	private int javaAgentPollable;
-	private int statusID;
-	private int serviceID;
-	private int bankHolidayOnly;
+	private String javaAgentPollable = "0";
+	private String statusID = "1";
+	private String serviceID = "1";
+	private String bankHolidayOnly = "0";
 	private String requestURL;
-	private String cron;
+	private String cron = "*";
 	private String description;
 	private int id;
+	
+	public SchedulingBuilder(){}
+	
+	public SchedulingBuilder(Scheduling s){
+		this.name = s.getName();
+		this.javaAgentPollable = Integer.toString(s.getJavaAgentPollable());
+		this.statusID = Integer.toString(s.getStatusID());
+		this.serviceID = Integer.toString(s.getServiceID());
+		this.bankHolidayOnly = Integer.toString(s.getBankHolidayOnly());
+		this.requestURL = s.getRequestURL();
+		this.cron = s.getCron();
+		this.description = s.getDescription();
+		this.id = s.getId();
+	}
 	
 	public String getName() {
 		return name;
 	}
 
-	public int getJavaAgentPollable() {
+	public String getJavaAgentPollable() {
 		return javaAgentPollable;
 	}
 
-	public int getStatusID() {
+	public String getStatusID() {
 		return statusID;
 	}
 
-	public int getServiceID() {
+	public String getServiceID() {
 		return serviceID;
 	}
 
-	public int getBankHolidayOnly() {
+	public String getBankHolidayOnly() {
 		return bankHolidayOnly;
 	}
 
@@ -60,13 +74,13 @@ public class SchedulingBuilder {
 		Scheduling s = new Scheduling();
 		s.setName(name);
 		s.setId(id);
-		s.setBankHolidayOnly(bankHolidayOnly);
+		s.setBankHolidayOnly(Integer.parseInt(bankHolidayOnly));
 		s.setCron(cron);
 		s.setDescription(description);
 		s.setRequestURL(requestURL);
-		s.setServiceID(serviceID);
-		s.setStatusID(statusID);
-		s.setJavaAgentPollable(javaAgentPollable);
+		s.setServiceID(Integer.parseInt(serviceID));
+		s.setStatusID(Integer.parseInt(statusID));
+		s.setJavaAgentPollable(Integer.parseInt(javaAgentPollable));
 		return s;
 	}
 
@@ -90,21 +104,31 @@ public class SchedulingBuilder {
 		this.requestURL = requestURL;
 	}
 
-	public void setBankHolidayOnly(int bankHolidayOnly) {
+	public void setBankHolidayOnly(String bankHolidayOnly) {
 		this.bankHolidayOnly = bankHolidayOnly;
 	}
 
-	public void setServiceID(int serviceID) {
+	public void setServiceID(String serviceID) {
 		this.serviceID = serviceID;
 	}
 
-	public void setStatusID(int statusID) {
+	public void setStatusID(String statusID) {
 		this.statusID = statusID;
 	}
 
-	public void setJavaAgentPollable(int javaAgentPollable) {
+	public void setJavaAgentPollable(String javaAgentPollable) {
 		this.javaAgentPollable = javaAgentPollable;
 	};
 	
-	
+	public void sync(Scheduling s){
+		s.setName(name);
+		s.setId(id);
+		s.setBankHolidayOnly(Integer.parseInt(bankHolidayOnly));
+		s.setCron(cron);
+		s.setDescription(description);
+		s.setRequestURL(requestURL);
+		s.setServiceID(Integer.parseInt(serviceID));
+		s.setStatusID(Integer.parseInt(statusID));
+		s.setJavaAgentPollable(Integer.parseInt(javaAgentPollable));
+	}
 }
