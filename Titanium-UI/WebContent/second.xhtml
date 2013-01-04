@@ -13,25 +13,27 @@
 </h:head>
 <h:body>
 	<h:form>
+		<style type="text/css">
+.ui-datatable-odd {
+	background-color: lightgray !important;
+}
+</style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
-			<ace:tabPane id="schedulings" label="Schedulings">
+			<ace:tabPane id="schedulings" label="Schedulings" >
 				<ace:menuBar>
-					 <ace:menuItem id="select_all"
-                                          value="Select All"
-                                          actionListener="#{sessionBean.SelectAll}">
-                                <ace:ajax event="activate" execute="@this" />
-                        </ace:menuItem>
-                        <ace:menuItem id="deselect_all"
-                                          value="Deselect All"
-                                          actionListener="#{sessionBean.DeSelectAll}">
-                                <ace:ajax event="activate" execute="@this" />
-                        </ace:menuItem>
-                        <ace:menuItem id="stop_selected"
-                                          value="Stop Selected"
-                                          actionListener="#{sessionBean.StopSelected}">
-                                <ace:ajax event="activate" execute="@this" />
-                        </ace:menuItem>
+					<ace:menuItem id="select_all" value="Select All"
+						actionListener="#{sessionBean.SelectAll}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="deselect_all" value="Deselect All"
+						actionListener="#{sessionBean.DeSelectAll}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="stop_selected" value="Stop Selected"
+						actionListener="#{sessionBean.StopSelected}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
 				</ace:menuBar>
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1">
@@ -64,37 +66,36 @@
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{sessionBean.addScheduling}" />
-						
-						
-
 					</ace:accordionPane>
 				</ace:accordion>
-				 
+				<h:form>
 				<ace:dataTable id="scheduleTable"
 					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
-					paginatorPosition="bottom" rows="10" stateMap="#{sessionBean.stateMap}" selectionMode="multiple">
+					paginatorPosition="bottom" rows="10"
+					stateMap="#{sessionBean.stateMap}" selectionMode="multiple" resizableColumns="false" binding="#{sessionBean.aceDataTable}">
 					<ace:ajax event="select" execute="@this" />
+
 					
-
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
-						filterBy="#{schedule.name}" filterMatchMode="contains">
-						<ace:cellEditor>
-							<f:facet name="output">
-								<h:outputText id="nameCell" value="#{schedule.name}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText id="nameInput" value="#{schedule.name}" />
-							</f:facet>
-						</ace:cellEditor>
-
-					</ace:column>
-					<ace:column id="mode" headerText="Mode"
-						sortBy="#{schedule.modeLabel}"
-						filterBy="#{schedule.modeLabel}" filterMatchMode="contains">
-						<h:outputText id="modeCell" value="#{schedule.modeLabel}"/>
-							
+						filterBy="#{schedule.name}" filterMatchMode="contains" >
+						
+						<h:outputText id="nameCell" value="#{schedule.name}"/>
 						
 					</ace:column>
+					
+					
+					<ace:column id="mode" headerText="Mode"
+						sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}"
+						filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						<f:facet name="mode">
+							Mode
+						</f:facet>
+						</ice:panelGroup>
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}" />
+						
+					</ace:column>
+					
 					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
 						filterBy="#{schedule.cron}" filterMatchMode="contains">
 						<ace:cellEditor>
@@ -106,19 +107,23 @@
 							</f:facet>
 						</ace:cellEditor>
 					</ace:column>
-					<ace:column id="cron_variables" headerText="Vars" >
+					<ace:column id="cron_variables" headerText="Vars">
 						<h:outputText id="bank_cell" value="#{schedule.bankHolidayOnly}" />
 						<h:outputText id="java_cell" value="#{schedule.javaAgentPollable}" />
 					</ace:column>
-					<ace:column id="source" headerText="Source">
-					
-					<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
+					<ace:column id="source" headerText="Source" sortBy="#{schedule.sourceName}"
+						filterBy="#{schedule.sourceName}" filterMatchMode="contains">
+
+						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
 					</ace:column>
-					
-					<ace:column id="target" headerText="Target">
-						<h:outputText id="targetCell" value="#{schedule.targetName}" />
+
+					<ace:column id="target" headerText="Target" sortBy="#{schedule.targetName}"
+						filterBy="#{schedule.targetName}" filterMatchMode="contains">
+						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
+
+
 					</ace:column>
-					
+
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
@@ -131,8 +136,8 @@
 							</f:facet>
 						</ace:cellEditor>
 					</ace:column>
-					
-					
+
+
 
 					<!-- 			<ace:column id="options" headerText="Options"> -->
 					<!--                    <ace:rowEditor id="editor" rowEditListener="#{sessionBean.edit}"> -->
@@ -141,8 +146,11 @@
 					<!--             </ace:column> -->
 
 					<ace:column id="edit" headerText="Edit">
+					
 						<ace:expansionToggler changeListener="#{sessionBean.expansion}" />
+						
 					</ace:column>
+					
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit">
 
@@ -150,19 +158,24 @@
 								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
-								<h:inputText id="editNameInput" value="#{sessionBean.editBuffer.get(schedule.id).name}" />
+								<h:inputText id="editNameInput"
+									value="#{sessionBean.editBuffer.get(schedule.id).name}" />
 								<h:outputLabel id="editDescLabel" for="editDescInput"
 									value="Description: " />
-								<h:inputText id="editDescInput" value="#{sessionBean.editBuffer.get(schedule.id).description}" />
+								<h:inputText id="editDescInput"
+									value="#{sessionBean.editBuffer.get(schedule.id).description}" />
 								<h:outputLabel id="editCronLabel" for="editCronInput"
 									value="CRON: " />
-								<h:inputText id="editCronInput" value="#{sessionBean.editBuffer.get(schedule.id).cron}" />
+								<h:inputText id="editCronInput"
+									value="#{sessionBean.editBuffer.get(schedule.id).cron}" />
 								<h:outputLabel id="editServiceLabel" for="editServiceInput"
 									value="Service Id: " />
-								<h:inputText id="editServiceInput" value="#{sessionBean.editBuffer.get(schedule.id).serviceID}" />
+								<h:inputText id="editServiceInput"
+									value="#{sessionBean.editBuffer.get(schedule.id).serviceID}" />
 								<h:outputLabel id="editStatusLabel" for="editStatusInput"
 									value="Status Id: " />
-								<h:inputText id="editStatusInput" value="#{sessionBean.editBuffer.get(schedule.id).statusID}" />
+								<h:inputText id="editStatusInput"
+									value="#{sessionBean.editBuffer.get(schedule.id).statusID}" />
 								<h:outputLabel id="editBankLabel" for="editBankInput"
 									value="Bank Holiday: " />
 								<h:inputText id="editBankInput"
@@ -173,17 +186,17 @@
 
 							<br />
 							<ice:commandButton id="confirm_edit" value="Confirm"
-								actionListener="#{sessionBean.confirmEdit(schedule)}"/> 
-							
+								actionListener="#{sessionBean.confirmEdit(schedule)}" />
+
 							<ice:commandButton id="reset_edit" value="Reset"
-								 actionListener="#{sessionBean.resetEdit(schedule)}"/>
+								actionListener="#{sessionBean.resetEdit(schedule)}" />
 
 						</ace:panel>
 
 					</ace:panelExpansion>
 				</ace:dataTable>
 
-
+			</h:form>
 
 			</ace:tabPane>
 

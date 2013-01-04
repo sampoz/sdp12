@@ -9,6 +9,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 
 @ManagedBean (name = SessionBean.BEAN_NAME, eager=true)
@@ -19,6 +20,14 @@ public class SessionBean {
 	private List<Composite> composites;
 	public static final HashMap<Integer, Backend> BACKENDS = new HashMap<Integer, Backend>();  
 	public static final HashMap<Integer,Mode> MODES = new HashMap<Integer, Mode>();
+	private DataTable aceDataTable;
+	
+	public DataTable getAceDataTable() {
+		return aceDataTable;
+	}
+	public void setAceDataTable(DataTable aceDataTable) {
+		this.aceDataTable = aceDataTable;
+	}
 	
 	public SessionBean(){
 		this.scheduleData = this.connector.getSchedulings();
@@ -105,13 +114,17 @@ public class SessionBean {
 	
 	
 	public void SelectAll(){
-		Collection<RowState> allRows = stateMap.values();
-        
-        for (RowState s : allRows) {
-            s.setSelected(true);
+		List<Scheduling> filteredRows = aceDataTable.getFilteredData();
+		if(filteredRows == null || filteredRows.isEmpty()) {
+			stateMap.setAllSelected(true);
+			return;
+		}
+        for (Scheduling s : filteredRows) {
+            stateMap.get(s).setSelected(true);
+            System.out.println(s.getName());
         }
-		System.out.println("All rows selected");
 	}
+	
 	public void DeSelectAll(){
 		Collection<RowState> allRows = stateMap.values();
         
@@ -122,7 +135,6 @@ public class SessionBean {
 	}
 	
 	public void StopSelected(){
-		
 	      for (Object rowData : stateMap.getSelected()) {
 	    	  Scheduling s = (Scheduling) rowData;
 	    	  s.setStatusID(0);
@@ -130,6 +142,9 @@ public class SessionBean {
 	        }
 	}
 	
+	public void saveTableState(){
+		
+	}
 	
 	
 }
