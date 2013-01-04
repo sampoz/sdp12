@@ -1,5 +1,6 @@
 package entities;
 
+import javax.faces.convert.FacesConverter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -58,5 +59,10 @@ public class Backend {
 
 	public void setContacts(String contacts) {
 		this.contacts = contacts;
+	}
+	
+	@Override
+	public String toString(){
+		return this.backend;
 	}
 }

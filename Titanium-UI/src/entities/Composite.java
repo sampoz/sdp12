@@ -5,15 +5,20 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "SCHEDULING_SERVICE")
 public class Composite implements Serializable{
 
 	@Id
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy = "increment")
 	private int id;
 	
 	@Column(name="OUTPUTTEXT")
@@ -44,5 +49,10 @@ public class Composite implements Serializable{
 
 	public void setJavaAgentPollable(Integer javaAgentPollable) {
 		this.javaAgentPollable = javaAgentPollable;
+	}
+	
+	@Override
+	public String toString(){
+		return this.outputText;
 	}
 }

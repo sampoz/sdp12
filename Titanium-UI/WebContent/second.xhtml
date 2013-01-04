@@ -17,30 +17,48 @@
 .ui-datatable-odd {
 	background-color: lightgray !important;
 }
+
+.left select{
+	display: block;
+}
+
+.left label{
+	display: block;
+	float:left;
+	margin-left:10px
+}
+
+.left input:not(.iceCmdBtn){
+	display: block;
+}
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
-
 			<ace:tabPane id="schedulings" label="Schedulings">
-				
+
 				<ace:menuBar>
 					<ace:menuItem id="select_all" value="Select All"
-						actionListener="#{sessionBean.SelectAll}"
+						actionListener="#{dataMaster.selectAll}"
 						icon="ui-icon ui-icon-check">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="deselect_all" value="Deselect All"
-						actionListener="#{sessionBean.DeSelectAll}"
+						actionListener="#{dataMaster.deselectAll}"
 						icon="ui-icon ui-icon-closethick">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="start_selected" value="Start Selected"
-						actionListener="#{sessionBean.StopSelected}"
+						actionListener="#{dataMaster.stopSelected}"
 						icon="ui-icon ui-icon-play">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="stop_selected" value="Stop Selected"
-						actionListener="#{sessionBean.StopSelected}"
+						actionListener="#{dataMaster.stopSelected}"
 						icon="ui-icon ui-icon-pause">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="refresh" value="Refresh"
+						actionListener="#{dataMaster.refresh}"
+						icon="ui-icon ui-icon-refresh">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 				</ace:menuBar>
@@ -51,38 +69,61 @@
 						<h:panelGrid id="addGrid" columns="6"
 							styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
-							<h:inputText id="nameInput" value="#{sessionBean.builder.name}" />
+							<h:inputText id="nameInput" value="#{dataMaster.builder.name}" />
 							<h:outputLabel id="descLabel" for="descInput"
 								value="Description: " />
 							<h:inputText id="descInput"
-								value="#{sessionBean.builder.description}" />
+								value="#{dataMaster.builder.description}" />
 							<h:outputLabel id="cronLabel" for="cronInput" value="CRON: " />
-							<h:inputText id="cronInput" value="#{sessionBean.builder.cron}" />
-							<h:outputLabel id="serviceLabel" for="serviceInput"
-								value="Service Id: " />
-							<h:inputText id="serviceInput"
-								value="#{sessionBean.builder.serviceID}" />
-							<h:outputLabel id="statusLabel" for="statusInput"
-								value="Status Id: " />
-							<h:inputText id="statusInput"
-								value="#{sessionBean.builder.statusID}" />
-							<h:outputLabel id="bankLabel" for="bankInput"
-								value="Bank Holiday: " />
-							<h:inputText id="bankInput"
-								value="#{sessionBean.builder.bankHolidayOnly}" />
+							<h:inputText id="cronInput" value="#{dataMaster.builder.cron}" />
+							<h:outputLabel id="sourceLabel" for="sourceInput"
+								value="Source: " />
+							<h:selectOneMenu id="sourceInput"
+								value="#{dataMaster.builder.source}">
+								<f:selectItems value="#{dataMaster.backends}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
+							<h:outputLabel id="targetLabel" for="targetInput"
+								value="Target: " />
+							<h:selectOneMenu id="targetInput"
+								value="#{dataMaster.builder.target}">
+								<f:selectItems value="#{dataMaster.backends}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
+							<h:outputLabel id="modeLabel" for="modeInput" value="Mode: " />
+							<h:selectOneMenu id="modeInput"
+								value="#{dataMaster.builder.mode}">
+								<f:selectItems value="#{dataMaster.modes}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
+							<h:outputLabel id="bankLabel" for="bankInput" value="Holiday: " />
+							<h:selectBooleanCheckbox id="bankInput"
+								value="#{dataMaster.builder.bankHolidayOnly}" />
 
+							<h:outputLabel id="javaLabel" for="javaInput" value="Pollable: " />
+							<h:selectBooleanCheckbox id="javaInput"
+								value="#{dataMaster.builder.javaAgentPollable}" />
+
+							<h:outputLabel id="serviceLabel" for="compositeInput"
+								value="Composite: " />
+							<h:selectOneMenu id="compositeInput"
+								value="#{dataMaster.builder.composite}">
+								<f:selectItems value="#{dataMaster.composites}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
 						</h:panelGrid>
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
-							actionListener="#{sessionBean.addScheduling}" />
+							actionListener="#{dataMaster.addScheduling}" />
+
 					</ace:accordionPane>
 				</ace:accordion>
 
-				<ace:dataTable id="scheduleTable"
-					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
-					paginatorPosition="bottom" rows="10"
-					stateMap="#{sessionBean.stateMap}" selectionMode="multiple"
-					resizableColumns="false" binding="#{sessionBean.aceDataTable}">
+				<ace:dataTable id="scheduleTable" value="#{dataMaster.schedulings}"
+					var="schedule" paginator="true" paginatorPosition="bottom"
+					rows="10" stateMap="#{dataMaster.stateMap}"
+					selectionMode="multiple" resizableColumns="false"
+					binding="#{dataMaster.dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
 
@@ -119,14 +160,14 @@
 					</ace:column>
 					<ace:column id="cron_variables" headerText="Vars">
 						<h:panelGrid id="icon_grid" columns="2">
-						<h:outputText id="bank_cell" value="#{schedule.bankHolidayOnly}" />
-						<h:outputText id="java_cell" value="#{schedule.javaAgentPollable}" />
 							<h:graphicImage id="java_image" library="images"
-								name="javaicon.png" style="height: 30px; width: 30px; " rendered="#{schedule.javaAgentPollable gt 0}"/>
-							<h:graphicImage id="bank_image" library="images" name="bankicon.jpg"
-								style="height: 30px; width: 30px; " rendered="#{schedule.bankHolidayOnly gt 0}"/>
+								name="javaicon.png" style="height: 30px; width: 30px; "
+								rendered="#{schedule.javaAgentPollable gt 0}" />
+							<h:graphicImage id="bank_image" library="images"
+								name="bankicon.jpg" style="height: 30px; width: 30px; "
+								rendered="#{schedule.bankHolidayOnly gt 0}" />
 						</h:panelGrid>
-													
+
 					</ace:column>
 					<ace:column id="source" headerText="Source"
 						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
@@ -156,59 +197,77 @@
 						</ace:cellEditor>
 					</ace:column>
 
-
-
-					<!-- 			<ace:column id="options" headerText="Options"> -->
-					<!--                    <ace:rowEditor id="editor" rowEditListener="#{sessionBean.edit}"> -->
-
-					<!--                    </ace:rowEditor> -->
-					<!--             </ace:column> -->
-
 					<ace:column id="edit" headerText="Edit">
 
-						<ace:expansionToggler changeListener="#{sessionBean.expansion}" />
+						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
 
 					</ace:column>
 
 					<ace:panelExpansion>
-						<ace:panel id="edit_panel" header="Edit">
+						<ace:panel id="edit_panel" header="Edit" styleClass="left">
 
 							<h:panelGrid id="editGrid" columns="6"
-								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText" >
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
 								<h:inputText id="editNameInput"
-									value="#{sessionBean.editBuffer.get(schedule.id).name}" />
+									value="#{dataMaster.editBuffer.get(schedule.id).name}" />
 								<h:outputLabel id="editDescLabel" for="editDescInput"
 									value="Description: " />
 								<h:inputText id="editDescInput"
-									value="#{sessionBean.editBuffer.get(schedule.id).description}" />
+									value="#{dataMaster.editBuffer.get(schedule.id).description}" />
 								<h:outputLabel id="editCronLabel" for="editCronInput"
 									value="CRON: " />
 								<h:inputText id="editCronInput"
-									value="#{sessionBean.editBuffer.get(schedule.id).cron}" />
-								<h:outputLabel id="editServiceLabel" for="editServiceInput"
-									value="Service Id: " />
-								<h:inputText id="editServiceInput"
-									value="#{sessionBean.editBuffer.get(schedule.id).serviceID}" />
-								<h:outputLabel id="editStatusLabel" for="editStatusInput"
-									value="Status Id: " />
-								<h:inputText id="editStatusInput"
-									value="#{sessionBean.editBuffer.get(schedule.id).statusID}" />
-								<h:outputLabel id="editBankLabel" for="editBankInput"
-									value="Bank Holiday: " />
-								<h:inputText id="editBankInput"
-									value="#{sessionBean.editBuffer.get(schedule.id).bankHolidayOnly}" />
+									value="#{dataMaster.editBuffer.get(schedule.id).cron}" />
+								<h:outputLabel id="editSourceLabel" for="editSourceInput"
+									value="Source: " />
+								<h:selectOneMenu id="editSourceInput"
+									value="#{dataMaster.editBuffer.get(schedule.id).source}">
+									<f:selectItems value="#{dataMaster.backends}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
 
+								<h:outputLabel id="editTargetLabel" for="editTargetInput"
+									value="Target: " />
+								<h:selectOneMenu id="editTargetInput"
+									value="#{dataMaster.editBuffer.get(schedule.id).target}">
+									<f:selectItems value="#{dataMaster.backends}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
+								<h:outputLabel id="editModeLabel" for="editModeInput"
+									value="Mode: " />
+								<h:selectOneMenu id="editModeInput"
+									value="#{dataMaster.editBuffer.get(schedule.id).mode}">
+									<f:selectItems value="#{dataMaster.modes}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
+
+								<h:outputLabel id="editBankLabel" for="editBankInput"
+									value="Holiday: " />
+								<ice:selectBooleanCheckbox id="editBankInput"
+									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}" partialSubmit="true" />
+								<h:outputLabel id="editJavaLabel" for="editJavaInput"
+									value="Pollable: " />
+								<ice:selectBooleanCheckbox id="editJavaInput"
+									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}" partialSubmit="true"/>
+								<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
+									value="Composite: " />
+								<h:selectOneMenu id="editCompositeInput"
+									value="#{dataMaster.editBuffer.get(schedule.id).composite}">
+									<f:selectItems value="#{dataMaster.composites}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
 
 							</h:panelGrid>
 
 							<br />
 							<ice:commandButton id="confirm_edit" value="Confirm"
-								actionListener="#{sessionBean.confirmEdit(schedule)}" />
+								actionListener="#{dataMaster.confirmEdit(schedule)}" />
 
 							<ice:commandButton id="reset_edit" value="Reset"
-								actionListener="#{sessionBean.resetEdit(schedule)}" />
+								actionListener="#{dataMaster.resetEdit(schedule)}" >
+							</ice:commandButton>
 
 						</ace:panel>
 
