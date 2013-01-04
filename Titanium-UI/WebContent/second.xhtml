@@ -20,18 +20,27 @@
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
-			<ace:tabPane id="schedulings" label="Schedulings" >
+			<ace:tabPane id="schedulings" label="Schedulings">
+				
 				<ace:menuBar>
 					<ace:menuItem id="select_all" value="Select All"
-						actionListener="#{sessionBean.SelectAll}">
+						actionListener="#{sessionBean.SelectAll}"
+						icon="ui-icon ui-icon-check">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="deselect_all" value="Deselect All"
-						actionListener="#{sessionBean.DeSelectAll}">
+						actionListener="#{sessionBean.DeSelectAll}"
+						icon="ui-icon ui-icon-closethick">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="start_selected" value="Start Selected"
+						actionListener="#{sessionBean.StopSelected}"
+						icon="ui-icon ui-icon-play">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="stop_selected" value="Stop Selected"
-						actionListener="#{sessionBean.StopSelected}">
+						actionListener="#{sessionBean.StopSelected}"
+						icon="ui-icon ui-icon-pause">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 				</ace:menuBar>
@@ -68,34 +77,35 @@
 							actionListener="#{sessionBean.addScheduling}" />
 					</ace:accordionPane>
 				</ace:accordion>
-				<h:form>
+
 				<ace:dataTable id="scheduleTable"
 					value="#{sessionBean.scheduleData}" var="schedule" paginator="true"
 					paginatorPosition="bottom" rows="10"
-					stateMap="#{sessionBean.stateMap}" selectionMode="multiple" resizableColumns="false" binding="#{sessionBean.aceDataTable}">
+					stateMap="#{sessionBean.stateMap}" selectionMode="multiple"
+					resizableColumns="false" binding="#{sessionBean.aceDataTable}">
 					<ace:ajax event="select" execute="@this" />
 
-					
+
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
-						filterBy="#{schedule.name}" filterMatchMode="contains" >
-						
-						<h:outputText id="nameCell" value="#{schedule.name}"/>
-						
+						filterBy="#{schedule.name}" filterMatchMode="contains">
+
+						<h:outputText id="nameCell" value="#{schedule.name}" />
+
 					</ace:column>
-					
-					
+
+
 					<ace:column id="mode" headerText="Mode"
 						sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}"
 						filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
-						<f:facet name="mode">
+							<f:facet name="mode">
 							Mode
 						</f:facet>
 						</ice:panelGroup>
 						<h:outputText id="modeCell" value="#{schedule.modeLabel}" />
-						
+
 					</ace:column>
-					
+
 					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
 						filterBy="#{schedule.cron}" filterMatchMode="contains">
 						<ace:cellEditor>
@@ -108,17 +118,26 @@
 						</ace:cellEditor>
 					</ace:column>
 					<ace:column id="cron_variables" headerText="Vars">
+						<h:panelGrid id="icon_grid" columns="2">
 						<h:outputText id="bank_cell" value="#{schedule.bankHolidayOnly}" />
 						<h:outputText id="java_cell" value="#{schedule.javaAgentPollable}" />
+							<h:graphicImage id="java_image" library="images"
+								name="javaicon.png" style="height: 30px; width: 30px; " rendered="#{schedule.javaAgentPollable gt 0}"/>
+							<h:graphicImage id="bank_image" library="images" name="bankicon.jpg"
+								style="height: 30px; width: 30px; " rendered="#{schedule.bankHolidayOnly gt 0}"/>
+						</h:panelGrid>
+													
 					</ace:column>
-					<ace:column id="source" headerText="Source" sortBy="#{schedule.sourceName}"
-						filterBy="#{schedule.sourceName}" filterMatchMode="contains">
+					<ace:column id="source" headerText="Source"
+						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
+						filterMatchMode="contains">
 
 						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
 					</ace:column>
 
-					<ace:column id="target" headerText="Target" sortBy="#{schedule.targetName}"
-						filterBy="#{schedule.targetName}" filterMatchMode="contains">
+					<ace:column id="target" headerText="Target"
+						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
+						filterMatchMode="contains">
 						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
 
 
@@ -146,11 +165,11 @@
 					<!--             </ace:column> -->
 
 					<ace:column id="edit" headerText="Edit">
-					
+
 						<ace:expansionToggler changeListener="#{sessionBean.expansion}" />
-						
+
 					</ace:column>
-					
+
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit">
 
@@ -196,7 +215,7 @@
 					</ace:panelExpansion>
 				</ace:dataTable>
 
-			</h:form>
+
 
 			</ace:tabPane>
 

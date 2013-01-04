@@ -1,4 +1,4 @@
-package org.icefaces.samples.showcase.example.ace.dataTable;
+package entities;
 
 import java.io.Serializable;
 import java.util.Set;

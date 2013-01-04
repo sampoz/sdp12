@@ -1,4 +1,4 @@
-package org.icefaces.samples.showcase.example.ace.dataTable;
+package entities;
 
 
 import java.io.Serializable;
@@ -6,6 +6,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.icefaces.samples.showcase.example.ace.dataTable.SessionBean;
 
 import javax.persistence.Id;
 

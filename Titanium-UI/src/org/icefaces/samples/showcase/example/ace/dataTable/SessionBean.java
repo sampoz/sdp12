@@ -6,13 +6,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 
-@ManagedBean (name = SessionBean.BEAN_NAME, eager=true)
+import entities.Backend;
+import entities.Composite;
+import entities.Mode;
+import entities.Scheduling;
+
+@ManagedBean (name = SessionBean.BEAN_NAME)
 @SessionScoped
 public class SessionBean {
 	

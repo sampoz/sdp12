@@ -5,32 +5,6 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
 	version="2.1">
 
-	<managed-bean>
-		<managed-bean-name>menuBarBean</managed-bean-name>
-		<managed-bean-class>MenuBarBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-		<managed-property>
-			<property-name>param</property-name>
-			<property-class>java.lang.String</property-class>
-			<value>./index.jsf</value>
-		</managed-property>
-		<managed-property>
-			<property-name>param1</property-name>
-			<property-class>java.lang.String</property-class>
-			<value>./second.jsf</value>
-		</managed-property>
-		<managed-property>
-			<property-name>param2</property-name>
-			<property-class>java.lang.String</property-class>
-			<value>./third.jsf</value>
-		</managed-property>
-		<managed-property>
-			<property-name>param3</property-name>
-			<property-class>java.lang.String</property-class>
-			<value>./fourth.jsf</value>
-		</managed-property>
-	</managed-bean>
-	
 	<navigation-rule>
 		<from-view-id>/index.xhtml</from-view-id>
 <!-- 		<navigation-case> -->

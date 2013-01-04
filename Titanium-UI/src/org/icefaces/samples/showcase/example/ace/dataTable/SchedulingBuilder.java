@@ -1,7 +1,7 @@
 package org.icefaces.samples.showcase.example.ace.dataTable;
 
 
-import org.icefaces.samples.showcase.example.ace.dataTable.Scheduling;
+import entities.Scheduling;
 
 /*
  * Builder class for creating a new scheduling.

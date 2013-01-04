@@ -7,6 +7,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import entities.Backend;
+import entities.Composite;
+import entities.Mode;
+import entities.Scheduling;
+
 public class DatabaseConnector {
 	
 	private EntityManager manager;
