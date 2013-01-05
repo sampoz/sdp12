@@ -18,6 +18,7 @@ import org.icefaces.ace.model.table.RowStateMap;
 
 import entities.Backend;
 import entities.Composite;
+import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
 
@@ -31,10 +32,16 @@ public class DataMaster implements Serializable {
 	public static final String BEAN_NAME = "dataMaster";
 
 	private DataTable dataTable;
+	
+	private DataTable i_dataTable;
 
 	private List<Scheduling> schedulings;
+	
+	private List<Instance> instances;
 
 	private RowStateMap stateMap = new RowStateMap();
+	
+	private RowStateMap i_stateMap = new RowStateMap();
 
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 
@@ -126,6 +133,14 @@ public class DataMaster implements Serializable {
 		this.dataTable = dataTable;
 	}
 
+	public DataTable getI_dataTable() {
+		return i_dataTable;
+	}
+
+	public void setI_dataTable(DataTable i_dataTable) {
+		this.i_dataTable = i_dataTable;
+	}
+
 	public SessionBean getSessionBean() {
 		return session;
 	}
@@ -139,6 +154,20 @@ public class DataMaster implements Serializable {
 			this.refresh();
 		}
 		return schedulings;
+	}
+
+	public List<Instance> getInstances() {
+		if (this.instances == null || this.instances.isEmpty()) {
+			this.refreshInstances();
+		}
+		return instances;
+	}
+
+	public void refreshInstances() {
+		this.instances = this.session.getConnector().getInstances();
+	}
+	public void setInstances(List<Instance> instances) {
+		this.instances = instances;
 	}
 
 	public void refresh() {
@@ -155,6 +184,14 @@ public class DataMaster implements Serializable {
 
 	public void setStateMap(RowStateMap stateMap) {
 		this.stateMap = stateMap;
+	}
+
+	public RowStateMap getI_stateMap() {
+		return i_stateMap;
+	}
+
+	public void setI_stateMap(RowStateMap i_stateMap) {
+		this.i_stateMap = i_stateMap;
 	}
 
 	public HashMap<Integer, SchedulingBuilder> getEditBuffer() {

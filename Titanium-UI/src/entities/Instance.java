@@ -60,6 +60,8 @@ public class Instance implements Serializable {
 	@Column(name = "INSTANCE_HIDDEN_UI")
 	private Integer instanceHiddenUI;
 	
+	public Instance() {}
+	
 	public Instance(String name, String process, String instance,
 			String startDate, String endDate, int statusID, String message,
 			String inputFileName, String outputFileName, int instanceDeleted,
