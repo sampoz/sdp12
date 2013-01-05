@@ -183,8 +183,7 @@ public class Scheduling implements Serializable  {
 	}
 	
 	public String getModeLabel() {
-		if(this.modeLabel == null)
-			this.modeLabel = SessionBean.MODES.get(this.statusID).getLabel();
+		this.modeLabel = SessionBean.MODES.get(this.statusID).getLabel();
 		return modeLabel;
 	}
 
@@ -197,9 +196,9 @@ public class Scheduling implements Serializable  {
 
 	public String getSourceName() {
 		try{
-		if(sourceName == null){
+
 			this.sourceName = SessionBean.BACKENDS.get(this.source).getBackend();
-		}
+
 		}catch (NullPointerException e){
 			return "SAMPSA UPDATEE RIVIT";
 		}
@@ -218,9 +217,9 @@ public class Scheduling implements Serializable  {
 
 	public String getTargetName() {
 		try{
-			if(targetName == null){
+
 			this.targetName = SessionBean.BACKENDS.get(this.target).getBackend();
-		}}catch (NullPointerException e){
+		}catch (NullPointerException e){
 			return "SAMPSA UPDATEE RIVIT";
 		}
 		return targetName;

@@ -28,32 +28,48 @@
 	margin-left: 10px
 }
 
-.left input:not (.iceCmdBtn ){
-	display: block;
-}
+.left
+ 
+input
+:not
+ 
+(
+.iceCmdBtn
+ 
+){
+display
+:
+ 
+block
+;
 
+
+}
 .red {
 	color: red;
 	float: left;
 	margin-top: 10px;
-	margin-bottom:10px;
+	margin-bottom: 10px;
 }
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
-			<ace:tabPane id="login_tab" label="Login">
+			<ace:tabPane id="login_tab" label="Login"
+				rendered="#{loginManager.session.authenticated eq false}">
 				<h:panelGrid id="login_grid" columns="2"
 					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 					<h:outputLabel id="username_label" for="username_input"
 						value="Username: " />
-					<h:inputText id="username_input" />
+					<h:inputText id="username_input" value="#{loginManager.username}" />
 					<h:outputLabel id="password_label" for="password_input"
 						value="Password: " />
-					<h:inputSecret id="password_input" />
-					<ice:commandButton id="login_button" value="Login" />
+					<h:inputSecret id="password_input" value="#{loginManager.password}" />
+					<ice:commandButton id="login_button" value="Login"
+						action="#{loginManager.authenticate}" />
 				</h:panelGrid>
 			</ace:tabPane>
-			<ace:tabPane id="schedulings" label="Schedulings">
+			<ace:tabPane id="schedulings" label="Schedulings"
+				rendered="#{loginManager.session.authenticated}">
 
 				<ace:menuBar>
 					<ace:menuItem id="select_all" value="Select All"
@@ -151,18 +167,15 @@
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
 						filterBy="#{schedule.name}" filterMatchMode="contains">
 
-						
-					    <h:panelGrid >
-						<h:outputText id="nameCell" value="#{schedule.name}" styleClass="tooltipTargetStyle" />
+
+						<h:panelGrid>
+							<h:outputText id="nameCell" value="#{schedule.name}"
+								styleClass="tooltipTargetStyle" />
 						</h:panelGrid>
-	                     <ace:tooltip id="tooltip_name_column"
-	                                for="nameCell"
-	                                value="#{schedule.name}"
-	                                showDelay="500"
-	                                hideDelay="200" 
-	                                >
-	         
-	                </ace:tooltip>
+						<ace:tooltip id="tooltip_name_column" for="nameCell"
+							value="#{schedule.name}" showDelay="500" hideDelay="200">
+
+						</ace:tooltip>
 					</ace:column>
 
 
@@ -180,14 +193,7 @@
 
 					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
 						filterBy="#{schedule.cron}" filterMatchMode="contains">
-						<ace:cellEditor>
-							<f:facet name="output">
-								<h:outputText id="timeCell" value="#{schedule.cron}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText id="timeInput" value="#{schedule.cron}" />
-							</f:facet>
-						</ace:cellEditor>
+						<h:outputText id="timeCell" value="#{schedule.cron}" />
 					</ace:column>
 					<ace:column id="cron_variables" headerText="Vars">
 						<h:panelGrid id="icon_grid" columns="2">
@@ -218,11 +224,12 @@
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
-							<ice:panelGroup style="width:100px;">
-							<f:facet name="mode">
+						<ice:panelGroup style="width:100px;">
+							<f:facet name="description">
 							Description
 						</f:facet>
-						</ice:panelGroup><h:outputText id="descCell" value="#{schedule.description}" />
+						</ice:panelGroup>
+						<h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
 					<ace:column id="edit" headerText="Edit">
@@ -310,11 +317,13 @@
 
 			</ace:tabPane>
 
-			<ace:tabPane id="scheduling_log" label="Scheduling Log">
+			<ace:tabPane id="scheduling_log" label="Scheduling Log"
+				rendered="#{loginManager.session.authenticated}">
 
 			</ace:tabPane>
 
-			<ace:tabPane id="audit_log" label="Audit Log">
+			<ace:tabPane id="audit_log" label="Audit Log"
+				rendered="#{loginManager.session.authenticated}">
 
 			</ace:tabPane>
 
