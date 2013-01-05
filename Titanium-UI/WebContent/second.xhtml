@@ -18,21 +18,41 @@
 	background-color: lightgray !important;
 }
 
-.left select{
+.left select {
 	display: block;
 }
 
-.left label{
+.left label {
 	display: block;
-	float:left;
-	margin-left:10px
+	float: left;
+	margin-left: 10px
 }
 
-.left input:not(.iceCmdBtn){
+.left input:not (.iceCmdBtn ){
 	display: block;
+}
+
+.red {
+	color: red;
+	float: left;
+	margin-top: 10px;
+	margin-bottom:10px;
 }
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
+
+			<ace:tabPane id="login_tab" label="Login">
+				<h:panelGrid id="login_grid" columns="2"
+					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+					<h:outputLabel id="username_label" for="username_input"
+						value="Username: " />
+					<h:inputText id="username_input" />
+					<h:outputLabel id="password_label" for="password_input"
+						value="Password: " />
+					<h:inputSecret id="password_input" />
+					<ice:commandButton id="login_button" value="Login" />
+				</h:panelGrid>
+			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings">
 
 				<ace:menuBar>
@@ -65,6 +85,8 @@
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
+						<ice:outputText value="#{dataMaster.addErrorMessage}"
+							rendered="#{dataMaster.addError}" styleClass="red" />
 
 						<h:panelGrid id="addGrid" columns="6"
 							styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
@@ -115,14 +137,13 @@
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{dataMaster.addScheduling}" />
-
 					</ace:accordionPane>
 				</ace:accordion>
 
 				<ace:dataTable id="scheduleTable" value="#{dataMaster.schedulings}"
 					var="schedule" paginator="true" paginatorPosition="bottom"
 					rows="10" stateMap="#{dataMaster.stateMap}"
-					selectionMode="multiple" resizableColumns="false"
+					selectionMode="multiple" resizableColumns="true"
 					binding="#{dataMaster.dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
@@ -130,8 +151,18 @@
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
 						filterBy="#{schedule.name}" filterMatchMode="contains">
 
-						<h:outputText id="nameCell" value="#{schedule.name}" />
-
+						
+					    <h:panelGrid >
+						<h:outputText id="nameCell" value="#{schedule.name}" styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+	                     <ace:tooltip id="tooltip_name_column"
+	                                for="nameCell"
+	                                value="#{schedule.name}"
+	                                showDelay="500"
+	                                hideDelay="200" 
+	                                >
+	         
+	                </ace:tooltip>
 					</ace:column>
 
 
@@ -164,7 +195,7 @@
 								name="javaicon.png" style="height: 30px; width: 30px; "
 								rendered="#{schedule.javaAgentPollable gt 0}" />
 							<h:graphicImage id="bank_image" library="images"
-								name="bankicon.png" style="height: 30px; width: 30px; "
+								name="bankicon.jpg" style="height: 30px; width: 30px; "
 								rendered="#{schedule.bankHolidayOnly gt 0}" />
 						</h:panelGrid>
 
@@ -187,14 +218,11 @@
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
-						<ace:cellEditor>
-							<f:facet name="output">
-								<h:outputText id="descCell" value="#{schedule.description}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText id="descInput" value="#{schedule.description}" />
-							</f:facet>
-						</ace:cellEditor>
+							<ice:panelGroup style="width:100px;">
+							<f:facet name="mode">
+							Description
+						</f:facet>
+						</ice:panelGroup><h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
 					<ace:column id="edit" headerText="Edit">
@@ -205,9 +233,11 @@
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
-
+							<ice:outputText value="#{dataMaster.editErrorMessage}"
+								rendered="#{dataMaster.editError}" styleClass="red"
+								style="white-space:pre;" />
 							<h:panelGrid id="editGrid" columns="6"
-								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText" >
+								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
 								<h:inputText id="editNameInput"
@@ -246,11 +276,13 @@
 								<h:outputLabel id="editBankLabel" for="editBankInput"
 									value="Holiday: " />
 								<ice:selectBooleanCheckbox id="editBankInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}" partialSubmit="true" />
+									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}"
+									partialSubmit="true" />
 								<h:outputLabel id="editJavaLabel" for="editJavaInput"
 									value="Pollable: " />
 								<ice:selectBooleanCheckbox id="editJavaInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}" partialSubmit="true"/>
+									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}"
+									partialSubmit="true" />
 								<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
 									value="Composite: " />
 								<h:selectOneMenu id="editCompositeInput"
@@ -266,7 +298,7 @@
 								actionListener="#{dataMaster.confirmEdit(schedule)}" />
 
 							<ice:commandButton id="reset_edit" value="Reset"
-								actionListener="#{dataMaster.resetEdit(schedule)}" >
+								actionListener="#{dataMaster.resetEdit(schedule)}">
 							</ice:commandButton>
 
 						</ace:panel>
@@ -278,163 +310,7 @@
 
 			</ace:tabPane>
 
-			<ace:tabPane id="instance_log" label="Instance Log">
-<!-- 				<ace:dataTable id="instanceTable" value="#{dataMaster.schedulings}" -->
-<!-- 					var="schedule" paginator="true" paginatorPosition="bottom" -->
-<!-- 					rows="10" stateMap="#{dataMaster.stateMap}" -->
-<!-- 					selectionMode="multiple" resizableColumns="false" -->
-<!-- 					binding="#{dataMaster.dataTable}"> -->
-<!-- 					<ace:ajax event="select" execute="@this" /> -->
-
-
-<!-- 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}" -->
-<!-- 						filterBy="#{schedule.name}" filterMatchMode="contains"> -->
-
-<!-- 						<h:outputText id="nameCell" value="#{schedule.name}" /> -->
-
-<!-- 					</ace:column> -->
-
-
-<!-- 					<ace:column id="mode" headerText="Mode" -->
-<!-- 						sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<ice:panelGroup style="width:100px;"> -->
-<!-- 							<f:facet name="mode"> -->
-<!-- 							Mode -->
-<!-- 						</f:facet> -->
-<!-- 						</ice:panelGroup> -->
-<!-- 						<h:outputText id="modeCell" value="#{schedule.modeLabel}" /> -->
-
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}" -->
-<!-- 						filterBy="#{schedule.cron}" filterMatchMode="contains"> -->
-<!-- 						<ace:cellEditor> -->
-<!-- 							<f:facet name="output"> -->
-<!-- 								<h:outputText id="timeCell" value="#{schedule.cron}" /> -->
-<!-- 							</f:facet> -->
-<!-- 							<f:facet name="input"> -->
-<!-- 								<h:inputText id="timeInput" value="#{schedule.cron}" /> -->
-<!-- 							</f:facet> -->
-<!-- 						</ace:cellEditor> -->
-<!-- 					</ace:column> -->
-<!-- 					<ace:column id="cron_variables" headerText="Vars"> -->
-<!-- 						<h:panelGrid id="icon_grid" columns="2"> -->
-<!-- 							<h:graphicImage id="java_image" library="images" -->
-<!-- 								name="javaicon.png" style="height: 30px; width: 30px; " -->
-<!-- 								rendered="#{schedule.javaAgentPollable gt 0}" /> -->
-<!-- 							<h:graphicImage id="bank_image" library="images" -->
-<!-- 								name="bankicon.jpg" style="height: 30px; width: 30px; " -->
-<!-- 								rendered="#{schedule.bankHolidayOnly gt 0}" /> -->
-<!-- 						</h:panelGrid> -->
-
-<!-- 					</ace:column> -->
-<!-- 					<ace:column id="source" headerText="Source" -->
-<!-- 						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}" -->
-<!-- 						filterMatchMode="contains"> -->
-
-<!-- 						<h:outputText id="sourceCell" value="#{schedule.sourceName}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="target" headerText="Target" -->
-<!-- 						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText> -->
-
-
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="description" headerText="Description" -->
-<!-- 						sortBy="#{schedule.description}" -->
-<!-- 						filterBy="#{schedule.description}" filterMatchMode="contains"> -->
-<!-- 						<ace:cellEditor> -->
-<!-- 							<f:facet name="output"> -->
-<!-- 								<h:outputText id="descCell" value="#{schedule.description}" /> -->
-<!-- 							</f:facet> -->
-<!-- 							<f:facet name="input"> -->
-<!-- 								<h:inputText id="descInput" value="#{schedule.description}" /> -->
-<!-- 							</f:facet> -->
-<!-- 						</ace:cellEditor> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="edit" headerText="Edit"> -->
-
-<!-- 						<ace:expansionToggler changeListener="#{dataMaster.expansion}" /> -->
-
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:panelExpansion> -->
-<!-- 						<ace:panel id="edit_panel" header="Edit" styleClass="left"> -->
-
-<!-- 							<h:panelGrid id="editGrid" columns="6" -->
-<!-- 								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText" > -->
-<!-- 								<h:outputLabel id="editNameLabel" for="editNameInput" -->
-<!-- 									value="Name: " /> -->
-<!-- 								<h:inputText id="editNameInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).name}" /> -->
-<!-- 								<h:outputLabel id="editDescLabel" for="editDescInput" -->
-<!-- 									value="Description: " /> -->
-<!-- 								<h:inputText id="editDescInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).description}" /> -->
-<!-- 								<h:outputLabel id="editCronLabel" for="editCronInput" -->
-<!-- 									value="CRON: " /> -->
-<!-- 								<h:inputText id="editCronInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).cron}" /> -->
-<!-- 								<h:outputLabel id="editSourceLabel" for="editSourceInput" -->
-<!-- 									value="Source: " /> -->
-<!-- 								<h:selectOneMenu id="editSourceInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).source}"> -->
-<!-- 									<f:selectItems value="#{dataMaster.backends}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
-
-<!-- 								<h:outputLabel id="editTargetLabel" for="editTargetInput" -->
-<!-- 									value="Target: " /> -->
-<!-- 								<h:selectOneMenu id="editTargetInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).target}"> -->
-<!-- 									<f:selectItems value="#{dataMaster.backends}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
-<!-- 								<h:outputLabel id="editModeLabel" for="editModeInput" -->
-<!-- 									value="Mode: " /> -->
-<!-- 								<h:selectOneMenu id="editModeInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).mode}"> -->
-<!-- 									<f:selectItems value="#{dataMaster.modes}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
-
-<!-- 								<h:outputLabel id="editBankLabel" for="editBankInput" -->
-<!-- 									value="Holiday: " /> -->
-<!-- 								<ice:selectBooleanCheckbox id="editBankInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}" partialSubmit="true" /> -->
-<!-- 								<h:outputLabel id="editJavaLabel" for="editJavaInput" -->
-<!-- 									value="Pollable: " /> -->
-<!-- 								<ice:selectBooleanCheckbox id="editJavaInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}" partialSubmit="true"/> -->
-<!-- 								<h:outputLabel id="editCompositeLabel" for="editCompositeInput" -->
-<!-- 									value="Composite: " /> -->
-<!-- 								<h:selectOneMenu id="editCompositeInput" -->
-<!-- 									value="#{dataMaster.editBuffer.get(schedule.id).composite}"> -->
-<!-- 									<f:selectItems value="#{dataMaster.composites}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
-
-<!-- 							</h:panelGrid> -->
-
-<!-- 							<br /> -->
-<!-- 							<ice:commandButton id="confirm_edit" value="Confirm" -->
-<!-- 								actionListener="#{dataMaster.confirmEdit(schedule)}" /> -->
-
-<!-- 							<ice:commandButton id="reset_edit" value="Reset" -->
-<!-- 								actionListener="#{dataMaster.resetEdit(schedule)}" > -->
-<!-- 							</ice:commandButton> -->
-
-<!-- 						</ace:panel> -->
-
-<!-- 					</ace:panelExpansion> -->
-<!-- 				</ace:dataTable> -->
-
-
+			<ace:tabPane id="scheduling_log" label="Scheduling Log">
 
 			</ace:tabPane>
 

@@ -1,6 +1,8 @@
-package org.icefaces.samples.showcase.example.ace.dataTable;
+package datalogic;
+
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -8,18 +10,11 @@ import java.util.List;
 import javax.faces.bean.CustomScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ValueChangeEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
-
-import com.icesoft.faces.component.SelectBooleanCheckboxTag;
-import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 
 import entities.Backend;
 import entities.Composite;
@@ -48,16 +43,36 @@ public class DataMaster implements Serializable {
 	private Collection<Mode> modes = SessionBean.MODES.values();
 	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
 	private Collection<Backend> backends = SessionBean.BACKENDS.values();
-
+	
+	private boolean editError;
+	private String editErrorMessage;
+	
+	private boolean addError;
+	private String addErrorMessage;
+	
 	public void addScheduling() {
 
-		Scheduling s = this.builder.build();
-		session.getConnector().addScheduling(s);
+		Scheduling s;
+		try {
+			s = this.builder.build();
+			session.getConnector().addScheduling(s);
+			addError = false;
+		} catch (IllegalOperationException e) {
+			addErrorMessage = e.getMessage();
+			addError = true;
+		}
+		
 	}
 
 	public void confirmEdit(Scheduling s) {
 
-		this.editBuffer.get(s.getId()).sync(s);
+		try {
+			this.editBuffer.get(s.getId()).sync(s);
+			editError = false;
+		} catch (IllegalOperationException e) {
+			editErrorMessage = e.getMessage();
+			editError = true;
+		}
 
 		// System.out.println(this.connector.updateScheduling(s));
 	}
@@ -181,5 +196,38 @@ public class DataMaster implements Serializable {
 	public void setBackends(Collection<Backend> backends) {
 		this.backends = backends;
 	}
+
+	public boolean isEditError() {
+		return editError;
+	}
+
+	public void setEditError(boolean editError) {
+		this.editError = editError;
+	}
+
+	public String getEditErrorMessage() {
+		return editErrorMessage;
+	}
+
+	public void setEditErrorMessage(String editErrorMessage) {
+		this.editErrorMessage = editErrorMessage;
+	}
+
+	public boolean isAddError() {
+		return addError;
+	}
+
+	public void setAddError(boolean addError) {
+		this.addError = addError;
+	}
+
+	public String getAddErrorMessage() {
+		return addErrorMessage;
+	}
+
+	public void setAddErrorMessage(String addErrorMessage) {
+		this.addErrorMessage = addErrorMessage;
+	}
+
 
 }

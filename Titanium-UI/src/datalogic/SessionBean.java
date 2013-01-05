@@ -1,4 +1,5 @@
-package org.icefaces.samples.showcase.example.ace.dataTable;
+package datalogic;
+
 
 import java.util.HashMap;
 import java.util.List;

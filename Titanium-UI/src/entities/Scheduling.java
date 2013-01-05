@@ -6,7 +6,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.icefaces.samples.showcase.example.ace.dataTable.SessionBean;
+
+import datalogic.SessionBean;
 
 import javax.persistence.Id;
 

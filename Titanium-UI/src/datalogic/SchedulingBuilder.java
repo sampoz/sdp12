@@ -1,4 +1,4 @@
-package org.icefaces.samples.showcase.example.ace.dataTable;
+package datalogic;
 
 
 import entities.Backend;
@@ -11,8 +11,7 @@ import entities.Scheduling;
  */
 
 public class SchedulingBuilder {
-	
-	
+
 	private String name;
 	private boolean javaAgentPollable = false;
 	private boolean bankHolidayOnly = false;
@@ -25,14 +24,17 @@ public class SchedulingBuilder {
 	private String description = "";
 	private int id;
 	
-	public SchedulingBuilder(){}
-	
-	public SchedulingBuilder(Scheduling s){
+	private static final String LINE_BREAK = "\n";
+
+	public SchedulingBuilder() {
+	}
+
+	public SchedulingBuilder(Scheduling s) {
 		this.name = s.getName();
-		if(s.getJavaAgentPollable() == 1)
+		if (s.getJavaAgentPollable() == 1)
 			this.javaAgentPollable = true;
-		
-		if(s.getBankHolidayOnly() == 1)
+
+		if (s.getBankHolidayOnly() == 1)
 			this.bankHolidayOnly = true;
 		this.mode = SessionBean.MODES.get(s.getStatusID());
 		this.composite = SessionBean.COMPOSITES.get(s.getServiceID());
@@ -43,21 +45,64 @@ public class SchedulingBuilder {
 		this.description = s.getDescription();
 		this.id = s.getId();
 	}
-	
-	public Scheduling build(){
+
+	public boolean validate() throws IllegalOperationException {
+		String message = "";
+		boolean error = false;
+		if (this.name == null || this.name.isEmpty()) {
+			error = true;
+			message += "Name cannot be empty!" + LINE_BREAK;
+		}
+		if (this.mode == null) {
+			error = true;
+			message += "Mode was not selected!" + LINE_BREAK;
+		}
+		if (this.composite == null) {
+			error = true;
+			message += "Composite was not selected!" + LINE_BREAK;
+		}
+		if (this.source == null) {
+			error = true;
+			message += "Source was not selected!" + LINE_BREAK;
+		}
+		if (this.target == null) {
+			error = true;
+			message += "Target was not selected!" + LINE_BREAK;
+		}
+		if (this.cron == null || this.cron.isEmpty()) {
+			error = true;
+			message += "CRON cannot be empty!" + LINE_BREAK;
+		}
+		if (this.description == null || this.description.isEmpty()) {
+			error = true;
+			message += "Description cannot be empty!" + LINE_BREAK;
+		}
+		if (this.source.getBackend() == this.target.getBackend()) {
+			error = true;
+			message += "Source cannot be the same as target!" + LINE_BREAK;
+		}
+		if (error)
+			throw new IllegalOperationException(message);
+
+		return true;
+	}
+
+	public Scheduling build() throws IllegalOperationException {
+		this.validate();
+
 		Scheduling s = new Scheduling();
 		s.setName(name);
 		s.setId(id);
-		
-		if(this.bankHolidayOnly)
+
+		if (this.bankHolidayOnly)
 			s.setBankHolidayOnly(1);
 		else
 			s.setBankHolidayOnly(0);
-		if(this.javaAgentPollable)
+		if (this.javaAgentPollable)
 			s.setJavaAgentPollable(1);
 		else
 			s.setJavaAgentPollable(0);
-		
+
 		s.setCron(cron);
 		s.setDescription(description);
 		s.setRequestURL(requestURL);
@@ -67,20 +112,21 @@ public class SchedulingBuilder {
 		s.setTarget(this.target.getId());
 		return s;
 	}
-	
-	public void sync(Scheduling s){
+
+	public void sync(Scheduling s) throws IllegalOperationException {
+		this.validate();
 		s.setName(name);
 		s.setId(id);
-		
-		if(this.bankHolidayOnly)
+
+		if (this.bankHolidayOnly)
 			s.setBankHolidayOnly(1);
 		else
 			s.setBankHolidayOnly(0);
-		if(this.javaAgentPollable)
+		if (this.javaAgentPollable)
 			s.setJavaAgentPollable(1);
 		else
 			s.setJavaAgentPollable(0);
-		
+
 		s.setCron(cron);
 		s.setDescription(description);
 		s.setRequestURL(requestURL);
@@ -89,7 +135,7 @@ public class SchedulingBuilder {
 		s.setSource(this.source.getId());
 		s.setTarget(this.target.getId());
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -178,7 +224,4 @@ public class SchedulingBuilder {
 		this.target = target;
 	}
 
-	
-	
-	
 }

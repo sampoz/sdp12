@@ -5,7 +5,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-import org.icefaces.samples.showcase.example.ace.dataTable.SessionBean;
+import datalogic.SessionBean;
+
 @FacesConverter("entityConverter")
 public class EntityConverter implements Converter {
 
