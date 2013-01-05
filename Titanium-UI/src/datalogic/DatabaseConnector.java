@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import entities.Backend;
 import entities.Composite;
+import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
 
@@ -33,6 +34,16 @@ public class DatabaseConnector {
 		List<Scheduling> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;
+	}
+	
+	public List<Instance> getInstances() {
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from Instance");
+		List<Instance> result = q.getResultList();
+		this.manager.getTransaction().commit();
+		return result;
+		
 	}
 	
 	public List<Mode> getAllModes(){
