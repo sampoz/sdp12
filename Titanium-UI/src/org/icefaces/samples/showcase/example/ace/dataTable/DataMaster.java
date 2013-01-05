@@ -38,7 +38,7 @@ public class DataMaster implements Serializable {
 
 	private DataTable dataTable;
 
-	private List<Scheduling> schedulings;
+	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 
 	private RowStateMap stateMap = new RowStateMap();
 
@@ -73,22 +73,28 @@ public class DataMaster implements Serializable {
 	public void confirmEdit(Scheduling s) {
 
 		try {
-			this.editBuffer.get(s.getId()).sync(s);
+			
+			Scheduling n = this.editBuffer.get(s.getId()).build();
+			this.schedulings.remove(s);
+			this.schedulings.add(n);
+
+			this.session.getConnector().updateScheduling(s);
 			editError = false;
 		} catch (IllegalOperationException e) {
 			editErrorMessage = e.getMessage();
 			editError = true;
 		}
 
-		// System.out.println(this.connector.updateScheduling(s));
 	}
 
 	public void expansion(ExpansionChangeEvent e) {
-		if (e.isExpanded())
+		if (e.isExpanded()){
 			this.editBuffer.put(((Scheduling) e.getRowData()).getId(),
 					new SchedulingBuilder((Scheduling) e.getRowData()));
-		else
+			this.editError = false;}
+		else {
 			this.editBuffer.remove(((Scheduling) e.getRowData()).getId());
+		}
 	}
 
 	public void resetEdit(Scheduling s) {
@@ -148,6 +154,7 @@ public class DataMaster implements Serializable {
 	}
 
 	public void refresh() {
+		this.schedulings.clear();
 		this.schedulings = this.session.getConnector().getSchedulings();
 	}
 

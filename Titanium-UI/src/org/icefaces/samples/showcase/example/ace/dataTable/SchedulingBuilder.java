@@ -109,6 +109,9 @@ public class SchedulingBuilder {
 		s.setStatusID(this.mode.getId());
 		s.setSource(this.source.getId());
 		s.setTarget(this.target.getId());
+		s.getModeLabel();
+		s.getSource();
+		s.getTarget();
 		return s;
 	}
 

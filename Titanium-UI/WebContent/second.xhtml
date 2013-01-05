@@ -34,6 +34,9 @@
 
 .red {
 	color: red;
+	float: left;
+	margin-top: 10px;
+	margin-bottom:10px;
 }
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
@@ -215,14 +218,11 @@
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
-						<ace:cellEditor>
-							<f:facet name="output">
-								<h:outputText id="descCell" value="#{schedule.description}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText id="descInput" value="#{schedule.description}" />
-							</f:facet>
-						</ace:cellEditor>
+							<ice:panelGroup style="width:100px;">
+							<f:facet name="mode">
+							Description
+						</f:facet>
+						</ice:panelGroup><h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
 					<ace:column id="edit" headerText="Edit">
