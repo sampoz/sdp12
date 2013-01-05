@@ -317,7 +317,8 @@ block
 
 			</ace:tabPane>
 
-			<ace:tabPane id="instance_log" label="Instance Log">
+			<ace:tabPane id="instance_log" label="Instance Log"
+				rendered="#{loginManager.session.authenticated}">
 				<ace:dataTable id="instanceTable" value="#{dataMaster.instances}"
 					var="instance" paginator="true" paginatorPosition="bottom"
 					rows="10" stateMap="#{dataMaster.i_stateMap}"
