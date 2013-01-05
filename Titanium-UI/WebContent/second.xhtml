@@ -18,21 +18,38 @@
 	background-color: lightgray !important;
 }
 
-.left select{
+.left select {
 	display: block;
 }
 
-.left label{
+.left label {
 	display: block;
-	float:left;
-	margin-left:10px
+	float: left;
+	margin-left: 10px
 }
 
-.left input:not(.iceCmdBtn){
+.left input:not (.iceCmdBtn ){
 	display: block;
+}
+
+.red {
+	color: red;
 }
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
+
+			<ace:tabPane id="login_tab" label="Login">
+				<h:panelGrid id="login_grid" columns="2"
+					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+					<h:outputLabel id="username_label" for="username_input"
+						value="Username: " />
+					<h:inputText id="username_input" />
+					<h:outputLabel id="password_label" for="password_input"
+						value="Password: " />
+					<h:inputSecret id="password_input" />
+					<ice:commandButton id="login_button" value="Login" />
+				</h:panelGrid>
+			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings">
 
 				<ace:menuBar>
@@ -65,6 +82,8 @@
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
+						<ice:outputText value="#{dataMaster.addErrorMessage}"
+							rendered="#{dataMaster.addError}" styleClass="red" />
 
 						<h:panelGrid id="addGrid" columns="6"
 							styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
@@ -115,14 +134,13 @@
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{dataMaster.addScheduling}" />
-
 					</ace:accordionPane>
 				</ace:accordion>
 
 				<ace:dataTable id="scheduleTable" value="#{dataMaster.schedulings}"
 					var="schedule" paginator="true" paginatorPosition="bottom"
 					rows="10" stateMap="#{dataMaster.stateMap}"
-					selectionMode="multiple" resizableColumns="false"
+					selectionMode="multiple" resizableColumns="true"
 					binding="#{dataMaster.dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
@@ -205,9 +223,11 @@
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
-
+							<ice:outputText value="#{dataMaster.editErrorMessage}"
+								rendered="#{dataMaster.editError}" styleClass="red"
+								style="white-space:pre;" />
 							<h:panelGrid id="editGrid" columns="6"
-								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText" >
+								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
 								<h:inputText id="editNameInput"
@@ -246,11 +266,13 @@
 								<h:outputLabel id="editBankLabel" for="editBankInput"
 									value="Holiday: " />
 								<ice:selectBooleanCheckbox id="editBankInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}" partialSubmit="true" />
+									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}"
+									partialSubmit="true" />
 								<h:outputLabel id="editJavaLabel" for="editJavaInput"
 									value="Pollable: " />
 								<ice:selectBooleanCheckbox id="editJavaInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}" partialSubmit="true"/>
+									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}"
+									partialSubmit="true" />
 								<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
 									value="Composite: " />
 								<h:selectOneMenu id="editCompositeInput"
@@ -266,7 +288,7 @@
 								actionListener="#{dataMaster.confirmEdit(schedule)}" />
 
 							<ice:commandButton id="reset_edit" value="Reset"
-								actionListener="#{dataMaster.resetEdit(schedule)}" >
+								actionListener="#{dataMaster.resetEdit(schedule)}">
 							</ice:commandButton>
 
 						</ace:panel>
