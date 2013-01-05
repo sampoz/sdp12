@@ -148,8 +148,18 @@
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
 						filterBy="#{schedule.name}" filterMatchMode="contains">
 
-						<h:outputText id="nameCell" value="#{schedule.name}" />
-
+						
+					    <h:panelGrid >
+						<h:outputText id="nameCell" value="#{schedule.name}" styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+	                     <ace:tooltip id="tooltip_name_column"
+	                                for="nameCell"
+	                                value="#{schedule.name}"
+	                                showDelay="500"
+	                                hideDelay="200" 
+	                                >
+	         
+	                </ace:tooltip>
 					</ace:column>
 
 
