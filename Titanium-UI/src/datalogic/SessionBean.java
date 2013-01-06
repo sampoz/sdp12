@@ -7,6 +7,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import users.User;
+
 
 import entities.Backend;
 import entities.Composite;
@@ -27,7 +29,7 @@ public class SessionBean {
 	
 	private DatabaseConnector connector = new DatabaseConnector();
 
-	private boolean authenticated = false;
+	private User user = User.UNAUTHORISED;
 	
 	public SessionBean(){
 		
@@ -62,15 +64,24 @@ public class SessionBean {
 
 	public void authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
-		this.authenticated = true;
+		
+		if(username.toLowerCase().contains("business"))
+			this.user = User.BUSINESS;
+		else
+			this.user = User.ADMINISTRATOR;
 	}
 
-	public boolean isAuthenticated() {
-		return authenticated;
+
+
+	public User getUser() {
+		return user;
 	}
 
-	public void setAuthenticated(boolean authenticated) throws IllegalOperationException {
-		throw new IllegalOperationException("Access violation");
+
+
+	public void setUser(User user) {
+		this.user = user;
 	}
+
 	
 }

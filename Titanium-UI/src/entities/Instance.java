@@ -15,54 +15,53 @@ import org.hibernate.annotations.GenericGenerator;
 public class Instance implements Serializable {
 
 	@Id
-	@GeneratedValue(generator = "increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy = "increment")
 	private int id;
-
-	// @ManyToOne
-	// @JoinColumn(name="SERVICEID", insertable=false, updatable=false)
-	// private SchedulingService service;
-	//
-	// @ManyToOne
-	// @JoinColumn(name="STATUSID", insertable=false, updatable=false)
-	// private SchedulingStatus status;
+	
+//	@ManyToOne
+//	@JoinColumn(name="SERVICEID", insertable=false, updatable=false)
+//	private SchedulingService service;
+//	
+//	@ManyToOne
+//	@JoinColumn(name="STATUSID", insertable=false, updatable=false)
+//	private SchedulingStatus status;
 
 	@Column(name = "NAME")
 	private String name;
-
+	
 	@Column(name = "PROCESS")
 	private String process;
-
+	
 	@Column(name = "INSTANCE")
 	private String instance;
-
+	
 	@Column(name = "START_DATE")
 	private String startDate;
-
+	
 	@Column(name = "END_DATE")
 	private String endDate;
-
+	
 	@Column(name = "STATUSID")
 	private Integer statusID;
-
+	
 	@Column(name = "MESSAGE")
 	private String message;
-
+	
 	@Column(name = "INPUT_FILENAME")
 	private String inputFileName;
-
+	
 	@Column(name = "OUTPUT_FILENAME")
 	private String outputFileName;
-
+	
 	@Column(name = "INSTANCE_DELETED")
 	private Integer instanceDeleted;
 
 	@Column(name = "INSTANCE_HIDDEN_UI")
 	private Integer instanceHiddenUI;
-
-	public Instance() {
-	}
-
+	
+	public Instance() {}
+	
 	public Instance(String name, String process, String instance,
 			String startDate, String endDate, int statusID, String message,
 			String inputFileName, String outputFileName, int instanceDeleted,
