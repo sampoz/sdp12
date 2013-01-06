@@ -162,6 +162,9 @@
 					selectionMode="multiple" resizableColumns="true"
 					binding="#{dataMaster.dataTable}">
 					<ace:ajax event="select" execute="@this" />
+					<ace:column id="edit" headerText="Edit">
+						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
+					</ace:column>
 
 
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
@@ -231,9 +234,7 @@
 						<h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
-					<ace:column id="edit" headerText="Edit">
-						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
-					</ace:column>
+
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
@@ -372,7 +373,13 @@
 						<ace:tooltip id="tooltip_correct_image" for="correct_image"
 							value="This instance was run normally" showDelay="100" hideDelay="200">
 						</ace:tooltip>
+						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
+					<ace:panelExpansion>
+							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" /> <br/>
+							inputFileAmmount <h:outputText id="i_inputFileAmmountCell_field" value="#{instance.inputFileAmmount}" /> <br/>
+							outputFileAmmount <h:outputText id="i_outputFileAmmountCell_field" value="#{instance.outputFileAmmount}" /> 
+					</ace:panelExpansion>
 					
 					<ace:column id="i_name" headerText="Name" sortBy="#{instance.name}"
 						filterBy="#{instance.name}" filterMatchMode="contains">
@@ -385,24 +392,10 @@
 						<h:panelGrid>
 							<h:outputText id="i_statusIDCell" value="#{instance.statusID}" styleClass="tooltipTargetStyle"/>
 						</h:panelGrid>		
-						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
-					<ace:panelExpansion>
-							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
-					</ace:panelExpansion>
+					
 			
 
-<!-- 					<ace:column id="i_process" headerText="Process" -->
-<!-- 						sortBy="#{instance.process}" filterBy="#{instance.process}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_processCell" value="#{instance.process}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_instance" headerText="Instance" -->
-<!-- 						sortBy="#{instance.instance}" filterBy="#{instance.instance}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_instanceCell" value="#{instance.instance}" /> -->
-<!-- 					</ace:column> -->
 
 					<ace:column id="i_startDate" headerText="StartDate"
 						sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
@@ -415,28 +408,6 @@
 						filterMatchMode="contains">
 						<h:outputText id="i_endDateCell" value="#{instance.endDate}" />
 					</ace:column>
-
-
-
-<!-- 					<ace:column id="i_message" headerText="Message" -->
-<!-- 						sortBy="#{instance.message}" filterBy="#{instance.message}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_messageCell" value="#{instance.message}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_inputFileName" headerText="InputFileName" -->
-<!-- 						sortBy="#{instance.inputFileName}" -->
-<!-- 						filterBy="#{instance.inputFileName}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_inputFileNameCell" -->
-<!-- 							value="#{instance.inputFileName}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_outputFileName" headerText="OutputFileName" -->
-<!-- 						sortBy="#{instance.outputFileName}" -->
-<!-- 						filterBy="#{instance.outputFileName}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_outputFileNameCell" -->
-<!-- 							value="#{instance.outputFileName}" /> -->
-<!-- 					</ace:column> -->
 
 					<ace:column id="i_inputFileAmmount" headerText="InputFiles"
 						sortBy="#{instance.inputFileAmmount}"
@@ -451,22 +422,6 @@
 						<h:outputText id="i_outputFileAmmountCell"
 							value="#{instance.outputFileAmmount}" />
 					</ace:column>
-
-<!-- 					<ace:column id="i_instanceDeleted" headerText="InstanceDeleted" -->
-<!-- 						sortBy="#{instance.instanceDeleted}" -->
-<!-- 						filterBy="#{instance.instanceDeleted}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_instanceDeletedCell" -->
-<!-- 							value="#{instance.instanceDeleted}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_instanceHiddenUI" headerText="InstanceHiddenUI" -->
-<!-- 						sortBy="#{instance.instanceHiddenUI}" -->
-<!-- 						filterBy="#{instance.instanceHiddenUI}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_instanceHiddenUICell" -->
-<!-- 							value="#{instance.instanceHiddenUI}" /> -->
-<!-- 					</ace:column> -->
-
-
 
 
 
