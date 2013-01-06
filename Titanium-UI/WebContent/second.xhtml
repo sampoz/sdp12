@@ -330,6 +330,11 @@ block
 						filterBy="#{instance.id}" filterMatchMode="contains">
 						<h:outputText id="i_IdCell" value="#{instance.id}" />
 					</ace:column>
+					
+<!-- 					<ace:column id="i_name" headerText="Was run"  -->
+<!-- 						filterBy="#{instance.name}" filterMatchMode="contains"> -->
+<!-- 						<h:outputText id="i_runCell" value="#{dataMaster.runState}" /> -->
+<!-- 					</ace:column> -->
 
 					<ace:column id="i_name" headerText="name" sortBy="#{instance.name}"
 						filterBy="#{instance.name}" filterMatchMode="contains">
@@ -373,7 +378,7 @@ block
 						
 					</ace:column>
 					<ace:panelExpansion>
-							<ice:outputText value="#{dataMaster.instanceErrorMessage}" />
+							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
 					</ace:panelExpansion>
 					
 

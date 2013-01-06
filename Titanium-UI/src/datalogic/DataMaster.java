@@ -57,8 +57,7 @@ public class DataMaster implements Serializable {
 	private boolean addError;
 	private String addErrorMessage;
 	
-	private boolean instanceError;
-	private String instanceErrorMessage;
+	private HashMap<Integer, String> instanceEditBuffer = new HashMap<Integer, String>();
 	
 	public void addScheduling() {
 
@@ -102,16 +101,15 @@ public class DataMaster implements Serializable {
 	}
 
 	public void instanceExpansion(ExpansionChangeEvent e){
+		String instanceErrorMessage = "g0ljuException";
 		if (e.isExpanded()){
 				int statusId = ((Instance) e.getRowData()).getStatusID();
+				int Id = ((Instance) e.getRowData()).getId();
 				if (statusId != 6) {
-					this.instanceError = true;
-					this.instanceErrorMessage = ((Instance) e.getRowData()).getName();
+					instanceErrorMessage = ((Instance) e.getRowData()).getName();
 				}
-				else {
-					this.instanceError = false;
-					this.instanceErrorMessage = "Instance was stopped";
-				}
+				
+				this.instanceEditBuffer.put(Id, instanceErrorMessage);
 			}
 		else {
 		
@@ -233,6 +231,13 @@ public class DataMaster implements Serializable {
 	public void setEditBuffer(HashMap<Integer, SchedulingBuilder> editBuffer) {
 		this.editBuffer = editBuffer;
 	}
+	public HashMap<Integer, String> getInstanceEditBuffer() {
+		return instanceEditBuffer;
+	}
+
+	public void setInstanceEditBuffer(HashMap<Integer, String> Buffer) {
+		this.instanceEditBuffer = Buffer;
+	}
 
 	public SchedulingBuilder getBuilder() {
 		return builder;
@@ -293,12 +298,7 @@ public class DataMaster implements Serializable {
 	public String getAddErrorMessage() {
 		return addErrorMessage;
 	}
-	public String getinstanceErrorMessage(){
-		return instanceErrorMessage;
-	}
-	public  void setinstanceErrorMessage(String msg){
-		instanceErrorMessage = msg;
-	}
+
 
 	public void setAddErrorMessage(String addErrorMessage) {
 		this.addErrorMessage = addErrorMessage;
