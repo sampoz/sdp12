@@ -55,8 +55,6 @@
 					<h:inputSecret id="password_input" value="#{loginManager.password}" />
 					<ice:commandButton id="login_button" value="Login"
 						action="#{loginManager.authenticate}" />
-						
-					<ace:submitMonitor for="login_button" activeLabel="Logging in" autoCenter="true" blockUI="@source"/>
 				</h:panelGrid>
 			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings"
@@ -74,7 +72,7 @@
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="start_selected" value="Start Selected"
-						actionListener="#{dataMaster.startSelected}"
+						actionListener="#{dataMaster.stopSelected}"
 						icon="ui-icon ui-icon-play" rendered="#{sessionBean.user.startRights}">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
@@ -88,13 +86,7 @@
 						icon="ui-icon ui-icon-refresh">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
-					
 				</ace:menuBar>
-				
-				<ace:submitMonitor for="refresh" activeLabel="Refreshing" autoCenter="true" blockUI="@source"/>
-				<ace:submitMonitor for="start_selected" activeLabel="Starting" autoCenter="true" blockUI="@source"/>
-				<ace:submitMonitor for="stop_selected" activeLabel="Stopping" autoCenter="true" blockUI="@source"/>
-				
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
@@ -148,11 +140,9 @@
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{dataMaster.addScheduling}" />
-						<pre>
-							<ice:outputText value="#{dataMaster.addErrorMessage}"
-								rendered="#{dataMaster.addError}" styleClass="red" />
-						</pre>
-						<ace:submitMonitor for="add_scheduling" activeLabel="Adding" autoCenter="true" blockUI="@source"/>
+						<ice:outputText value="#{dataMaster.addErrorMessage}"
+							rendered="#{dataMaster.addError}" styleClass="red" />
+
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -163,6 +153,10 @@
 					binding="#{dataMaster.dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
+
+					<ace:column id="edit" headerText="Edit">
+						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
+					</ace:column>
 
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
 						filterBy="#{schedule.name}" filterMatchMode="contains">
@@ -216,8 +210,6 @@
 						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
 						filterMatchMode="contains">
 						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
-
-
 					</ace:column>
 
 					<ace:column id="description" headerText="Description"
@@ -231,9 +223,6 @@
 						<h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
-					<ace:column id="edit" headerText="Edit">
-						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
-					</ace:column>
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
@@ -312,9 +301,7 @@
 
 							<ice:commandButton id="reset_edit" value="Reset"
 								actionListener="#{dataMaster.resetEdit(schedule)}" rendered="#{sessionBean.user.editRights}"/>
-							
-							<ace:submitMonitor for="confirm_edit"/>
-							<ace:submitMonitor for="reset_edit" activeLabel="Resetting" autoCenter="true" blockUI="@source"/>
+
 						</ace:panel>
 
 					</ace:panelExpansion>
@@ -332,12 +319,6 @@
 					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
-<!-- 					<ace:column id="i_Id" headerText="ID" sortBy="#{instance.id}" -->
-<!-- 						filterBy="#{instance.id}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_IdCell" value="#{instance.id}" /> -->
-<!-- 					</ace:column> -->
-
-
 					<ace:column id="i_run_state" headerText="Was run" sortBy="#{instance.statusID}">
 						<h:panelGrid id="i_run_state_Id" columns="1">
 							<h:graphicImage id="correct_image" library="images"
@@ -353,7 +334,13 @@
 						<ace:tooltip id="tooltip_correct_image" for="correct_image"
 							value="This instance was run normally" showDelay="100" hideDelay="200">
 						</ace:tooltip>
+						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
+					<ace:panelExpansion>
+							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" /> <br/>
+							inputFileAmmount <h:outputText id="i_inputFileAmmountCell" value="#{instance.inputFileAmmount}" /> <br/>
+							outputFileAmmount <h:outputText id="i_outputFileAmmountCell" value="#{instance.outputFileAmmount}" /> 
+					</ace:panelExpansion>
 					
 					<ace:column id="i_name" headerText="Name" sortBy="#{instance.name}"
 						filterBy="#{instance.name}" filterMatchMode="contains">
@@ -363,27 +350,9 @@
 					<ace:column id="i_statusID" headerText="StatusID"
 						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
 						filterMatchMode="contains">
-						<h:panelGrid>
-							<h:outputText id="i_statusIDCell" value="#{instance.statusID}" styleClass="tooltipTargetStyle"/>
-						</h:panelGrid>		
-						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
-					</ace:column>
-					<ace:panelExpansion>
-							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
-					</ace:panelExpansion>
-			
-
-<!-- 					<ace:column id="i_process" headerText="Process" -->
-<!-- 						sortBy="#{instance.process}" filterBy="#{instance.process}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_processCell" value="#{instance.process}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_instance" headerText="Instance" -->
-<!-- 						sortBy="#{instance.instance}" filterBy="#{instance.instance}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_instanceCell" value="#{instance.instance}" /> -->
-<!-- 					</ace:column> -->
+						<h:outputText id="i_statusIDCell" value="#{instance.statusID}" />
+					</ace:column>	
+					
 
 					<ace:column id="i_startDate" headerText="StartDate"
 						sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
@@ -399,54 +368,20 @@
 
 
 
-<!-- 					<ace:column id="i_message" headerText="Message" -->
-<!-- 						sortBy="#{instance.message}" filterBy="#{instance.message}" -->
-<!-- 						filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_messageCell" value="#{instance.message}" /> -->
+
+<!-- 					<ace:column id="i_inputFileAmmount" headerText="InputFiles" -->
+<!-- 						sortBy="#{instance.inputFileAmmount}" -->
+<!-- 						filterBy="#{instance.inputFileAmmount}" filterMatchMode="contains"> -->
+<!-- 						<h:outputText id="i_inputFileAmmountCell" -->
+<!-- 							value="#{instance.inputFileAmmount}" /> -->
 <!-- 					</ace:column> -->
 
-<!-- 					<ace:column id="i_inputFileName" headerText="InputFileName" -->
-<!-- 						sortBy="#{instance.inputFileName}" -->
-<!-- 						filterBy="#{instance.inputFileName}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_inputFileNameCell" -->
-<!-- 							value="#{instance.inputFileName}" /> -->
+<!-- 					<ace:column id="i_outputFileAmmount" headerText="OutputFiles" -->
+<!-- 						sortBy="#{instance.outputFileAmmount}" -->
+<!-- 						filterBy="#{instance.outputFileAmmount}" filterMatchMode="contains"> -->
+<!-- 						<h:outputText id="i_outputFileAmmountCell" -->
+<!-- 							value="#{instance.outputFileAmmount}" /> -->
 <!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_outputFileName" headerText="OutputFileName" -->
-<!-- 						sortBy="#{instance.outputFileName}" -->
-<!-- 						filterBy="#{instance.outputFileName}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_outputFileNameCell" -->
-<!-- 							value="#{instance.outputFileName}" /> -->
-<!-- 					</ace:column> -->
-
-					<ace:column id="i_inputFileAmmount" headerText="InputFiles"
-						sortBy="#{instance.inputFileAmmount}"
-						filterBy="#{instance.inputFileAmmount}" filterMatchMode="contains">
-						<h:outputText id="i_inputFileAmmountCell"
-							value="#{instance.inputFileAmmount}" />
-					</ace:column>
-
-					<ace:column id="i_outputFileAmmount" headerText="OutputFiles"
-						sortBy="#{instance.outputFileAmmount}"
-						filterBy="#{instance.outputFileAmmount}" filterMatchMode="contains">
-						<h:outputText id="i_outputFileAmmountCell"
-							value="#{instance.outputFileAmmount}" />
-					</ace:column>
-
-<!-- 					<ace:column id="i_instanceDeleted" headerText="InstanceDeleted" -->
-<!-- 						sortBy="#{instance.instanceDeleted}" -->
-<!-- 						filterBy="#{instance.instanceDeleted}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_instanceDeletedCell" -->
-<!-- 							value="#{instance.instanceDeleted}" /> -->
-<!-- 					</ace:column> -->
-
-<!-- 					<ace:column id="i_instanceHiddenUI" headerText="InstanceHiddenUI" -->
-<!-- 						sortBy="#{instance.instanceHiddenUI}" -->
-<!-- 						filterBy="#{instance.instanceHiddenUI}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_instanceHiddenUICell" -->
-<!-- 							value="#{instance.instanceHiddenUI}" /> -->
-<!-- 					</ace:column> -->
-
 
 
 
