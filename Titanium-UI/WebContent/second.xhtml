@@ -101,9 +101,7 @@ block
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
-						<ice:outputText value="#{dataMaster.addErrorMessage}"
-							rendered="#{dataMaster.addError}" styleClass="red" />
-
+						
 						<h:panelGrid id="addGrid" columns="6"
 							styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
@@ -153,6 +151,9 @@ block
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{dataMaster.addScheduling}" />
+						<ice:outputText value="#{dataMaster.addErrorMessage}"
+							rendered="#{dataMaster.addError}" styleClass="red" />
+						
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -320,7 +321,7 @@ block
 			<ace:tabPane id="instance_log" label="Instance Log"
 				rendered="#{loginManager.session.authenticated}">
 				<ace:dataTable id="instanceTable" value="#{dataMaster.instances}"
-					var="instance" paginator="true" paginatorPosition="bottom"
+					var="instance" paginator="true" paginatorPosition="both"
 					rows="10" stateMap="#{dataMaster.i_stateMap}"
 					selectionMode="multiple" resizableColumns="true"
 					binding="#{dataMaster.i_dataTable}">
