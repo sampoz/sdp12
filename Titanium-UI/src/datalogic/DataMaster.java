@@ -102,9 +102,10 @@ public class DataMaster implements Serializable {
 
 	public void instanceExpansion(ExpansionChangeEvent e){
 		String instanceErrorMessage = "g0ljuException";
+		int Id = ((Instance) e.getRowData()).getId();
 		if (e.isExpanded()){
 				int statusId = ((Instance) e.getRowData()).getStatusID();
-				int Id = ((Instance) e.getRowData()).getId();
+		
 				if (statusId != 6) {
 					instanceErrorMessage = ((Instance) e.getRowData()).getName();
 				}
@@ -112,7 +113,7 @@ public class DataMaster implements Serializable {
 				this.instanceEditBuffer.put(Id, instanceErrorMessage);
 			}
 		else {
-		
+			this.instanceEditBuffer.remove(Id);
 		}
 		
 	}

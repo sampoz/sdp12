@@ -204,8 +204,8 @@ block
 								name="bankicon.jpg" style="height: 30px; width: 30px; "
 								rendered="#{schedule.bankHolidayOnly gt 0}" />
 						</h:panelGrid>
-
 					</ace:column>
+					
 					<ace:column id="source" headerText="Source"
 						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
 						filterMatchMode="contains">
@@ -225,7 +225,7 @@ block
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
-							<f:facet name="description">
+						<f:facet name="description">
 							Description
 						</f:facet>
 						</ice:panelGroup>
@@ -233,9 +233,7 @@ block
 					</ace:column>
 
 					<ace:column id="edit" headerText="Edit">
-
 						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
-
 					</ace:column>
 
 					<ace:panelExpansion>
@@ -331,10 +329,17 @@ block
 						<h:outputText id="i_IdCell" value="#{instance.id}" />
 					</ace:column>
 					
-<!-- 					<ace:column id="i_name" headerText="Was run"  -->
-<!-- 						filterBy="#{instance.name}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_runCell" value="#{dataMaster.runState}" /> -->
-<!-- 					</ace:column> -->
+
+					<ace:column id="i_run_state" headerText="Was run">
+						<h:panelGrid id="i_run_state_Id" columns="1">
+							<h:graphicImage id="java_image" library="images"
+								name="correcticon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 1}" />
+							<h:graphicImage id="bank_image" library="images"
+								name="skippedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID gt 1}" />
+						</h:panelGrid>
+					</ace:column>
 
 					<ace:column id="i_name" headerText="name" sortBy="#{instance.name}"
 						filterBy="#{instance.name}" filterMatchMode="contains">
