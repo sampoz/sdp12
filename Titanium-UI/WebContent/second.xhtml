@@ -55,6 +55,8 @@
 					<h:inputSecret id="password_input" value="#{loginManager.password}" />
 					<ice:commandButton id="login_button" value="Login"
 						action="#{loginManager.authenticate}" />
+						
+					<ace:submitMonitor for="login_button" activeLabel="Logging in" autoCenter="true" blockUI="@source"/>
 				</h:panelGrid>
 			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings"
@@ -72,7 +74,7 @@
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="start_selected" value="Start Selected"
-						actionListener="#{dataMaster.stopSelected}"
+						actionListener="#{dataMaster.startSelected}"
 						icon="ui-icon ui-icon-play" rendered="#{sessionBean.user.startRights}">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
@@ -86,7 +88,13 @@
 						icon="ui-icon ui-icon-refresh">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
+					
 				</ace:menuBar>
+				
+				<ace:submitMonitor for="refresh" activeLabel="Refreshing" autoCenter="true" blockUI="@source"/>
+				<ace:submitMonitor for="start_selected" activeLabel="Starting" autoCenter="true" blockUI="@source"/>
+				<ace:submitMonitor for="stop_selected" activeLabel="Stopping" autoCenter="true" blockUI="@source"/>
+				
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
@@ -140,9 +148,11 @@
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
 							actionListener="#{dataMaster.addScheduling}" />
-						<ice:outputText value="#{dataMaster.addErrorMessage}"
-							rendered="#{dataMaster.addError}" styleClass="red" />
-
+						<pre>
+							<ice:outputText value="#{dataMaster.addErrorMessage}"
+								rendered="#{dataMaster.addError}" styleClass="red" />
+						</pre>
+						<ace:submitMonitor for="add_scheduling" activeLabel="Adding" autoCenter="true" blockUI="@source"/>
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -302,7 +312,9 @@
 
 							<ice:commandButton id="reset_edit" value="Reset"
 								actionListener="#{dataMaster.resetEdit(schedule)}" rendered="#{sessionBean.user.editRights}"/>
-
+							
+							<ace:submitMonitor for="confirm_edit"/>
+							<ace:submitMonitor for="reset_edit" activeLabel="Resetting" autoCenter="true" blockUI="@source"/>
 						</ace:panel>
 
 					</ace:panelExpansion>

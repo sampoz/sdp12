@@ -143,6 +143,13 @@ public class DataMaster implements Serializable {
 		}
 	}
 	
+	public void startSelected() {
+		long time = System.currentTimeMillis();
+		while(System.currentTimeMillis() - time <  2500){
+			
+		}
+	}
+	
 
 	public void stopSelected() {
 		
