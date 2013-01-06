@@ -79,6 +79,24 @@ public class Instance implements Serializable {
 		this.instanceDeleted = instanceDeleted;
 		this.instanceHiddenUI = instanceHiddenUI;
 	}
+	
+	public int getInputFileAmmount() {
+		try {
+			String[] files = this.inputFileName.split(";");
+			return files.length;	
+		} catch (NullPointerException e) {
+			return -1;
+		}
+	}
+	
+	public int getOutputFileAmmount() {
+		try {
+			String[] files = this.outputFileName.split(";");
+			return files.length;
+		} catch (NullPointerException e) {
+			return -1;
+		}	
+	}
 
 	public int getId() {
 		return id;

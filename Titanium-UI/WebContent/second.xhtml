@@ -419,6 +419,20 @@
 <!-- 							value="#{instance.outputFileName}" /> -->
 <!-- 					</ace:column> -->
 
+					<ace:column id="i_inputFileAmmount" headerText="InputFiles"
+						sortBy="#{instance.inputFileAmmount}"
+						filterBy="#{instance.inputFileAmmount}" filterMatchMode="contains">
+						<h:outputText id="i_inputFileAmmountCell"
+							value="#{instance.inputFileAmmount}" />
+					</ace:column>
+
+					<ace:column id="i_outputFileAmmount" headerText="OutputFiles"
+						sortBy="#{instance.outputFileAmmount}"
+						filterBy="#{instance.outputFileAmmount}" filterMatchMode="contains">
+						<h:outputText id="i_outputFileAmmountCell"
+							value="#{instance.outputFileAmmount}" />
+					</ace:column>
+
 <!-- 					<ace:column id="i_instanceDeleted" headerText="InstanceDeleted" -->
 <!-- 						sortBy="#{instance.instanceDeleted}" -->
 <!-- 						filterBy="#{instance.instanceDeleted}" filterMatchMode="contains"> -->
