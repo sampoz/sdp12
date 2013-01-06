@@ -28,23 +28,12 @@
 	margin-left: 10px
 }
 
-.left
- 
-input
-:not
- 
-(
-.iceCmdBtn
- 
-){
-display
-:
- 
-block
-;
-
-
+.left input:not(.iceCmdBtn){
+	display:block;
+	float: left;
+	margin-left: 10px
 }
+
 .red {
 	color: red;
 	float: left;
@@ -55,7 +44,7 @@ block
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
 			<ace:tabPane id="login_tab" label="Login"
-				rendered="#{loginManager.session.authenticated eq false}">
+				rendered="#{sessionBean.user.authenticated eq false}">
 				<h:panelGrid id="login_grid" columns="2"
 					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 					<h:outputLabel id="username_label" for="username_input"
@@ -69,27 +58,27 @@ block
 				</h:panelGrid>
 			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings"
-				rendered="#{loginManager.session.authenticated}">
+				rendered="#{sessionBean.user.authenticated}">
 
 				<ace:menuBar>
 					<ace:menuItem id="select_all" value="Select All"
 						actionListener="#{dataMaster.selectAll}"
-						icon="ui-icon ui-icon-check">
-						<ace:ajax event="activate" execute="@this" />
+						icon="ui-icon ui-icon-check" rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
+						<ace:ajax event="activate" execute="@this"/>
 					</ace:menuItem>
 					<ace:menuItem id="deselect_all" value="Deselect All"
 						actionListener="#{dataMaster.deselectAll}"
-						icon="ui-icon ui-icon-closethick">
+						icon="ui-icon ui-icon-closethick" rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="start_selected" value="Start Selected"
 						actionListener="#{dataMaster.stopSelected}"
-						icon="ui-icon ui-icon-play">
+						icon="ui-icon ui-icon-play" rendered="#{sessionBean.user.startRights}">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="stop_selected" value="Stop Selected"
 						actionListener="#{dataMaster.stopSelected}"
-						icon="ui-icon ui-icon-pause">
+						icon="ui-icon ui-icon-pause" rendered="#{sessionBean.user.stopRights}">
 						<ace:ajax event="activate" execute="@this" />
 					</ace:menuItem>
 					<ace:menuItem id="refresh" value="Refresh"
@@ -99,9 +88,9 @@ block
 					</ace:menuItem>
 				</ace:menuBar>
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
-					activeIndex="1">
+					activeIndex="1" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
-						
+
 						<h:panelGrid id="addGrid" columns="6"
 							styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
@@ -153,7 +142,7 @@ block
 							actionListener="#{dataMaster.addScheduling}" />
 						<ice:outputText value="#{dataMaster.addErrorMessage}"
 							rendered="#{dataMaster.addError}" styleClass="red" />
-						
+
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -181,11 +170,11 @@ block
 
 					<ace:column id="mode" headerText="Mode"
 						sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}"
-						filterMatchMode="contains">
+						filterMatchMode="exact">
 						<ice:panelGroup style="width:100px;">
 							<f:facet name="mode">
 							Mode
-						</f:facet>
+							</f:facet>
 						</ice:panelGroup>
 						<h:outputText id="modeCell" value="#{schedule.modeLabel}" />
 
@@ -205,7 +194,7 @@ block
 								rendered="#{schedule.bankHolidayOnly gt 0}" />
 						</h:panelGrid>
 					</ace:column>
-					
+
 					<ace:column id="source" headerText="Source"
 						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
 						filterMatchMode="contains">
@@ -225,7 +214,7 @@ block
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
-						<f:facet name="description">
+							<f:facet name="description">
 							Description
 						</f:facet>
 						</ice:panelGroup>
@@ -246,19 +235,23 @@ block
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
 								<h:inputText id="editNameInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).name}" />
+									value="#{dataMaster.editBuffer.get(schedule.id).name}"
+									disabled="#{not sessionBean.user.editRights}" />
 								<h:outputLabel id="editDescLabel" for="editDescInput"
 									value="Description: " />
 								<h:inputText id="editDescInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).description}" />
+									value="#{dataMaster.editBuffer.get(schedule.id).description}"
+									disabled="#{not sessionBean.user.editRights}" />
 								<h:outputLabel id="editCronLabel" for="editCronInput"
 									value="CRON: " />
 								<h:inputText id="editCronInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).cron}" />
+									value="#{dataMaster.editBuffer.get(schedule.id).cron}"
+									disabled="#{not sessionBean.user.editRights}" />
 								<h:outputLabel id="editSourceLabel" for="editSourceInput"
 									value="Source: " />
 								<h:selectOneMenu id="editSourceInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).source}">
+									value="#{dataMaster.editBuffer.get(schedule.id).source}"
+									disabled="#{not sessionBean.user.editRights}">
 									<f:selectItems value="#{dataMaster.backends}" />
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
@@ -266,14 +259,16 @@ block
 								<h:outputLabel id="editTargetLabel" for="editTargetInput"
 									value="Target: " />
 								<h:selectOneMenu id="editTargetInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).target}">
+									value="#{dataMaster.editBuffer.get(schedule.id).target}"
+									disabled="#{not sessionBean.user.editRights}">
 									<f:selectItems value="#{dataMaster.backends}" />
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
 								<h:outputLabel id="editModeLabel" for="editModeInput"
 									value="Mode: " />
 								<h:selectOneMenu id="editModeInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).mode}">
+									value="#{dataMaster.editBuffer.get(schedule.id).mode}"
+									disabled="#{not sessionBean.user.editRights}">
 									<f:selectItems value="#{dataMaster.modes}" />
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
@@ -282,16 +277,19 @@ block
 									value="Holiday: " />
 								<ice:selectBooleanCheckbox id="editBankInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}"
-									partialSubmit="true" />
+									partialSubmit="true"
+									disabled="#{not sessionBean.user.editRights}" />
 								<h:outputLabel id="editJavaLabel" for="editJavaInput"
 									value="Pollable: " />
 								<ice:selectBooleanCheckbox id="editJavaInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}"
-									partialSubmit="true" />
+									partialSubmit="true"
+									disabled="#{not sessionBean.user.editRights}" />
 								<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
 									value="Composite: " />
 								<h:selectOneMenu id="editCompositeInput"
-									value="#{dataMaster.editBuffer.get(schedule.id).composite}">
+									value="#{dataMaster.editBuffer.get(schedule.id).composite}"
+									disabled="#{not sessionBean.user.editRights}">
 									<f:selectItems value="#{dataMaster.composites}" />
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
@@ -300,11 +298,10 @@ block
 
 							<br />
 							<ice:commandButton id="confirm_edit" value="Confirm"
-								actionListener="#{dataMaster.confirmEdit(schedule)}" />
+								actionListener="#{dataMaster.confirmEdit(schedule)}" rendered="#{sessionBean.user.editRights}"/>
 
 							<ice:commandButton id="reset_edit" value="Reset"
-								actionListener="#{dataMaster.resetEdit(schedule)}">
-							</ice:commandButton>
+								actionListener="#{dataMaster.resetEdit(schedule)}" rendered="#{sessionBean.user.editRights}"/>
 
 						</ace:panel>
 
@@ -316,19 +313,18 @@ block
 			</ace:tabPane>
 
 			<ace:tabPane id="instance_log" label="Instance Log"
-				rendered="#{loginManager.session.authenticated}">
+				rendered="#{sessionBean.user.authenticated}">
 				<ace:dataTable id="instanceTable" value="#{dataMaster.instances}"
-					var="instance" paginator="true" paginatorPosition="both"
-					rows="10" stateMap="#{dataMaster.i_stateMap}"
-					selectionMode="multiple" resizableColumns="true"
-					binding="#{dataMaster.i_dataTable}">
+					var="instance" paginator="true" paginatorPosition="both" rows="10"
+					stateMap="#{dataMaster.i_stateMap}" selectionMode="multiple"
+					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
 					<ace:column id="i_Id" headerText="ID" sortBy="#{instance.id}"
 						filterBy="#{instance.id}" filterMatchMode="contains">
 						<h:outputText id="i_IdCell" value="#{instance.id}" />
 					</ace:column>
-					
+
 
 					<ace:column id="i_run_state" headerText="Was run">
 						<h:panelGrid id="i_run_state_Id" columns="1">
@@ -374,18 +370,22 @@ block
 						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
 						filterMatchMode="contains">
 						<h:panelGrid>
-							<h:outputText id="i_statusIDCell" value="#{instance.statusID}" styleClass="tooltipTargetStyle"/>
-						</h:panelGrid>		
-						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
+							<h:outputText id="i_statusIDCell" value="#{instance.statusID}"
+								styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+						<ace:expansionToggler
+							changeListener="#{dataMaster.instanceExpansion}" />
 						<ace:tooltip id="tooltip_statusIDCell" for="i_statusIDCell"
-							value="Expand row to view message" showDelay="100" hideDelay="200">
+							value="Expand row to view message" showDelay="100"
+							hideDelay="200">
 						</ace:tooltip>
-						
+
 					</ace:column>
 					<ace:panelExpansion>
-							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
+						<ice:outputText
+							value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
 					</ace:panelExpansion>
-					
+
 
 					<ace:column id="i_message" headerText="message"
 						sortBy="#{instance.message}" filterBy="#{instance.message}"
@@ -420,8 +420,8 @@ block
 						<h:outputText id="i_instanceHiddenUICell"
 							value="#{instance.instanceHiddenUI}" />
 					</ace:column>
-				
-					
+
+
 
 
 
@@ -430,7 +430,7 @@ block
 			</ace:tabPane>
 
 			<ace:tabPane id="audit_log" label="Audit Log"
-				rendered="#{loginManager.session.authenticated}">
+				rendered="#{sessionBean.user.authenticated}">
 
 			</ace:tabPane>
 
