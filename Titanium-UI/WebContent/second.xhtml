@@ -162,6 +162,9 @@
 					selectionMode="multiple" resizableColumns="true"
 					binding="#{dataMaster.dataTable}">
 					<ace:ajax event="select" execute="@this" />
+					<ace:column id="edit" headerText="Edit">
+						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
+					</ace:column>
 
 
 					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
@@ -231,9 +234,7 @@
 						<h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
-					<ace:column id="edit" headerText="Edit">
-						<ace:expansionToggler changeListener="#{dataMaster.expansion}" />
-					</ace:column>
+
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
