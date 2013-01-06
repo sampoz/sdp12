@@ -175,7 +175,6 @@ block
 						</h:panelGrid>
 						<ace:tooltip id="tooltip_name_column" for="nameCell"
 							value="#{schedule.name}" showDelay="500" hideDelay="200">
-
 						</ace:tooltip>
 					</ace:column>
 
@@ -364,8 +363,19 @@ block
 					<ace:column id="i_statusID" headerText="statusID"
 						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
 						filterMatchMode="contains">
-						<h:outputText id="i_statusIDCell" value="#{instance.statusID}" />
+						<h:panelGrid>
+							<h:outputText id="i_statusIDCell" value="#{instance.statusID}" styleClass="tooltipTargetStyle"/>
+						</h:panelGrid>		
+						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
+						<ace:tooltip id="tooltip_statusIDCell" for="i_statusIDCell"
+							value="Expand row to view message" showDelay="100" hideDelay="200">
+						</ace:tooltip>
+						
 					</ace:column>
+					<ace:panelExpansion>
+							<ice:outputText value="#{dataMaster.instanceErrorMessage}" />
+					</ace:panelExpansion>
+					
 
 					<ace:column id="i_message" headerText="message"
 						sortBy="#{instance.message}" filterBy="#{instance.message}"
@@ -400,6 +410,9 @@ block
 						<h:outputText id="i_instanceHiddenUICell"
 							value="#{instance.instanceHiddenUI}" />
 					</ace:column>
+				
+					
+
 
 
 				</ace:dataTable>
