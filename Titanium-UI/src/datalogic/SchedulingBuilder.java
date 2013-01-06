@@ -1,6 +1,7 @@
 package datalogic;
 
 
+
 import entities.Backend;
 import entities.Composite;
 import entities.Mode;
@@ -27,19 +28,30 @@ public class SchedulingBuilder {
 	private static final String LINE_BREAK = "\n";
 
 	public SchedulingBuilder() {
+		initComposite();
+	}
+
+	private void initComposite() {
+		Composite c = null;
+		int i = 0;
+		while(c == null){
+			c = SessionBean.COMPOSITES.get(i);
+			i++;
+		}
+		this.composite = c;
 	}
 
 	public SchedulingBuilder(Scheduling s) {
 		this.name = s.getName();
-		if (s.getJavaAgentPollable() == 1)
-			this.javaAgentPollable = true;
-
-		if (s.getBankHolidayOnly() == 1)
-			this.bankHolidayOnly = true;
 		this.mode = SessionBean.MODES.get(s.getStatusID());
 		this.composite = SessionBean.COMPOSITES.get(s.getServiceID());
 		this.source = SessionBean.BACKENDS.get(s.getSource());
 		this.target = SessionBean.BACKENDS.get(s.getTarget());
+		if (this.composite.getJavaAgentPollable() == 1 && s.getJavaAgentPollable() == 1)
+			this.javaAgentPollable = true;
+
+		if (s.getBankHolidayOnly() == 1)
+			this.bankHolidayOnly = true;
 		this.requestURL = s.getRequestURL();
 		this.cron = s.getCron();
 		this.description = s.getDescription();
@@ -77,10 +89,6 @@ public class SchedulingBuilder {
 			error = true;
 			message += "Description cannot be empty!" + LINE_BREAK;
 		}
-		if (this.source.getBackend() == this.target.getBackend()) {
-			error = true;
-			message += "Source cannot be the same as target!" + LINE_BREAK;
-		}
 		if (error)
 			throw new IllegalOperationException(message);
 
@@ -98,7 +106,7 @@ public class SchedulingBuilder {
 			s.setBankHolidayOnly(1);
 		else
 			s.setBankHolidayOnly(0);
-		if (this.javaAgentPollable)
+		if (this.composite.getJavaAgentPollable() == 1 && this.javaAgentPollable)
 			s.setJavaAgentPollable(1);
 		else
 			s.setJavaAgentPollable(0);
@@ -122,7 +130,7 @@ public class SchedulingBuilder {
 			s.setBankHolidayOnly(1);
 		else
 			s.setBankHolidayOnly(0);
-		if (this.javaAgentPollable)
+		if (this.composite.getJavaAgentPollable() == 1 && this.javaAgentPollable)
 			s.setJavaAgentPollable(1);
 		else
 			s.setJavaAgentPollable(0);
@@ -181,7 +189,7 @@ public class SchedulingBuilder {
 	}
 
 	public void setJavaAgentPollable(boolean javaAgentPollable) {
-		this.javaAgentPollable = javaAgentPollable;
+			this.javaAgentPollable = javaAgentPollable;
 	}
 
 	public boolean isBankHolidayOnly() {
@@ -206,6 +214,8 @@ public class SchedulingBuilder {
 
 	public void setComposite(Composite composite) {
 		this.composite = composite;
+		if(this.composite.getJavaAgentPollable() == 0)
+			this.javaAgentPollable = false;
 	}
 
 	public Backend getSource() {

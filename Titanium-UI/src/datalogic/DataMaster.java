@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.CustomScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -45,7 +46,8 @@ public class DataMaster implements Serializable {
 
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 
-	private SchedulingBuilder builder = new SchedulingBuilder();
+	
+	private SchedulingBuilder builder;
 
 	private Collection<Mode> modes = SessionBean.MODES.values();
 	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
@@ -58,6 +60,11 @@ public class DataMaster implements Serializable {
 	private String addErrorMessage;
 	
 	private HashMap<Integer, String> instanceEditBuffer = new HashMap<Integer, String>();
+	
+	@PostConstruct
+	private void init(){
+		this.builder = new SchedulingBuilder();
+	}
 	
 	public void addScheduling() {
 

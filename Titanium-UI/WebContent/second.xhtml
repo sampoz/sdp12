@@ -135,15 +135,15 @@
 
 							<h:outputLabel id="javaLabel" for="javaInput" value="Pollable: " />
 							<h:selectBooleanCheckbox id="javaInput"
-								value="#{dataMaster.builder.javaAgentPollable}" />
-
+								value="#{dataMaster.builder.javaAgentPollable}" disabled="#{dataMaster.builder.composite.javaAgentPollable eq 0}"/>
+							
 							<h:outputLabel id="serviceLabel" for="compositeInput"
 								value="Composite: " />
-							<h:selectOneMenu id="compositeInput"
-								value="#{dataMaster.builder.composite}">
+							<ice:selectOneMenu id="compositeInput"
+								value="#{dataMaster.builder.composite}" partialSubmit="true" >
 								<f:selectItems value="#{dataMaster.composites}" />
 								<f:converter converterId="entityConverter" />
-							</h:selectOneMenu>
+							</ice:selectOneMenu>
 						</h:panelGrid>
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
@@ -237,28 +237,38 @@
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
+							
 							<ice:outputText value="#{dataMaster.editErrorMessage}"
 								rendered="#{dataMaster.editError}" styleClass="red"
 								style="white-space:pre;" />
+							
 							<h:panelGrid id="editGrid" columns="6"
 								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+								
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
+								
 								<h:inputText id="editNameInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).name}"
 									disabled="#{not sessionBean.user.editRights}" />
+								
 								<h:outputLabel id="editDescLabel" for="editDescInput"
 									value="Description: " />
+								
 								<h:inputText id="editDescInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).description}"
 									disabled="#{not sessionBean.user.editRights}" />
+								
 								<h:outputLabel id="editCronLabel" for="editCronInput"
 									value="CRON: " />
+								
 								<h:inputText id="editCronInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).cron}"
 									disabled="#{not sessionBean.user.editRights}" />
+								
 								<h:outputLabel id="editSourceLabel" for="editSourceInput"
 									value="Source: " />
+								
 								<h:selectOneMenu id="editSourceInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).source}"
 									disabled="#{not sessionBean.user.editRights}">
@@ -268,14 +278,17 @@
 
 								<h:outputLabel id="editTargetLabel" for="editTargetInput"
 									value="Target: " />
+								
 								<h:selectOneMenu id="editTargetInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).target}"
 									disabled="#{not sessionBean.user.editRights}">
 									<f:selectItems value="#{dataMaster.backends}" />
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
+								
 								<h:outputLabel id="editModeLabel" for="editModeInput"
 									value="Mode: " />
+								
 								<h:selectOneMenu id="editModeInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).mode}"
 									disabled="#{not sessionBean.user.editRights}">
@@ -283,20 +296,26 @@
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
 
+								
 								<h:outputLabel id="editBankLabel" for="editBankInput"
 									value="Holiday: " />
+								
 								<ice:selectBooleanCheckbox id="editBankInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}"
 									partialSubmit="true"
 									disabled="#{not sessionBean.user.editRights}" />
+								
 								<h:outputLabel id="editJavaLabel" for="editJavaInput"
 									value="Pollable: " />
+								
 								<ice:selectBooleanCheckbox id="editJavaInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}"
 									partialSubmit="true"
 									disabled="#{not sessionBean.user.editRights}" />
+								
 								<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
 									value="Composite: " />
+								
 								<h:selectOneMenu id="editCompositeInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).composite}"
 									disabled="#{not sessionBean.user.editRights}">
