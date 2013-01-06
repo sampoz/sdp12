@@ -57,6 +57,9 @@ public class DataMaster implements Serializable {
 	private boolean addError;
 	private String addErrorMessage;
 	
+	private boolean instanceError;
+	private String instanceErrorMessage;
+	
 	public void addScheduling() {
 
 		Scheduling s;
@@ -98,6 +101,24 @@ public class DataMaster implements Serializable {
 		}
 	}
 
+	public void instanceExpansion(ExpansionChangeEvent e){
+		if (e.isExpanded()){
+				int statusId = ((Instance) e.getRowData()).getStatusID();
+				if (statusId != 6) {
+					this.instanceError = true;
+					this.instanceErrorMessage = ((Instance) e.getRowData()).getName();
+				}
+				else {
+					this.instanceError = false;
+					this.instanceErrorMessage = "Instance was stopped";
+				}
+			}
+		else {
+		
+		}
+		
+	}
+	
 	public void resetEdit(Scheduling s) {
 		SchedulingBuilder b = new SchedulingBuilder(s);
 
@@ -122,6 +143,7 @@ public class DataMaster implements Serializable {
 			s.setSelected(false);
 		}
 	}
+	
 
 	public void stopSelected() {
 		
@@ -271,10 +293,17 @@ public class DataMaster implements Serializable {
 	public String getAddErrorMessage() {
 		return addErrorMessage;
 	}
+	public String getinstanceErrorMessage(){
+		return instanceErrorMessage;
+	}
+	public  void setinstanceErrorMessage(String msg){
+		instanceErrorMessage = msg;
+	}
 
 	public void setAddErrorMessage(String addErrorMessage) {
 		this.addErrorMessage = addErrorMessage;
 	}
+
 
 
 }
