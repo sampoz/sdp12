@@ -62,24 +62,6 @@ public class Instance implements Serializable {
 	
 	public Instance() {}
 	
-	public Instance(String name, String process, String instance,
-			String startDate, String endDate, int statusID, String message,
-			String inputFileName, String outputFileName, int instanceDeleted,
-			int instanceHiddenUI) {
-		super();
-		this.name = name;
-		this.process = process;
-		this.instance = instance;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.statusID = statusID;
-		this.message = message;
-		this.inputFileName = inputFileName;
-		this.outputFileName = outputFileName;
-		this.instanceDeleted = instanceDeleted;
-		this.instanceHiddenUI = instanceHiddenUI;
-	}
-	
 	public int getInputFileAmmount() {
 		try {
 			String[] files = this.inputFileName.split(";");
