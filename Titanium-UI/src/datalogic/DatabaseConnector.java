@@ -8,6 +8,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import entities.Backend;
+import entities.Comment;
 import entities.Composite;
 import entities.Instance;
 import entities.Mode;
@@ -60,6 +61,15 @@ public class DatabaseConnector {
 		this.manager.getTransaction().begin();
 		Query q = this.manager.createQuery("from Composite");
 		List<Composite> result = q.getResultList();
+		this.manager.getTransaction().commit();
+		return result;
+	}
+	
+	public List<Comment> getLastComments(int id){
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from Comment where rownum <= 5 and id = " + id);
+		List<Comment> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;
 	}

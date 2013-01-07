@@ -5,10 +5,10 @@
              version="2.0">
    <persistence-unit name="manager1" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <class>entities.Scheduling</class>
-      <class>entities.Composite</class>
-      <class>entities.Mode</class>
-      <class>entities.Backend</class>
+<!--       <class>entities.Scheduling</class> -->
+<!--       <class>entities.Composite</class> -->
+<!--       <class>entities.Mode</class> -->
+<!--       <class>entities.Backend</class> -->
       <properties>
       <property name="hibernate.connection.provider_class" value="org.hibernate.connection.DriverManagerConnectionProvider" />
          <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

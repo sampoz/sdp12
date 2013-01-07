@@ -11,6 +11,7 @@ import users.User;
 
 
 import entities.Backend;
+import entities.Comment;
 import entities.Composite;
 import entities.Mode;
 
@@ -32,7 +33,10 @@ public class SessionBean {
 	private User user = User.UNAUTHORISED;
 	
 	public SessionBean(){
-		
+		List<Comment> cerr = this.connector.getLastComments(1);
+		for (Comment comment : cerr) {
+			System.out.println(comment.getText());
+		}
 		List<Composite> tempComposites = this.connector.getAllComposites();
 		for(Composite c: tempComposites ){
 			COMPOSITES.put(c.getId(), c);

@@ -72,26 +72,6 @@ public class Scheduling implements Serializable  {
 	
 	public Scheduling(){}
 	
-	
-
-
-	public Scheduling(String name, String description, String cron,
-			int serviceID, int statusID) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.cron = cron;
-		this.serviceID = serviceID;
-		this.statusID = statusID;
-		this.bankHolidayOnly = 0;
-		this.modeLabel = SessionBean.MODES.get(this.serviceID).getLabel();
-		this.sourceName = SessionBean.BACKENDS.get(this.source).getBackend();
-		this.targetName = SessionBean.BACKENDS.get(this.target).getBackend();
-	}
-
-
-
-
 	public int getId() {
 		return id;
 	}

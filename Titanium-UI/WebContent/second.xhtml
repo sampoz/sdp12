@@ -28,10 +28,36 @@
 	margin-left: 10px
 }
 
-.left input:not(.iceCmdBtn){
-	display:block;
-	float: left;
-	margin-left: 10px
+.left
+ 
+input
+:not
+ 
+(
+.iceCmdBtn
+ 
+){
+display
+:
+ 
+block
+;
+
+	
+float
+:
+ 
+left
+;
+
+	
+margin-left
+:
+ 
+10
+px
+
+
 }
 
 .red {
@@ -40,6 +66,7 @@
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
@@ -55,46 +82,59 @@
 					<h:inputSecret id="password_input" value="#{loginManager.password}" />
 					<ice:commandButton id="login_button" value="Login"
 						action="#{loginManager.authenticate}" />
-						
-					<ace:submitMonitor for="login_button" activeLabel="Logging in" autoCenter="true" blockUI="@source"/>
+
+					<ace:submitMonitor for="login_button" activeLabel="Logging in"
+						autoCenter="true" blockUI="@source" />
 				</h:panelGrid>
 			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings"
 				rendered="#{sessionBean.user.authenticated}">
 
-				<ace:menuBar>
-					<ace:menuItem id="select_all" value="Select All"
-						actionListener="#{dataMaster.selectAll}"
-						icon="ui-icon ui-icon-check" rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
-						<ace:ajax event="activate" execute="@this"/>
-					</ace:menuItem>
-					<ace:menuItem id="deselect_all" value="Deselect All"
-						actionListener="#{dataMaster.deselectAll}"
-						icon="ui-icon ui-icon-closethick" rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
-						<ace:ajax event="activate" execute="@this" />
-					</ace:menuItem>
-					<ace:menuItem id="start_selected" value="Start Selected"
-						actionListener="#{dataMaster.startSelected}"
-						icon="ui-icon ui-icon-play" rendered="#{sessionBean.user.startRights}">
-						<ace:ajax event="activate" execute="@this" />
-					</ace:menuItem>
-					<ace:menuItem id="stop_selected" value="Stop Selected"
-						actionListener="#{dataMaster.stopSelected}"
-						icon="ui-icon ui-icon-pause" rendered="#{sessionBean.user.stopRights}">
-						<ace:ajax event="activate" execute="@this" />
-					</ace:menuItem>
-					<ace:menuItem id="refresh" value="Refresh"
-						actionListener="#{dataMaster.refresh}"
-						icon="ui-icon ui-icon-refresh">
-						<ace:ajax event="activate" execute="@this" />
-					</ace:menuItem>
-					
-				</ace:menuBar>
-				
-				<ace:submitMonitor for="refresh" activeLabel="Refreshing" autoCenter="true" blockUI="@source"/>
-				<ace:submitMonitor for="start_selected" activeLabel="Starting" autoCenter="true" blockUI="@source"/>
-				<ace:submitMonitor for="stop_selected" activeLabel="Stopping" autoCenter="true" blockUI="@source"/>
-				
+				<h:panelGrid columns="2">
+					<ace:menuBar>
+						<ace:menuItem id="select_all" value="Select All"
+							actionListener="#{dataMaster.selectAll}"
+							icon="ui-icon ui-icon-check"
+							rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+						<ace:menuItem id="deselect_all" value="Deselect All"
+							actionListener="#{dataMaster.deselectAll}"
+							icon="ui-icon ui-icon-closethick"
+							rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+						<ace:menuItem id="start_selected" value="Start Selected"
+							actionListener="#{dataMaster.startSelected}"
+							icon="ui-icon ui-icon-play"
+							rendered="#{sessionBean.user.startRights}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+						<ace:menuItem id="stop_selected" value="Stop Selected"
+							actionListener="#{dataMaster.stopSelected}"
+							icon="ui-icon ui-icon-pause"
+							rendered="#{sessionBean.user.stopRights}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+						<ace:menuItem id="refresh" value="Refresh"
+							actionListener="#{dataMaster.refresh}"
+							icon="ui-icon ui-icon-refresh">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+
+					</ace:menuBar>
+					<a href="https://google.com"> <img
+								src="resources/images/question.png"
+								style="width: 24px; height: 24px;" />
+							</a>
+				</h:panelGrid>
+				<ace:submitMonitor for="refresh" activeLabel="Refreshing"
+					autoCenter="true" blockUI="@source" />
+				<ace:submitMonitor for="start_selected" activeLabel="Starting"
+					autoCenter="true" blockUI="@source" />
+				<ace:submitMonitor for="stop_selected" activeLabel="Stopping"
+					autoCenter="true" blockUI="@source" />
+
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="1" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="addScheduling" title="Add Scheduling">
@@ -135,15 +175,17 @@
 
 							<h:outputLabel id="javaLabel" for="javaInput" value="Pollable: " />
 							<h:selectBooleanCheckbox id="javaInput"
-								value="#{dataMaster.builder.javaAgentPollable}" disabled="#{dataMaster.builder.composite.javaAgentPollable eq 0}"/>
-							
+								value="#{dataMaster.builder.javaAgentPollable}"
+								disabled="#{dataMaster.builder.composite.javaAgentPollable eq 0}" />
+
 							<h:outputLabel id="serviceLabel" for="compositeInput"
 								value="Composite: " />
 							<ice:selectOneMenu id="compositeInput"
-								value="#{dataMaster.builder.composite}" partialSubmit="true" >
+								value="#{dataMaster.builder.composite}" partialSubmit="true">
 								<f:selectItems value="#{dataMaster.composites}" />
 								<f:converter converterId="entityConverter" />
 							</ice:selectOneMenu>
+							
 						</h:panelGrid>
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
@@ -152,7 +194,8 @@
 							<ice:outputText value="#{dataMaster.addErrorMessage}"
 								rendered="#{dataMaster.addError}" styleClass="red" />
 						</pre>
-						<ace:submitMonitor for="add_scheduling" activeLabel="Adding" autoCenter="true" blockUI="@source"/>
+						<ace:submitMonitor for="add_scheduling" activeLabel="Adding"
+							autoCenter="true" blockUI="@source" />
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -238,38 +281,38 @@
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" styleClass="left">
-							
+
 							<ice:outputText value="#{dataMaster.editErrorMessage}"
 								rendered="#{dataMaster.editError}" styleClass="red"
 								style="white-space:pre;" />
-							
+
 							<h:panelGrid id="editGrid" columns="6"
 								styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
-								
+
 								<h:outputLabel id="editNameLabel" for="editNameInput"
 									value="Name: " />
-								
+
 								<h:inputText id="editNameInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).name}"
 									disabled="#{not sessionBean.user.editRights}" />
-								
+
 								<h:outputLabel id="editDescLabel" for="editDescInput"
 									value="Description: " />
-								
+
 								<h:inputText id="editDescInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).description}"
 									disabled="#{not sessionBean.user.editRights}" />
-								
+
 								<h:outputLabel id="editCronLabel" for="editCronInput"
 									value="CRON: " />
-								
+
 								<h:inputText id="editCronInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).cron}"
 									disabled="#{not sessionBean.user.editRights}" />
-								
+
 								<h:outputLabel id="editSourceLabel" for="editSourceInput"
 									value="Source: " />
-								
+
 								<h:selectOneMenu id="editSourceInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).source}"
 									disabled="#{not sessionBean.user.editRights}">
@@ -279,17 +322,17 @@
 
 								<h:outputLabel id="editTargetLabel" for="editTargetInput"
 									value="Target: " />
-								
+
 								<h:selectOneMenu id="editTargetInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).target}"
 									disabled="#{not sessionBean.user.editRights}">
 									<f:selectItems value="#{dataMaster.backends}" />
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
-								
+
 								<h:outputLabel id="editModeLabel" for="editModeInput"
 									value="Mode: " />
-								
+
 								<h:selectOneMenu id="editModeInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).mode}"
 									disabled="#{not sessionBean.user.editRights}">
@@ -297,26 +340,26 @@
 									<f:converter converterId="entityConverter" />
 								</h:selectOneMenu>
 
-								
+
 								<h:outputLabel id="editBankLabel" for="editBankInput"
 									value="Holiday: " />
-								
+
 								<ice:selectBooleanCheckbox id="editBankInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).bankHolidayOnly}"
 									partialSubmit="true"
 									disabled="#{not sessionBean.user.editRights}" />
-								
+
 								<h:outputLabel id="editJavaLabel" for="editJavaInput"
 									value="Pollable: " />
-								
+
 								<ice:selectBooleanCheckbox id="editJavaInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).javaAgentPollable}"
 									partialSubmit="true"
 									disabled="#{not sessionBean.user.editRights}" />
-								
+
 								<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
 									value="Composite: " />
-								
+
 								<h:selectOneMenu id="editCompositeInput"
 									value="#{dataMaster.editBuffer.get(schedule.id).composite}"
 									disabled="#{not sessionBean.user.editRights}">
@@ -328,13 +371,16 @@
 
 							<br />
 							<ice:commandButton id="confirm_edit" value="Confirm"
-								actionListener="#{dataMaster.confirmEdit(schedule)}" rendered="#{sessionBean.user.editRights}"/>
+								actionListener="#{dataMaster.confirmEdit(schedule)}"
+								rendered="#{sessionBean.user.editRights}" />
 
 							<ice:commandButton id="reset_edit" value="Reset"
-								actionListener="#{dataMaster.resetEdit(schedule)}" rendered="#{sessionBean.user.editRights}"/>
-							
-							<ace:submitMonitor for="confirm_edit"/>
-							<ace:submitMonitor for="reset_edit" activeLabel="Resetting" autoCenter="true" blockUI="@source"/>
+								actionListener="#{dataMaster.resetEdit(schedule)}"
+								rendered="#{sessionBean.user.editRights}" />
+
+							<ace:submitMonitor for="confirm_edit" />
+							<ace:submitMonitor for="reset_edit" activeLabel="Resetting"
+								autoCenter="true" blockUI="@source" />
 						</ace:panel>
 
 					</ace:panelExpansion>
@@ -352,13 +398,14 @@
 					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
-<!-- 					<ace:column id="i_Id" headerText="ID" sortBy="#{instance.id}" -->
-<!-- 						filterBy="#{instance.id}" filterMatchMode="contains"> -->
-<!-- 						<h:outputText id="i_IdCell" value="#{instance.id}" /> -->
-<!-- 					</ace:column> -->
+					<!-- 					<ace:column id="i_Id" headerText="ID" sortBy="#{instance.id}" -->
+					<!-- 						filterBy="#{instance.id}" filterMatchMode="contains"> -->
+					<!-- 						<h:outputText id="i_IdCell" value="#{instance.id}" /> -->
+					<!-- 					</ace:column> -->
 
 
-					<ace:column id="i_run_state" headerText="Was run" sortBy="#{instance.statusID}">
+					<ace:column id="i_run_state" headerText="Was run"
+						sortBy="#{instance.statusID}">
 						<h:panelGrid id="i_run_state_Id" columns="1">
 							<h:graphicImage id="correct_image" library="images"
 								name="correcticon.png" style="height: 30px; width: 30px; "
@@ -368,34 +415,41 @@
 								rendered="#{instance.statusID gt 1}" />
 						</h:panelGrid>
 						<ace:tooltip id="tooltip_skipped_image" for="skipped_image"
-							value="This instance was not run. Expand view for more information" showDelay="100" hideDelay="200">
+							value="This instance was not run. Expand view for more information"
+							showDelay="100" hideDelay="200">
 						</ace:tooltip>
 						<ace:tooltip id="tooltip_correct_image" for="correct_image"
-							value="This instance was run normally" showDelay="100" hideDelay="200">
+							value="This instance was run normally" showDelay="100"
+							hideDelay="200">
 						</ace:tooltip>
-						<ace:expansionToggler changeListener="#{dataMaster.instanceExpansion}" />
+						<ace:expansionToggler
+							changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
 					<ace:panelExpansion>
-							<ice:outputText value="#{dataMaster.instanceEditBuffer.get(instance.id)}" /> <br/>
-							inputFileAmmount <h:outputText id="i_inputFileAmmountCell_field" value="#{instance.inputFileAmmount}" /> <br/>
-							outputFileAmmount <h:outputText id="i_outputFileAmmountCell_field" value="#{instance.outputFileAmmount}" /> 
+						<ice:outputText
+							value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
+						<br />
+							inputFileAmmount <h:outputText id="i_inputFileAmmountCell_field"
+							value="#{instance.inputFileAmmount}" />
+						<br />
+							outputFileAmmount <h:outputText
+							id="i_outputFileAmmountCell_field"
+							value="#{instance.outputFileAmmount}" />
 					</ace:panelExpansion>
-					
+
 					<ace:column id="i_name" headerText="Name" sortBy="#{instance.name}"
 						filterBy="#{instance.name}" filterMatchMode="contains">
 						<h:outputText id="i_nameCell" value="#{instance.name}" />
 					</ace:column>
-	
+
 					<ace:column id="i_statusID" headerText="StatusID"
 						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
 						filterMatchMode="contains">
 						<h:panelGrid>
-							<h:outputText id="i_statusIDCell" value="#{instance.statusID}" styleClass="tooltipTargetStyle"/>
-						</h:panelGrid>		
+							<h:outputText id="i_statusIDCell" value="#{instance.statusID}"
+								styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
 					</ace:column>
-					
-			
-
 
 					<ace:column id="i_startDate" headerText="StartDate"
 						sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
@@ -418,12 +472,11 @@
 
 					<ace:column id="i_outputFileAmmount" headerText="OutputFiles"
 						sortBy="#{instance.outputFileAmmount}"
-						filterBy="#{instance.outputFileAmmount}" filterMatchMode="contains">
+						filterBy="#{instance.outputFileAmmount}"
+						filterMatchMode="contains">
 						<h:outputText id="i_outputFileAmmountCell"
 							value="#{instance.outputFileAmmount}" />
 					</ace:column>
-
-
 
 				</ace:dataTable>
 
@@ -437,5 +490,6 @@
 		</ace:tabSet>
 
 	</h:form>
+
 </h:body>
 </html>
