@@ -16,8 +16,8 @@ import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
 
-
 import entities.Backend;
+import entities.Comment;
 import entities.Composite;
 import entities.Instance;
 import entities.Mode;
@@ -33,40 +33,41 @@ public class DataMaster implements Serializable {
 	public static final String BEAN_NAME = "dataMaster";
 
 	private DataTable dataTable;
-	
+
 	private DataTable i_dataTable;
 
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
-	
+
 	private List<Instance> instances;
 
 	private RowStateMap stateMap = new RowStateMap();
-	
+
 	private RowStateMap i_stateMap = new RowStateMap();
 
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
+	private HashMap<Integer, List<Comment>> commentList = new HashMap<Integer, List<Comment>>();
 
 	private HttpConnector http = new HttpConnector();
-	
+
 	private SchedulingBuilder builder;
 
 	private Collection<Mode> modes = SessionBean.MODES.values();
 	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
 	private Collection<Backend> backends = SessionBean.BACKENDS.values();
-	
+
 	private boolean editError;
 	private String editErrorMessage;
-	
+
 	private boolean addError;
 	private String addErrorMessage;
-	
+
 	private HashMap<Integer, String> instanceEditBuffer = new HashMap<Integer, String>();
-	
+
 	@PostConstruct
-	private void init(){
+	private void init() {
 		this.builder = new SchedulingBuilder();
 	}
-	
+
 	public void addScheduling() {
 
 		Scheduling s;
@@ -74,18 +75,20 @@ public class DataMaster implements Serializable {
 			s = this.builder.build();
 			session.getConnector().addScheduling(s);
 			addError = false;
-			System.out.print("HttpConnector returned: " + http.addId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
+			System.out.print("HttpConnector returned: "
+					+ http.addId(SessionBean.COMPOSITES.get(s.getServiceID())
+							.getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
 			addErrorMessage = e.getMessage();
 			addError = true;
 		}
-		
+
 	}
 
 	public void confirmEdit(Scheduling s) {
 
 		try {
-			
+
 			Scheduling n = this.editBuffer.get(s.getId()).build();
 			this.schedulings.remove(s);
 			this.schedulings.add(n);
@@ -100,33 +103,37 @@ public class DataMaster implements Serializable {
 	}
 
 	public void expansion(ExpansionChangeEvent e) {
-		if (e.isExpanded()){
-			this.editBuffer.put(((Scheduling) e.getRowData()).getId(),
-					new SchedulingBuilder((Scheduling) e.getRowData()));
-			this.editError = false;}
-		else {
-			this.editBuffer.remove(((Scheduling) e.getRowData()).getId());
+		Scheduling s = (Scheduling) e.getRowData();
+		if (e.isExpanded()) {
+			this.commentList.put(s.getId(), this.session.getConnector()
+					.getLastComments(s.getId()));
+			for (Comment c : this.commentList.get(s.getId())) {
+				System.out.println(c.getCreationDate() + " : " +  c.getText());
+			}
+			this.editBuffer.put(s.getId(), new SchedulingBuilder(s));
+			this.editError = false;
+		} else {
+			this.editBuffer.remove(s.getId());
 		}
 	}
 
-	public void instanceExpansion(ExpansionChangeEvent e){
+	public void instanceExpansion(ExpansionChangeEvent e) {
 		String instanceErrorMessage = "g0ljuException";
 		int Id = ((Instance) e.getRowData()).getId();
-		if (e.isExpanded()){
-				int statusId = ((Instance) e.getRowData()).getStatusID();
-		
-				if (statusId != 6) {
-					instanceErrorMessage = ((Instance) e.getRowData()).getName();
-				}
-				
-				this.instanceEditBuffer.put(Id, instanceErrorMessage);
+		if (e.isExpanded()) {
+			int statusId = ((Instance) e.getRowData()).getStatusID();
+
+			if (statusId != 6) {
+				instanceErrorMessage = ((Instance) e.getRowData()).getName();
 			}
-		else {
+
+			this.instanceEditBuffer.put(Id, instanceErrorMessage);
+		} else {
 			this.instanceEditBuffer.remove(Id);
 		}
-		
+
 	}
-	
+
 	public void resetEdit(Scheduling s) {
 		SchedulingBuilder b = new SchedulingBuilder(s);
 
@@ -151,17 +158,16 @@ public class DataMaster implements Serializable {
 			s.setSelected(false);
 		}
 	}
-	
+
 	public void startSelected() {
 		long time = System.currentTimeMillis();
-		while(System.currentTimeMillis() - time <  2500){
-			
+		while (System.currentTimeMillis() - time < 2500) {
+
 		}
 	}
-	
 
 	public void stopSelected() {
-		
+
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
@@ -212,6 +218,7 @@ public class DataMaster implements Serializable {
 	public void refreshInstances() {
 		this.instances = this.session.getConnector().getInstances();
 	}
+
 	public void setInstances(List<Instance> instances) {
 		this.instances = instances;
 	}
@@ -248,6 +255,7 @@ public class DataMaster implements Serializable {
 	public void setEditBuffer(HashMap<Integer, SchedulingBuilder> editBuffer) {
 		this.editBuffer = editBuffer;
 	}
+
 	public HashMap<Integer, String> getInstanceEditBuffer() {
 		return instanceEditBuffer;
 	}
@@ -316,11 +324,16 @@ public class DataMaster implements Serializable {
 		return addErrorMessage;
 	}
 
-
 	public void setAddErrorMessage(String addErrorMessage) {
 		this.addErrorMessage = addErrorMessage;
 	}
 
+	public HashMap<Integer, List<Comment>> getCommentList() {
+		return commentList;
+	}
 
+	public void setCommentList(HashMap<Integer, List<Comment>> commentList) {
+		this.commentList = commentList;
+	}
 
 }
