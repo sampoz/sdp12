@@ -85,7 +85,7 @@ public class Instance implements Serializable {
 			String[] files = this.inputFileName.split(";");
 			return files.length;	
 		} catch (NullPointerException e) {
-			return -1;
+			return 0;
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class Instance implements Serializable {
 			String[] files = this.outputFileName.split(";");
 			return files.length;
 		} catch (NullPointerException e) {
-			return -1;
+			return 0;
 		}	
 	}
 

@@ -46,6 +46,7 @@ public class DataMaster implements Serializable {
 
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 
+	private HttpConnector http = new HttpConnector();
 	
 	private SchedulingBuilder builder;
 
@@ -73,6 +74,7 @@ public class DataMaster implements Serializable {
 			s = this.builder.build();
 			session.getConnector().addScheduling(s);
 			addError = false;
+			System.out.print("HttpConnector returned: " + http.addId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
 			addErrorMessage = e.getMessage();
 			addError = true;
