@@ -68,7 +68,7 @@ public class DatabaseConnector {
 	public List<Comment> getLastComments(int id){
 		lazyInit();
 		this.manager.getTransaction().begin();
-		Query q = this.manager.createQuery("from Comment where rownum <= 5 and id = " + id);
+		Query q = this.manager.createQuery("from Comment where rownum <= 5 and schedulingID = " + id);
 		List<Comment> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;

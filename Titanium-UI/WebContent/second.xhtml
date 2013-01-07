@@ -382,7 +382,16 @@ px
 							<ace:submitMonitor for="reset_edit" activeLabel="Resetting"
 								autoCenter="true" blockUI="@source" />
 						</ace:panel>
-
+						<ace:dataTable id="commentTable" value="#{dataMaster.commentList.get(schedule.id)}"
+					var="comment" paginator="false" 
+					rows="5">
+					<ace:column id="creation_date" headerText="Date">
+						<h:outputText value="#{comment.creationDate}"/>
+					</ace:column>
+					<ace:column id="text" headerText="Text">
+						<h:outputText value="#{comment.text}"/>
+					</ace:column>	
+					</ace:dataTable>
 					</ace:panelExpansion>
 				</ace:dataTable>
 
