@@ -90,8 +90,9 @@ public class DataMaster implements Serializable {
 			this.schedulings.remove(s);
 			this.schedulings.add(n);
 
-			this.session.getConnector().updateScheduling(n);
+			//this.session.getConnector().updateScheduling(n);
 			editError = false;
+			System.out.print("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
 			editErrorMessage = e.getMessage();
 			editError = true;
@@ -153,9 +154,13 @@ public class DataMaster implements Serializable {
 	}
 	
 	public void startSelected() {
-		long time = System.currentTimeMillis();
-		while(System.currentTimeMillis() - time <  2500){
-			
+		for (Object rowData : stateMap.getSelected()) {
+			Scheduling s = (Scheduling) rowData;
+
+			s.setStatusID(SessionBean.ENABLED);
+
+			//this.session.getConnector().updateScheduling(s);
+			System.out.print("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		}
 	}
 	
@@ -167,7 +172,8 @@ public class DataMaster implements Serializable {
 
 			s.setStatusID(SessionBean.DISABLED);
 
-			this.session.getConnector().updateScheduling(s);
+			//this.session.getConnector().updateScheduling(s);
+			System.out.print("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		}
 	}
 

@@ -26,6 +26,7 @@ public class SessionBean {
 	public static final HashMap<Integer,Composite> COMPOSITES = new HashMap<Integer, Composite>();
 	
 	// Hard coded disabled state. Better options?
+	public static final int ENABLED = 1;
 	public static final int DISABLED = 2;
 	
 	private DatabaseConnector connector = new DatabaseConnector();
