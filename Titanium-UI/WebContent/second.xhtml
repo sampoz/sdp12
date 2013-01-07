@@ -127,6 +127,10 @@ px
 							icon="ui-icon ui-icon-refresh">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
+						<ace:menuItem id="run" value="Run selected"
+							icon="ui-icon ui-icon-gear">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
 
 					</ace:menuBar>
 					<a href="https://google.com"> <img
@@ -407,18 +411,24 @@ px
 
 			<ace:tabPane id="instance_log" label="Instance Log"
 				rendered="#{sessionBean.user.authenticated}">
+				
+				<h:panelGrid columns="2">
+				<ace:menuBar>
+					<ace:menuItem id="run_instances" value="Run selected instances"
+						actionListener="#{dataMaster.runInstances}"
+						icon="ui-icon ui-icon-gear">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+				</ace:menuBar>
+				</h:panelGrid>
+					
 				<ace:dataTable id="instanceTable" value="#{dataMaster.instances}"
 					var="instance" paginator="true" paginatorPosition="both" rows="10"
 					stateMap="#{dataMaster.i_stateMap}" selectionMode="multiple"
 					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
-					<!-- 					<ace:column id="i_Id" headerText="ID" sortBy="#{instance.id}" -->
-					<!-- 						filterBy="#{instance.id}" filterMatchMode="contains"> -->
-					<!-- 						<h:outputText id="i_IdCell" value="#{instance.id}" /> -->
-					<!-- 					</ace:column> -->
-
-
+					
 					<ace:column id="i_run_state" headerText="Was run"
 						sortBy="#{instance.statusID}">
 						<h:panelGrid id="i_run_state_Id" columns="1">
@@ -440,7 +450,7 @@ px
 						<ace:expansionToggler
 							changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
-				<ace:panelExpansion>
+					<ace:panelExpansion>
 					<ace:panel styleClass = "instanceleft">
 						<h:panelGrid id="instanceGrid" columns="4">
 								

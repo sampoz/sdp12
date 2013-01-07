@@ -176,6 +176,10 @@ public class DataMaster implements Serializable {
 		}
 	}
 
+	public void runInstances() {
+
+		System.out.println("run instances");
+	}
 	public DataTable getDataTable() {
 		return dataTable;
 	}
