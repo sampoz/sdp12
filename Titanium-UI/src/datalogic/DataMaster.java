@@ -74,9 +74,7 @@ public class DataMaster implements Serializable {
 			s = this.builder.build();
 			session.getConnector().addScheduling(s);
 			addError = false;
-			System.out.print("HttpConnector returned: "
-					+ http.addId(SessionBean.COMPOSITES.get(s.getServiceID())
-							.getDestinationURL(), s.getId()));
+			System.out.println("HttpConnector returned: " + http.addId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
 			addErrorMessage = e.getMessage();
 			addError = true;
@@ -94,7 +92,7 @@ public class DataMaster implements Serializable {
 
 			//this.session.getConnector().updateScheduling(n);
 			editError = false;
-			System.out.print("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
+			System.out.println("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
 			editErrorMessage = e.getMessage();
 			editError = true;
@@ -160,7 +158,7 @@ public class DataMaster implements Serializable {
 			s.setStatusID(SessionBean.ENABLED);
 
 			//this.session.getConnector().updateScheduling(s);
-			System.out.print("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
+			System.out.println("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		}
 	}
 
@@ -172,7 +170,14 @@ public class DataMaster implements Serializable {
 			s.setStatusID(SessionBean.DISABLED);
 
 			//this.session.getConnector().updateScheduling(s);
-			System.out.print("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
+			System.out.println("HttpConnector returned: " + http.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
+		}
+	}
+	
+	public void runSelectedSchedules() {
+		for (Object rowData : stateMap.getSelected()) {
+			Scheduling s = (Scheduling) rowData;
+			System.out.println("HttpConnector returned: " + http.runId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		}
 	}
 
