@@ -66,6 +66,12 @@ px
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+.instanceleft {
+	float: left;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 
 </style>
 		<ace:tabSet id="sampleTabSet" clientSide="false">
@@ -434,18 +440,25 @@ px
 						<ace:expansionToggler
 							changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
-					<ace:panelExpansion>
-						<ice:outputText
-							value="#{dataMaster.instanceEditBuffer.get(instance.id)}" />
-						<br />
-							inputFileAmmount <h:outputText id="i_inputFileAmmountCell_field"
-							value="#{instance.inputFileAmmount}" />
-						<br />
-							outputFileAmmount <h:outputText
-							id="i_outputFileAmmountCell_field"
-							value="#{instance.outputFileAmmount}" />
-					</ace:panelExpansion>
+				<ace:panelExpansion>
+					<ace:panel styleClass = "instanceleft">
+						<h:panelGrid id="instanceGrid" columns="4">
+								
+							<h:outputLabel value= "Error Message:"/>
+							<h:outputText id="i_message" value="#{dataMaster.instanceEditBuffer.get(instance.id).message}"  styleClass = "instanceleft"/>
+							
+							<h:outputLabel value="Composite: " />
+							<h:outputText id="i_composite" value="#{dataMaster.instanceEditBuffer.get(instance.id).process}" styleClass = "instanceleft"/>
+							
+							<h:outputLabel value="Input files:" />
+							<h:outputText id="i_input_files" value="#{dataMaster.instanceEditBuffer.get(instance.id).inputFileName}" styleClass = "instanceleft" />
+							
+							<h:outputLabel value="Output files:" />
+							<h:outputText id="i_output_files" value="#{dataMaster.instanceEditBuffer.get(instance.id).outputFileName}" styleClass = "instanceleft"/>
 
+							</h:panelGrid>
+					</ace:panel>
+					</ace:panelExpansion>
 					<ace:column id="i_name" headerText="Name" sortBy="#{instance.name}"
 						filterBy="#{instance.name}" filterMatchMode="contains">
 						<h:outputText id="i_nameCell" value="#{instance.name}" />
