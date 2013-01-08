@@ -22,13 +22,8 @@ public interface User {
 
 	void setEditRights(boolean editRights);
 
-	boolean isStopRights();
+	boolean isRunRights();
 
-	void setStopRights(boolean stopRights);
-
-	boolean isStartRights();
-
-	void setStartRights(boolean startRights);
-	
+	void setRunRights(boolean stopRights);
 	
 }

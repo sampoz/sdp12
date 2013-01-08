@@ -6,8 +6,7 @@ public abstract class AbstractUser implements User {
 	boolean viewRights = false;
 	boolean addRights = false;
 	boolean editRights = false;
-	boolean stopRights = false;
-	boolean startRights = false;
+	boolean runRights = false;
 
 	@Override
 	public boolean isAuthenticated() {
@@ -50,22 +49,12 @@ public abstract class AbstractUser implements User {
 	}
 
 	@Override
-	public boolean isStopRights() {
-		return stopRights;
+	public boolean isRunRights() {
+		return runRights;
 	}
 
 	@Override
-	public void setStopRights(boolean stopRights) {
-		throw new IllegalAccessError();
-	}
-
-	@Override
-	public boolean isStartRights() {
-		return startRights;
-	}
-
-	@Override
-	public void setStartRights(boolean startRights) {
+	public void setRunRights(boolean startRights) {
 		throw new IllegalAccessError();
 	}
 

@@ -46,14 +46,17 @@
 
 .activated {
 	color: green;
+	font-weight: bolder;
 }
 
 .deactivated {
-	color: red;
+	color: grey;
+	font-weight: bolder;
 }
 
 .removed {
-	color: grey;
+	color: red;
+	font-weight: bolder;
 }
 
 .grey {
@@ -92,22 +95,23 @@
 
 				<h:panelGrid columns="2">
 					<ace:menuBar>
-						<ace:menuItem id="select_all" value="Select All"
-							actionListener="#{schedulingDataManager.selectAll}"
+						<ace:menuItem id="select_filtered" value="Select Filtered"
+							actionListener="#{schedulingDataManager.selectFiltered}"
 							icon="ui-icon ui-icon-check"
-							rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
+							rendered="#{sessionBean.user.runRights}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
 						<ace:menuItem id="deselect_all" value="Deselect All"
 							actionListener="#{schedulingDataManager.deselectAll}"
 							icon="ui-icon ui-icon-closethick"
-							rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
+							rendered="#{sessionBean.user.runRights}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						<ace:menuItem id="start_selected" value="Run Selected"
+						<ace:menuItem id="run_selected" value="Run Selected"
 							onclick="run_conf.show()"
 							icon="ui-icon ui-icon-play"
-							rendered="#{sessionBean.user.startRights}">
+							rendered="#{sessionBean.user.runRights}"
+							actionListener="#{schedulingDataManager.listSelected}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
 						
@@ -126,10 +130,11 @@
 				</h:panelGrid>
 				
 				<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf" 
-				message="Are you sure you want to run selected schedulings?" 
+				message="Are you sure you want to run following schedulings?" 
 				header="Confirm Run" 
-				width="300" 
-				height="180">
+				width="330" 
+				height="220">
+							<ice:outputText value="#{schedulingDataManager.schedulingList}" escape="false"/>
 						<h:panelGrid columns="2">
 		                    <h:commandButton id="yes" value="Yes" onclick="run_conf.hide()" actionListener="#{schedulingDataManager.runSelectedSchedules}" />
 		                    <h:commandButton id="no" value="No" onclick="run_conf.hide()"/>
@@ -151,7 +156,7 @@
                     </pre>
                     <br/>
                     <h:panelGroup>
-                            <h:commandButton value="Close" actionListener="#{schedulingDataManager.setResponseDialogVisible(false)}"/>
+                            <h:commandButton value="Close" actionListener="#{schedulingDataManager.setResponseDialogVisible(false)}" style="margin-left: auto; margin-right: auto;"/>
                		 </h:panelGroup>
                 </f:facet>
                 

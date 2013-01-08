@@ -60,12 +60,24 @@ public class SchedulingDataManager {
 	
 	private boolean responseDialogVisible;
 	private String runReport;
+	
+	private String schedulingList;
 
 	@PostConstruct
 	private void init() {
 		this.builder = new SchedulingBuilder();
 	}
 
+	public void listSelected(){
+		if(stateMap.getSelected().isEmpty()){
+			this.schedulingList = "None";
+			return;
+		}
+		this.schedulingList = "";
+		for (Scheduling s : (List<Scheduling>)stateMap.getSelected()) {
+			this.schedulingList += s.getId() + "<br/>";
+		}
+	}
 	/**
 	 * Method to be called from the UI when a new {@link Scheduling} is to be
 	 * constructed from the {@link SchedulingBuilder}
@@ -262,7 +274,7 @@ public class SchedulingDataManager {
 	 * rows currently filtered (or lazily loaded) are to be selected. The [@link
 	 * DataTable} is bound to this bean so we can operate on the filtered data.
 	 */
-	public void selectAll() {
+	public void selectFiltered() {
 
 		List<Scheduling> filteredRows = dataTable.getFilteredData();
 
@@ -272,7 +284,6 @@ public class SchedulingDataManager {
 		 * of the stateMap for selecting all rows
 		 */
 		if (filteredRows == null || filteredRows.isEmpty()) {
-			stateMap.setAllSelected(true);
 			return;
 		}
 
@@ -459,6 +470,14 @@ public class SchedulingDataManager {
 
 	public void setRunReport(String runReport) {
 		this.runReport = runReport;
+	}
+
+	public String getSchedulingList() {
+		return schedulingList;
+	}
+
+	public void setSchedulingList(String schedulingList) {
+		this.schedulingList = schedulingList;
 	}
 
 }

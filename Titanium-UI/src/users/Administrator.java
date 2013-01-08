@@ -6,8 +6,7 @@ public class Administrator extends AbstractUser {
 		this.authenticated = true;
 		this.addRights = true;
 		this.editRights = true;
-		this.startRights = true;
-		this.stopRights = true;
+		this.runRights = true;
 		this.viewRights = true;
 	}
 	
