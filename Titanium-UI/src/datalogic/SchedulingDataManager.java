@@ -42,8 +42,6 @@ public class SchedulingDataManager {
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 	private HashMap<Integer, List<Comment>> commentLists = new HashMap<Integer, List<Comment>>();
 	private HashMap<Integer, Comment> editCommentList = new HashMap<Integer, Comment>();
-	private HashMap<Integer, Boolean> hasCommentsList = new HashMap<Integer, Boolean>();
-	
 
 	private Collection<Mode> modes = SessionBean.MODES.values();
 	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
@@ -85,8 +83,11 @@ public class SchedulingDataManager {
 
 			// If the database connector returns true from the persisting of
 			// Scheduling we can safely add it to the table
-			if (this.session.getConnector().addScheduling(s))
+			if (this.session.getConnector().addScheduling(s)) {
 				this.schedulings.add(s);
+				this.builder = new SchedulingBuilder();
+			} 
+				
 
 			/*
 			 * If there is some text in addComment, we'll add it straight away.
@@ -149,13 +150,12 @@ public class SchedulingDataManager {
 			 */
 			this.commentLists.put(s.getId(), this.session.getConnector()
 					.getLastComments(s.getId()));
-			this.hasCommentsList.put(s.getId(), !this.commentLists.get(s.getId()).isEmpty());
+		
 			/*
 			 * Create a new empty comment, set its SchedulingID to match this
 			 * Scheduling and add it to the comment buffer
 			 */
 			Comment c = new Comment();
-			c.setSchedulingID(s.getId());
 			this.editCommentList.put(s.getId(), c);
 			
 			/*
@@ -171,7 +171,6 @@ public class SchedulingDataManager {
 			 * refreshed when the row is expanded again
 			 */
 			this.commentLists.remove(s.getId());
-			this.hasCommentsList.remove(s.getId());
 			this.editBuffer.remove(s.getId());
 			
 		}
@@ -245,13 +244,16 @@ public class SchedulingDataManager {
 	 */
 	public void submitComment(int id) {
 		Comment c = this.editCommentList.get(id);
+		
 		c.setCreationDate(DATE_FORMAT.format(new Date()));
+		c.setSchedulingID(id);
 
 		// If the database connector returns true from the persisting of the
 		// comment we can safely add it to the table
 		if (this.session.getConnector().addComment(c)) {
+			this.editCommentList.put(id,new Comment());
 			this.commentLists.get(id).add(c);
-			this.hasCommentsList.put(id, true);
+			this.commentLists.put(id, this.session.getConnector().getLastComments(id));
 		}
 	}
 
@@ -441,14 +443,6 @@ public class SchedulingDataManager {
 
 	public void setBackends(Collection<Backend> backends) {
 		this.backends = backends;
-	}
-
-	public HashMap<Integer, Boolean> getHasCommentsList() {
-		return hasCommentsList;
-	}
-
-	public void setHasCommentsList(HashMap<Integer, Boolean> hasCommentsList) {
-		this.hasCommentsList = hasCommentsList;
 	}
 
 	public boolean isResponseDialogVisible() {

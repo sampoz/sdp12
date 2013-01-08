@@ -421,16 +421,15 @@
 								autoCenter="true" blockUI="@source" />
 						</ace:panel>
 						<br/>
-						<ice:outputText value="-- No Comments --" rendered="#{not schedulingDataManager.hasCommentsList.get(schedule.id)}" styleClass="grey"/>
-						<br/>
 						<ace:dataTable id="comment_table"
 							value="#{schedulingDataManager.commentLists.get(schedule.id)}"
-							var="comment" paginator="false" rows="5" rendered="#{schedulingDataManager.hasCommentsList.get(schedule.id)}">
-							<ace:column id="creation_date" headerText="Date">
-								<h:outputText value="#{comment.creationDate}" />
+							var="comment" paginator="false" rows="5"  emptyMessage="-- No Comments --">
+							<ace:column id="creation_date" headerText="Date" >
+							
+								<ice:outputText value="#{comment.creationDate}" />
 							</ace:column>
-							<ace:column id="text" headerText="Text">
-								<h:outputText value="#{comment.text}" />
+							<ace:column id="text" headerText="Text" >
+								<h:outputText value="#{comment.text}" />	
 							</ace:column>
 						</ace:dataTable>
 						<br/>
