@@ -110,6 +110,14 @@ public class DatabaseConnector {
 		this.manager.getTransaction().commit();
 		return result;
 	}
+
+	public void addComment(Comment c) {
+		lazyInit();
+		
+		this.manager.getTransaction().begin();
+		this.manager.persist(c);
+		this.manager.getTransaction().commit();
+	}
 	
 	
 	

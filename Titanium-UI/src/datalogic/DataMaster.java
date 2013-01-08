@@ -1,8 +1,11 @@
 package datalogic;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,6 +49,7 @@ public class DataMaster implements Serializable {
 
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 	private HashMap<Integer, List<Comment>> commentList = new HashMap<Integer, List<Comment>>();
+	private HashMap<Integer, Comment> addCommentList = new HashMap<Integer, Comment>();
 
 	private HttpConnector http = new HttpConnector();
 
@@ -54,6 +58,8 @@ public class DataMaster implements Serializable {
 	private Collection<Mode> modes = SessionBean.MODES.values();
 	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
 	private Collection<Backend> backends = SessionBean.BACKENDS.values();
+	
+	private Comment comment = new Comment();
 
 	private boolean editError;
 	private String editErrorMessage;
@@ -73,6 +79,18 @@ public class DataMaster implements Serializable {
 		try {
 			s = this.builder.build();
 			session.getConnector().addScheduling(s);
+			if(comment.getText() != null  && !comment.getText().equals("")){
+				DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+				comment.setSchedulingID(s.getId());
+				System.out.println(comment.getSchedulingID());
+				System.out.println(format.format(new Date()));
+				System.out.println(comment.getText());
+				comment.setCreationDate(format.format(new Date()).toString());
+				session.getConnector().addComment(comment);
+				
+			}
+			
+			System.out.println(s.getId());
 			addError = false;
 			System.out.println("HttpConnector returned: " + http.addId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
@@ -103,16 +121,29 @@ public class DataMaster implements Serializable {
 	public void expansion(ExpansionChangeEvent e) {
 		Scheduling s = (Scheduling) e.getRowData();
 		if (e.isExpanded()) {
+			Comment c = new Comment();
+			c.setText("ARGH");
+			c.setSchedulingID(s.getId());
+			this.addCommentList.put(s.getId(), c);
 			this.commentList.put(s.getId(), this.session.getConnector()
 					.getLastComments(s.getId()));
-			for (Comment c : this.commentList.get(s.getId())) {
-				System.out.println(c.getCreationDate() + " : " +  c.getText());
-			}
 			this.editBuffer.put(s.getId(), new SchedulingBuilder(s));
 			this.editError = false;
 		} else {
+			this.commentList.remove(s.getId());
 			this.editBuffer.remove(s.getId());
 		}
+	}
+	
+	public void submitComment(int id){
+		
+		Comment c = this.addCommentList.get(id);
+		DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		System.out.println(format.format(new Date()));
+		System.out.println(c.getText());
+		c.setCreationDate(format.format(new Date()).toString());
+		this.session.getConnector().addComment(c);
+		this.commentList.get(id).add(c);
 	}
 
 	public void instanceExpansion(ExpansionChangeEvent e){
@@ -342,6 +373,22 @@ public class DataMaster implements Serializable {
 
 	public void setCommentList(HashMap<Integer, List<Comment>> commentList) {
 		this.commentList = commentList;
+	}
+
+	public HashMap<Integer, Comment> getAddCommentList() {
+		return addCommentList;
+	}
+
+	public void setAddCommentList(HashMap<Integer, Comment> addCommentList) {
+		this.addCommentList = addCommentList;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 
 }

@@ -196,7 +196,7 @@ px
 								<f:selectItems value="#{dataMaster.composites}" />
 								<f:converter converterId="entityConverter" />
 							</ice:selectOneMenu>
-							
+							<ace:textAreaEntry id="comment_input" label="Comment" value="#{dataMaster.comment.text}" rendered="#{sessionBean.user.addRights}"/>
 						</h:panelGrid>
 
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
@@ -207,6 +207,9 @@ px
 						</pre>
 						<ace:submitMonitor for="add_scheduling" activeLabel="Adding"
 							autoCenter="true" blockUI="@source" />
+							
+						
+
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -403,6 +406,11 @@ px
 						<h:outputText value="#{comment.text}"/>
 					</ace:column>	
 					</ace:dataTable>
+					
+					<ace:textAreaEntry id="comment_input" label="Comment" value="#{dataMaster.addCommentList.get(schedule.id).text}" rendered="#{sessionBean.user.editRights}"/>
+					<ice:commandButton id="sumbit_comment" value="Submit"
+								actionListener="#{dataMaster.submitComment(schedule.id)}"
+								rendered="#{sessionBean.user.editRights}" />
 					</ace:panelExpansion>
 				</ace:dataTable>
 
