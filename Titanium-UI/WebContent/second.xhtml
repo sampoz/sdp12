@@ -44,12 +44,30 @@
 	margin-bottom: 10px;
 }
 
+.activated {
+	color: green;
+}
+
+.deactivated {
+	color: red;
+}
+
+.removed {
+	color: grey;
+}
+
+.grey {
+	color: grey;
+}
+
 .instanceleft {
 	float: left;
 	margin-left: 10px;
 	margin-right: 10px;
 }
 </style>
+
+		
 		<ace:tabSet id="sampleTabSet" clientSide="false">
 
 			<ace:tabPane id="login_tab" label="Login"
@@ -86,40 +104,60 @@
 							rendered="#{sessionBean.user.startRights or sessionBean.user.stopRights}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						<ace:menuItem id="start_selected" value="Start Selected"
-							actionListener="#{schedulingDataManager.startSelected}"
+						<ace:menuItem id="start_selected" value="Run Selected"
+							onclick="run_conf.show()"
 							icon="ui-icon ui-icon-play"
 							rendered="#{sessionBean.user.startRights}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						<ace:menuItem id="stop_selected" value="Stop Selected"
-							actionListener="#{schedulingDataManager.stopSelected}"
-							icon="ui-icon ui-icon-pause"
-							rendered="#{sessionBean.user.stopRights}">
-							<ace:ajax event="activate" execute="@this" />
-						</ace:menuItem>
+						
 						<ace:menuItem id="refresh" value="Refresh"
 							actionListener="#{schedulingDataManager.refresh}"
 							icon="ui-icon ui-icon-refresh">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						<ace:menuItem id="run" value="Run selected"
-							actionListener="#{schedulingDataManager.runSelectedSchedules}"
-							icon="ui-icon ui-icon-gear">
-							<ace:ajax event="activate" execute="@this" />
-						</ace:menuItem>
-
+						
+						
 					</ace:menuBar>
 					<a href="https://google.com"> <img
 						src="resources/images/question.png"
 						style="width: 24px; height: 24px;" />
 					</a>
 				</h:panelGrid>
+				
+				<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf" 
+				message="Are you sure you want to run selected schedulings?" 
+				header="Confirm Run" 
+				width="300" 
+				height="180">
+						<h:panelGrid columns="2">
+		                    <h:commandButton id="yes" value="Yes" onclick="run_conf.hide()" actionListener="#{schedulingDataManager.runSelectedSchedules}" />
+		                    <h:commandButton id="no" value="No" onclick="run_conf.hide()"/>
+               			 </h:panelGrid>
+				</ace:confirmationDialog>
+				
+				<ice:panelPopup visible="#{schedulingDataManager.responseDialogVisible}"
+                            rendered="#{schedulingDataManager.responseDialogVisible}"
+                            modal="true"
+                            autoCentre="true">
+                  <f:facet name="header">
+                    <h:panelGroup>
+                        <h:outputText value="Run Report" style="margin-left:5px"/>
+                    </h:panelGroup>
+                </f:facet>
+                <f:facet name="body">
+                    <pre>
+                   		 <h:outputText value="#{schedulingDataManager.runReport}"></h:outputText>
+                    </pre>
+                    <br/>
+                    <h:panelGroup>
+                            <h:commandButton value="Close" actionListener="#{schedulingDataManager.setResponseDialogVisible(false)}"/>
+               		 </h:panelGroup>
+                </f:facet>
+                
+                </ice:panelPopup>
+				
 				<ace:submitMonitor for="refresh" activeLabel="Refreshing"
-					autoCenter="true" blockUI="@source" />
-				<ace:submitMonitor for="start_selected" activeLabel="Starting"
-					autoCenter="true" blockUI="@source" />
-				<ace:submitMonitor for="stop_selected" activeLabel="Stopping"
 					autoCenter="true" blockUI="@source" />
 
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
@@ -194,8 +232,6 @@
 						<ace:submitMonitor for="add_scheduling" activeLabel="Adding"
 							autoCenter="true" blockUI="@source" />
 
-
-
 					</ace:accordionPane>
 				</ace:accordion>
 
@@ -234,7 +270,7 @@
 							Mode
 							</f:facet>
 						</ice:panelGroup>
-						<h:outputText id="modeCell" value="#{schedule.modeLabel}" />
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}" styleClass="#{schedule.styleClass}"/>
 
 					</ace:column>
 
@@ -385,9 +421,11 @@
 								autoCenter="true" blockUI="@source" />
 						</ace:panel>
 						<br/>
+						<ice:outputText value="-- No Comments --" rendered="#{not schedulingDataManager.hasCommentsList.get(schedule.id)}" styleClass="grey"/>
+						<br/>
 						<ace:dataTable id="comment_table"
 							value="#{schedulingDataManager.commentLists.get(schedule.id)}"
-							var="comment" paginator="false" rows="5">
+							var="comment" paginator="false" rows="5" rendered="#{schedulingDataManager.hasCommentsList.get(schedule.id)}">
 							<ace:column id="creation_date" headerText="Date">
 								<h:outputText value="#{comment.creationDate}" />
 							</ace:column>

@@ -25,6 +25,15 @@ public class SessionBean {
 	public static final HashMap<Integer,Mode> MODES = new HashMap<Integer, Mode>();
 	public static final HashMap<Integer,Composite> COMPOSITES = new HashMap<Integer, Composite>();
 	
+	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
+	
+	// Hard coded styleClasses for different modes
+	{
+		MODE_STYLES.put(1, "activated");
+		MODE_STYLES.put(2, "deactivated");
+		MODE_STYLES.put(3, "removed");
+	}
+	
 	// Hard coded disabled state. Better options?
 	public static final int ENABLED = 1;
 	public static final int DISABLED = 2;
@@ -49,6 +58,7 @@ public class SessionBean {
 			MODES.put(m.getId(), m);
 			System.out.println(m.getId() + " : " + m.getLabel());
 		}
+		
 		
 	}
 	

@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 import org.icefaces.ace.component.datatable.DataTable;
+import org.icefaces.ace.component.dialog.Dialog;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
@@ -27,7 +28,7 @@ import entities.Scheduling;
 @ManagedBean(name = "schedulingDataManager")
 @SessionScoped
 public class SchedulingDataManager {
-	
+
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 
@@ -41,11 +42,13 @@ public class SchedulingDataManager {
 	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
 	private HashMap<Integer, List<Comment>> commentLists = new HashMap<Integer, List<Comment>>();
 	private HashMap<Integer, Comment> editCommentList = new HashMap<Integer, Comment>();
+	private HashMap<Integer, Boolean> hasCommentsList = new HashMap<Integer, Boolean>();
 	
+
 	private Collection<Mode> modes = SessionBean.MODES.values();
 	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
 	private Collection<Backend> backends = SessionBean.BACKENDS.values();
-	
+
 	private boolean showEditError;
 	private String editErrorMessage;
 
@@ -56,6 +59,9 @@ public class SchedulingDataManager {
 			"dd-MM-yyyy HH:mm:ss");
 
 	private HttpConnector httpConnector = new HttpConnector();
+	
+	private boolean responseDialogVisible;
+	private String runReport;
 
 	@PostConstruct
 	private void init() {
@@ -77,7 +83,10 @@ public class SchedulingDataManager {
 			 */
 			Scheduling s = this.builder.build();
 
-			this.session.getConnector().addScheduling(s);
+			// If the database connector returns true from the persisting of
+			// Scheduling we can safely add it to the table
+			if (this.session.getConnector().addScheduling(s))
+				this.schedulings.add(s);
 
 			/*
 			 * If there is some text in addComment, we'll add it straight away.
@@ -140,7 +149,7 @@ public class SchedulingDataManager {
 			 */
 			this.commentLists.put(s.getId(), this.session.getConnector()
 					.getLastComments(s.getId()));
-
+			this.hasCommentsList.put(s.getId(), !this.commentLists.get(s.getId()).isEmpty());
 			/*
 			 * Create a new empty comment, set its SchedulingID to match this
 			 * Scheduling and add it to the comment buffer
@@ -148,7 +157,7 @@ public class SchedulingDataManager {
 			Comment c = new Comment();
 			c.setSchedulingID(s.getId());
 			this.editCommentList.put(s.getId(), c);
-
+			
 			/*
 			 * Since we just expanded a new row, we want to clear all error
 			 * messages that would be shown in it
@@ -162,7 +171,9 @@ public class SchedulingDataManager {
 			 * refreshed when the row is expanded again
 			 */
 			this.commentLists.remove(s.getId());
+			this.hasCommentsList.remove(s.getId());
 			this.editBuffer.remove(s.getId());
+			
 		}
 	}
 
@@ -235,8 +246,13 @@ public class SchedulingDataManager {
 	public void submitComment(int id) {
 		Comment c = this.editCommentList.get(id);
 		c.setCreationDate(DATE_FORMAT.format(new Date()));
-		this.session.getConnector().addComment(c);
-		this.commentLists.get(id).add(c);
+
+		// If the database connector returns true from the persisting of the
+		// comment we can safely add it to the table
+		if (this.session.getConnector().addComment(c)) {
+			this.commentLists.get(id).add(c);
+			this.hasCommentsList.put(id, true);
+		}
 	}
 
 	/**
@@ -257,16 +273,16 @@ public class SchedulingDataManager {
 			stateMap.setAllSelected(true);
 			return;
 		}
-		
+
 		// Iterate through the filtered data and set all rows to be selected
 		for (Scheduling s : filteredRows) {
 			stateMap.get(s).setSelected(true);
 		}
 	}
-	
+
 	/**
-	 * Method to be called from the UI when Deselect All button is pressed and all
-	 * selected rows are to be deselected.
+	 * Method to be called from the UI when Deselect All button is pressed and
+	 * all selected rows are to be deselected.
 	 */
 	public void deselectAll() {
 		Collection<RowState> allRows = stateMap.values();
@@ -275,41 +291,19 @@ public class SchedulingDataManager {
 			s.setSelected(false);
 		}
 	}
-	
-	
-	//TODO Comments
-	public void startSelected() {
-		for (Object rowData : stateMap.getSelected()) {
-			Scheduling s = (Scheduling) rowData;
 
-			s.setStatusID(SessionBean.ENABLED);
-
-			//this.session.getConnector().updateScheduling(s);
-			System.out.println("HttpConnector returned: " + httpConnector.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
-		}
-	}
-	
-	//TODO Comments
-	public void stopSelected() {
-
-		for (Object rowData : stateMap.getSelected()) {
-			Scheduling s = (Scheduling) rowData;
-
-			s.setStatusID(SessionBean.DISABLED);
-
-			//this.session.getConnector().updateScheduling(s);
-			System.out.println("HttpConnector returned: " + httpConnector.editId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
-		}
-	}
-	
-	//TODO Comments
+	// TODO Comments
 	public void runSelectedSchedules() {
+		String runReport = stateMap.getSelected().size() + " schedulings were run.\n";
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
-			System.out.println("HttpConnector returned: " + httpConnector.runId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()));
+			runReport += "Response for scheduling " + s.getId() + " was "+ httpConnector.runId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()) + ".\n";
 		}
+		this.runReport = runReport;
+		this.responseDialogVisible = true;
 	}
 	
+
 	/**
 	 * Method for refreshing the contents of the data table.
 	 */
@@ -317,7 +311,7 @@ public class SchedulingDataManager {
 		this.schedulings.clear();
 		this.schedulings = this.session.getConnector().getSchedulings();
 	}
-	
+
 	public SessionBean getSession() {
 		return session;
 	}
@@ -447,6 +441,30 @@ public class SchedulingDataManager {
 
 	public void setBackends(Collection<Backend> backends) {
 		this.backends = backends;
+	}
+
+	public HashMap<Integer, Boolean> getHasCommentsList() {
+		return hasCommentsList;
+	}
+
+	public void setHasCommentsList(HashMap<Integer, Boolean> hasCommentsList) {
+		this.hasCommentsList = hasCommentsList;
+	}
+
+	public boolean isResponseDialogVisible() {
+		return responseDialogVisible;
+	}
+
+	public void setResponseDialogVisible(boolean responseDialogVisible) {
+		this.responseDialogVisible = responseDialogVisible;
+	}
+
+	public String getRunReport() {
+		return runReport;
+	}
+
+	public void setRunReport(String runReport) {
+		this.runReport = runReport;
 	}
 
 }

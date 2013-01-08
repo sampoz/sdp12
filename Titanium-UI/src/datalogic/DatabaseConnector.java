@@ -18,7 +18,7 @@ public class DatabaseConnector {
 	
 	private EntityManager manager;
 	
-	public void addScheduling(Scheduling s){
+	public boolean addScheduling(Scheduling s){
 		
 		// Initialize entity manager if it isn't already
 		lazyInit();
@@ -26,6 +26,7 @@ public class DatabaseConnector {
 		this.manager.getTransaction().begin();
 		this.manager.persist(s);
 		this.manager.getTransaction().commit();
+		return true;
 	}	
 	
 	public List<Scheduling> getSchedulings(){
@@ -111,12 +112,13 @@ public class DatabaseConnector {
 		return result;
 	}
 
-	public void addComment(Comment c) {
+	public boolean addComment(Comment c) {
 		lazyInit();
 		
 		this.manager.getTransaction().begin();
 		this.manager.persist(c);
 		this.manager.getTransaction().commit();
+		return true;
 	}
 	
 	

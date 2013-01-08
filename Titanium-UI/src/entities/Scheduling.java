@@ -32,6 +32,9 @@ public class Scheduling implements Serializable  {
 	@Transient
 	private String targetName;
 	
+	@Transient
+	private String styleClass;
+	
 //	@ManyToOne
 //	@JoinColumn(name="SERVICEID", insertable=false, updatable=false)
 //	private SchedulingService service;
@@ -197,7 +200,6 @@ public class Scheduling implements Serializable  {
 
 	public String getTargetName() {
 		try{
-
 			this.targetName = SessionBean.BACKENDS.get(this.target).getBackend();
 		}catch (NullPointerException e){
 			return "SAMPSA UPDATEE RIVIT";
@@ -238,6 +240,15 @@ public class Scheduling implements Serializable  {
 
 	public void setTarget(Integer target) {
 		this.target = target;
+	}
+
+	public String getStyleClass() {
+		this.styleClass = SessionBean.MODE_STYLES.get(this.statusID);
+		return styleClass;
+	}
+
+	public void setStyleClass(String styleClass) {
+		this.styleClass = styleClass;
 	}
 
 	
