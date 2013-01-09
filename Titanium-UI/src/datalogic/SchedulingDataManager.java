@@ -68,6 +68,8 @@ public class SchedulingDataManager {
 
 	private List<Scheduling> tabs = new ArrayList<Scheduling>();;
 
+	private int selectedTabIndex; 
+
 
 
 	@PostConstruct
@@ -363,8 +365,11 @@ public class SchedulingDataManager {
 	    tabs.add(s);
 	}
 
-	public void removeCurrent(Scheduling s){
-	    //TODO implement
+	public void removeCurrent(int index){
+	    tabs.remove(index-3);
+	    if (selectedTabIndex >= (tabs.size() + 3)) {
+	        selectedTabIndex = 0;
+	    }
 	 
 	}
 
@@ -537,5 +542,11 @@ public class SchedulingDataManager {
 	public void setTabs(List tabs) {
 		this.tabs = tabs;
 	}
+	public int getSelectedTabIndex() {
+		return selectedTabIndex;
+	}
 
+	public void setSelectedTabIndex(int selectedTabIndex) {
+		this.selectedTabIndex = selectedTabIndex;
+	}
 }

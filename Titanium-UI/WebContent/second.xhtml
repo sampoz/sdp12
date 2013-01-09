@@ -75,7 +75,8 @@
 </style>
 
 		
-		<ace:tabSet id="sampleTabSet" clientSide="false">
+		<ace:tabSet id="sampleTabSet" clientSide="false"
+				selectedIndex="#{schedulingDataManager.selectedTabIndex}">
 
 			<ace:tabPane id="login_tab" label="Login"
 				rendered="#{sessionBean.user.authenticated eq false}">
@@ -598,7 +599,8 @@
                         <h:panelGroup id="pnlGrp">
                             <h3><h:outputText value="#{tab.name}"/></h3>
                             <h:outputText id="spn" value="#{tab.name}"/>
-                          
+                          		<ice:commandButton id="close_tab_button" value="Close tab"
+							actionListener="#{schedulingDataManager.removeCurrent(schedulingDataManager.selectedTabIndex)}"/>
                         </h:panelGroup>
                     </f:subview>
                 </ace:tabPane>
