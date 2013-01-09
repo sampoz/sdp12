@@ -34,9 +34,10 @@ public class SessionBean {
 		MODE_STYLES.put(3, "removed");
 	}
 	
-	// Hard coded disabled state. Better options?
+	// Hard coded states. Better options?
 	public static final int ENABLED = 1;
 	public static final int DISABLED = 2;
+	public static final int REMOVED = 3;
 	
 	private DatabaseConnector connector = new DatabaseConnector();
 

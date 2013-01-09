@@ -8,7 +8,7 @@
 	xmlns:ace="http://www.icefaces.org/icefaces/components"
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 <h:head>
-	<title>ICEfaces 3</title>
+	<title>Titanium UI</title>
 	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
 </h:head>
 <h:body>
@@ -112,6 +112,19 @@
 							icon="ui-icon ui-icon-play"
 							rendered="#{sessionBean.user.runRights}"
 							actionListener="#{schedulingDataManager.listSelected}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+						
+						<ace:menuItem id="resume_selected" value="Resume Selected"
+							actionListener="#{schedulingDataManager.resumeSelected}"
+							icon="ui-icon ui-icon-circle-triangle-e"
+							rendered="#{sessionBean.user.editRights}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
+						<ace:menuItem id="hold_selected" value="Hold Selected"
+							actionListener="#{schedulingDataManager.holdSelected}"
+							icon="ui-icon ui-icon-circle-close"
+							rendered="#{sessionBean.user.editRights}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
 						
