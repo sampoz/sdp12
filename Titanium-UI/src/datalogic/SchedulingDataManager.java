@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.component.dialog.Dialog;
@@ -57,28 +58,33 @@ public class SchedulingDataManager {
 			"dd-MM-yyyy HH:mm:ss");
 
 	private HttpConnector httpConnector = new HttpConnector();
-
+	
 	private boolean responseDialogVisible;
 	private String runReport;
-
+	
 	private String schedulingList;
+
+	private int counter = 0;
+
+	private List<Scheduling> tabs = new ArrayList<Scheduling>();;
+
+
 
 	@PostConstruct
 	private void init() {
 		this.builder = new SchedulingBuilder();
 	}
 
-	public void listSelected() {
-		if (stateMap.getSelected().isEmpty()) {
+	public void listSelected(){
+		if(stateMap.getSelected().isEmpty()){
 			this.schedulingList = "None";
 			return;
 		}
 		this.schedulingList = "";
-		for (Scheduling s : (List<Scheduling>) stateMap.getSelected()) {
+		for (Scheduling s : (List<Scheduling>)stateMap.getSelected()) {
 			this.schedulingList += s.getId() + "<br/>";
 		}
 	}
-
 	/**
 	 * Method to be called from the UI when a new {@link Scheduling} is to be
 	 * constructed from the {@link SchedulingBuilder}
@@ -99,7 +105,8 @@ public class SchedulingDataManager {
 			if (this.session.getConnector().addScheduling(s)) {
 				this.schedulings.add(s);
 				this.builder = new SchedulingBuilder();
-			}
+			} 
+				
 
 			/*
 			 * If there is some text in addComment, we'll add it straight away.
@@ -145,7 +152,7 @@ public class SchedulingDataManager {
 
 		// Retrieve the Scheduling corresponding to the row
 		Scheduling s = (Scheduling) e.getRowData();
-
+		
 		if (e.isExpanded()) {
 
 			/*
@@ -162,14 +169,14 @@ public class SchedulingDataManager {
 			 */
 			this.commentLists.put(s.getId(), this.session.getConnector()
 					.getLastComments(s.getId()));
-
+		
 			/*
 			 * Create a new empty comment, set its SchedulingID to match this
 			 * Scheduling and add it to the comment buffer
 			 */
 			Comment c = new Comment();
 			this.editCommentList.put(s.getId(), c);
-
+			
 			/*
 			 * Since we just expanded a new row, we want to clear all error
 			 * messages that would be shown in it
@@ -184,7 +191,7 @@ public class SchedulingDataManager {
 			 */
 			this.commentLists.remove(s.getId());
 			this.editBuffer.remove(s.getId());
-
+			
 		}
 	}
 
@@ -256,17 +263,16 @@ public class SchedulingDataManager {
 	 */
 	public void submitComment(int id) {
 		Comment c = this.editCommentList.get(id);
-
+		
 		c.setCreationDate(DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(id);
 
 		// If the database connector returns true from the persisting of the
 		// comment we can safely add it to the table
 		if (this.session.getConnector().addComment(c)) {
-			this.editCommentList.put(id, new Comment());
+			this.editCommentList.put(id,new Comment());
 			this.commentLists.get(id).add(c);
-			this.commentLists.put(id, this.session.getConnector()
-					.getLastComments(id));
+			this.commentLists.put(id, this.session.getConnector().getLastComments(id));
 		}
 	}
 
@@ -308,53 +314,24 @@ public class SchedulingDataManager {
 
 	// TODO Comments
 	public void runSelectedSchedules() {
-		String runReport = stateMap.getSelected().size()
-				+ " schedulings were run.\n";
+		String runReport = stateMap.getSelected().size() + " schedulings were run.\n";
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
-			runReport += "Response for scheduling "
-					+ s.getId()
-					+ " was "
-					+ httpConnector.runId(
-							SessionBean.COMPOSITES.get(s.getServiceID())
-									.getDestinationURL(), s.getId()) + ".\n";
+			runReport += "Response for scheduling " + s.getId() + " was "+ httpConnector.runId(SessionBean.COMPOSITES.get(s.getServiceID()).getDestinationURL(), s.getId()) + ".\n";
 		}
 		this.runReport = runReport;
 		this.responseDialogVisible = true;
 	}
 	
-	//TODO comments
-	public void resumeSelected() {
-		
-		for (Object rowData : stateMap.getSelected()) {
-			Scheduling s = (Scheduling) rowData;
-			
-			if(s.getStatusID() != SessionBean.REMOVED){
-				s.setStatusID(SessionBean.ENABLED);
-
-			// this.session.getConnector().updateScheduling(s);
-			System.out.println("HttpConnector returned: "
-					+ httpConnector.editId(SessionBean.COMPOSITES.get(s.getServiceID())
-							.getDestinationURL(), s.getId()));
-			}
-		}
-	}
 	
-	//TODO comments
-	public void holdSelected() {
+	public void addTab(Scheduling s) {
+	    int i = counter ++;
+	    tabs.add(s);
+	}
 
-		for (Object rowData : stateMap.getSelected()) {
-			Scheduling s = (Scheduling) rowData;
-			
-			if(s.getStatusID() != SessionBean.REMOVED){
-				s.setStatusID(SessionBean.DISABLED);
-
-			// this.session.getConnector().updateScheduling(s);
-			System.out.println("HttpConnector returned: "
-					+ httpConnector.editId(SessionBean.COMPOSITES.get(s.getServiceID())
-							.getDestinationURL(), s.getId()));
-			}
-		}
+	public void removeCurrent(Scheduling s){
+	    //TODO implement
+	 
 	}
 
 	/**
@@ -518,6 +495,13 @@ public class SchedulingDataManager {
 
 	public void setSchedulingList(String schedulingList) {
 		this.schedulingList = schedulingList;
+	}
+	public List getTabs() {
+		return tabs;
+	}
+
+	public void setTabs(List tabs) {
+		this.tabs = tabs;
 	}
 
 }
