@@ -76,7 +76,7 @@
 
 		
 		<ace:tabSet id="sampleTabSet" clientSide="false"
-				selectedIndex="#{schedulingDataManager.selectedTabIndex}">
+				selectedIndex="#{schedulingDataManager.selectedTabIndex}" binding="#{schedulingDataManager.tabSet}">
 
 			<ace:tabPane id="login_tab" label="Login"
 				rendered="#{sessionBean.user.authenticated eq false}">
