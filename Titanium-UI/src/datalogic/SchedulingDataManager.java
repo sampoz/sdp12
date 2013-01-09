@@ -323,6 +323,40 @@ public class SchedulingDataManager {
 		this.responseDialogVisible = true;
 	}
 	
+	//TODO comments
+	public void resumeSelected() {
+		
+		for (Object rowData : stateMap.getSelected()) {
+			Scheduling s = (Scheduling) rowData;
+			
+			if(s.getStatusID() != SessionBean.REMOVED){
+				s.setStatusID(SessionBean.ENABLED);
+
+			// this.session.getConnector().updateScheduling(s);
+			System.out.println("HttpConnector returned: "
+					+ httpConnector.editId(SessionBean.COMPOSITES.get(s.getServiceID())
+							.getDestinationURL(), s.getId()));
+			}
+		}
+	}
+	
+	//TODO comments
+	public void holdSelected() {
+
+		for (Object rowData : stateMap.getSelected()) {
+			Scheduling s = (Scheduling) rowData;
+			
+			if(s.getStatusID() != SessionBean.REMOVED){
+				s.setStatusID(SessionBean.DISABLED);
+
+			// this.session.getConnector().updateScheduling(s);
+			System.out.println("HttpConnector returned: "
+					+ httpConnector.editId(SessionBean.COMPOSITES.get(s.getServiceID())
+							.getDestinationURL(), s.getId()));
+			}
+		}
+	}
+
 	
 	public void addTab(Scheduling s) {
 	    int i = counter ++;
