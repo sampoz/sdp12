@@ -24,6 +24,7 @@ import org.icefaces.ace.model.table.RowStateMap;
 import entities.Backend;
 import entities.Comment;
 import entities.Composite;
+import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
 
@@ -33,6 +34,9 @@ public class SchedulingDataManager {
 
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
+
+	@ManagedProperty(value = "#{dataMaster}")
+	private DataMaster master;
 
 	private SchedulingBuilder builder;
 	private Comment addComment = new Comment();
@@ -67,7 +71,7 @@ public class SchedulingDataManager {
 
 	private int counter = 0;
 
-	private List<Scheduling> tabs = new ArrayList<Scheduling>();;
+	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();;
 
 	private int selectedTabIndex;
 
@@ -279,6 +283,21 @@ public class SchedulingDataManager {
 					.getLastComments(id));
 		}
 	}
+	
+	public void submitComment(SchedulingTab t) {
+		Comment c = t.getAddComment();
+
+		c.setCreationDate(DATE_FORMAT.format(new Date()));
+		c.setSchedulingID(t.getScheduling().getId());
+
+		// If the database connector returns true from the persisting of the
+		// comment we can safely add it to the table
+		if (this.session.getConnector().addComment(c)) {
+			t.setAddComment(new Comment());
+			t.setComments(this.session.getConnector()
+					.getLastComments(t.getScheduling().getId()));
+		}
+	}
 
 	/**
 	 * Method to be called from the UI when Select All button is pressed and all
@@ -370,19 +389,42 @@ public class SchedulingDataManager {
 	}
 
 	public void addTab(Scheduling s) {
-		if (!tabs.contains(s)) {
-			counter++;
-			tabs.add(s);
+		boolean contains = false;
+		int index = 0;
+		for (SchedulingTab tab : this.tabs) {
+			if (tab.getScheduling().equals(s)) {
+				contains = true;
+				index = this.tabs.indexOf(tab);
+				break;
+			}
 		}
-		this.tabSet.setSelectedIndex(tabs.indexOf(s) + 3);
+
+		if (!contains) {
+			counter++;
+			SchedulingTab t = new SchedulingTab();
+			t.setScheduling(s);
+
+			List<Instance> temp = new ArrayList<Instance>();
+			for (Instance i : this.master.getInstances()) {
+				if (s.getName().substring(0, 3).equals(i.getInstance())) {
+					temp.add(i);
+				}
+			}
+			t.setComments(this.session.getConnector()
+					.getLastComments(s.getId()));
+			t.setInstances(temp);
+			tabs.add(t);
+			index = tabs.size() - 1;
+		}
+
+		this.tabSet.setSelectedIndex(index + 3);
 	}
 
-	public void removeCurrent(int index) {
-		tabs.remove(index - 3);
-		if (selectedTabIndex >= (tabs.size() + 3)) {
-			selectedTabIndex = 0;
-		}
-
+	public void removeCurrent(SchedulingTab t) {
+		int index = this.tabs.indexOf(t) - 1;
+		
+		tabs.remove(t);
+		this.tabSet.setSelectedIndex(index + 3);
 	}
 
 	/**
@@ -570,5 +612,13 @@ public class SchedulingDataManager {
 
 	public void setTabSet(TabSet tabSet) {
 		this.tabSet = tabSet;
+	}
+
+	public DataMaster getMaster() {
+		return master;
+	}
+
+	public void setMaster(DataMaster master) {
+		this.master = master;
 	}
 }

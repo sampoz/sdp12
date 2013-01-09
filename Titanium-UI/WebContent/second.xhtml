@@ -594,14 +594,33 @@
 			</ace:tabPane>
 			
 			 <c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}" var="tab">
-                <ace:tabPane label="#{tab.name}" id="tab_#{tab.id}">
-                    <f:subview id="sub_#{tab.id}">
+                <ace:tabPane label="#{tab.scheduling.id}" id="tab_#{tab.scheduling.id}">
+                    <f:subview id="sub_#{tab.scheduling.id}">
                         <h:panelGroup id="pnlGrp">
-                            <h3><h:outputText value="#{tab.name}"/></h3>
-                            <h:outputText id="spn" value="#{tab.name}"/>
+                            <h3><h:outputText value="#{tab.scheduling.name}"/></h3>
+                            <h:outputText id="spn" value="#{tab.scheduling.name}"/>
                           		<ice:commandButton id="close_tab_button" value="Close tab"
-							actionListener="#{schedulingDataManager.removeCurrent(schedulingDataManager.selectedTabIndex)}"/>
+							actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>
                         </h:panelGroup>
+                        
+                        <ace:dataTable id="tab_comment_table"
+							value="#{tab.comments}"
+							var="comment" paginator="false" rows="5"  emptyMessage="-- No Comments --">
+							<ace:column id="tab_creation_date" headerText="Date" >
+							
+								<ice:outputText value="#{comment.creationDate}" />
+							</ace:column>
+							<ace:column id="tab_text" headerText="Text" >
+								<h:outputText value="#{comment.text}" />	
+							</ace:column>
+						</ace:dataTable>
+						<br/>
+						<ace:textEntry id="tab_edit_comment_input" label="Comment: " labelPosition="left"
+							value="#{tab.addComment.text}"
+							rendered="#{sessionBean.user.editRights}" style="margin-right: 10px;"/>
+						<ice:commandButton id="tab_sumbit_comment" value="Submit"
+							actionListener="#{schedulingDataManager.submitComment(tab)}"
+							rendered="#{sessionBean.user.editRights}" />
                     </f:subview>
                 </ace:tabPane>
             </c:forEach>
