@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.component.dialog.Dialog;
@@ -62,6 +63,12 @@ public class SchedulingDataManager {
 	private String runReport;
 	
 	private String schedulingList;
+
+	private int counter = 0;
+
+	private List<Scheduling> tabs = new ArrayList<Scheduling>();;
+
+
 
 	@PostConstruct
 	private void init() {
@@ -145,7 +152,7 @@ public class SchedulingDataManager {
 
 		// Retrieve the Scheduling corresponding to the row
 		Scheduling s = (Scheduling) e.getRowData();
-
+		
 		if (e.isExpanded()) {
 
 			/*
@@ -316,6 +323,16 @@ public class SchedulingDataManager {
 		this.responseDialogVisible = true;
 	}
 	
+	
+	public void addTab(Scheduling s) {
+	    int i = counter ++;
+	    tabs.add(s);
+	}
+
+	public void removeCurrent(Scheduling s){
+	    //TODO implement
+	 
+	}
 
 	/**
 	 * Method for refreshing the contents of the data table.
@@ -478,6 +495,13 @@ public class SchedulingDataManager {
 
 	public void setSchedulingList(String schedulingList) {
 		this.schedulingList = schedulingList;
+	}
+	public List getTabs() {
+		return tabs;
+	}
+
+	public void setTabs(List tabs) {
+		this.tabs = tabs;
 	}
 
 }
