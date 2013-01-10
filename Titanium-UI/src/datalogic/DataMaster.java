@@ -1,6 +1,7 @@
 package datalogic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,8 @@ import javax.faces.bean.ManagedProperty;
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowStateMap;
+
+import antlr.debug.NewLineEvent;
 
 import entities.Backend;
 import entities.Composite;
@@ -32,7 +35,7 @@ public class DataMaster implements Serializable {
 
 	private DataTable i_dataTable;
 
-	private List<Instance> instances;
+	private List<Instance> instances = new ArrayList<Instance>();
 
 	private RowStateMap i_stateMap = new RowStateMap();
 

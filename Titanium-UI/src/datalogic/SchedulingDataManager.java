@@ -12,10 +12,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.component.dialog.Dialog;
+import org.icefaces.ace.component.tabset.TabPane;
 import org.icefaces.ace.component.tabset.TabSet;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowState;
@@ -100,7 +102,7 @@ public class SchedulingDataManager {
 	 * constructed from the {@link SchedulingBuilder}
 	 */
 	public void addScheduling() {
-
+		
 		try {
 
 			/*
@@ -458,10 +460,34 @@ public class SchedulingDataManager {
 	}
 
 	public void removeCurrent(SchedulingTab t) {
-		
+		this.tabSet.setSelectedIndex(0);
+		TabPane pane = (TabPane) this.tabSet.getChildren().get(tabs.indexOf(t) + STATIC_TABS + 1);
+		pane.setInView(false);
 		tabs.remove(t);
-		this.tabSet.setSelectedIndex(tabs.size() - 1 + STATIC_TABS);
 	}
+	
+	public void removeAllTabs() {
+		this.tabSet.setSelectedIndex(0);
+		List<UIComponent> panes =  this.tabSet.getChildren();
+		for (UIComponent pane : panes) {
+			pane.setInView(false);
+		}
+		tabs.clear();
+	}
+	
+	public void removeOtherTabs(SchedulingTab t) {
+		this.tabSet.setSelectedIndex(0);
+		List<UIComponent> panes =  this.tabSet.getChildren();
+		for (UIComponent pane : panes) {
+			if(panes.indexOf(pane) > STATIC_TABS - 1 && panes.indexOf(pane) != tabs.indexOf(t) + STATIC_TABS) {
+				pane.setInView(false);
+			}
+		}
+		tabs.clear();
+		tabs.add(t);
+		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
+	}
+
 
 	/**
 	 * Method for refreshing the contents of the data table.

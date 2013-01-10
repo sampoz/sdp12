@@ -344,7 +344,11 @@
 						<h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
-
+					<ace:column id="details" headerText="Details">
+						<ice:commandButton id="details_button" value="Open in new tab"
+							image="resources/images/openinnewtabicon.jpg" 
+							actionListener="#{schedulingDataManager.addTab(schedule)}"/>
+					</ace:column>
 
 					<ace:panelExpansion>
 						<ace:panel id="edit_panel" header="Edit" >
@@ -599,12 +603,15 @@
 
 			</ace:tabPane>
 			<ace:tabPane id="divider" label=""
-				disabled="true" />
+				disabled="true" rendered="#{sessionBean.user.authenticated}"/>
 			 <c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}" var="tab">
                 <ace:tabPane label="#{tab.scheduling.id}" id="tab_#{tab.scheduling.id}">
                     <f:subview id="sub_#{tab.scheduling.id}">
-                          		<ice:commandButton id="close_tab_button" value="Close tab"
-							actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>
+                          		<ace:menuButton id="close_tab_button" value="Close">
+								<ace:menuItem value="This Tab" actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>
+								<ace:menuItem value="All Tabs" actionListener="#{schedulingDataManager.removeAllTabs}"/>
+								<ace:menuItem value="Other Tabs" actionListener="#{schedulingDataManager.removeOtherTabs(tab)}"/>
+							</ace:menuButton>
                 <ace:panel id="panel" header="Details - #{tab.scheduling.id}">
                 	<h:panelGrid columns="2">
 	                	<ice:outputText value="Name: " styleClass="bold"/>
