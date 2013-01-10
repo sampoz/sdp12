@@ -174,9 +174,6 @@ public class Scheduling implements Serializable  {
 		this.modeLabel = modeLabel;
 	}
 
-
-
-
 	public String getSourceName() {
 		try{
 

@@ -62,6 +62,8 @@ public class SchedulingDataManager {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"dd-MM-yyyy HH:mm:ss");
 
+	private static final int STATIC_TABS = 4;
+
 	private HttpConnector httpConnector = new HttpConnector();
 
 	private boolean responseDialogVisible;
@@ -248,6 +250,49 @@ public class SchedulingDataManager {
 		}
 
 	}
+	
+	public void confirmEdit(SchedulingTab t) {
+
+		try {
+
+			/*
+			 * Retrieve the SchedulingBuilder corresponding to the id of
+			 * Scheduling passed as a parameter from the UI and build it.
+			 * Validation is carried out normally within the builder
+			 */
+			Scheduling n = t.getBuilder().build();
+
+			/*
+			 * In order to refresh the DataTable we need to "brute force" the
+			 * change by removing the unedited Scheduling and adding the newly
+			 * built one
+			 */
+			this.schedulings.remove(t.getScheduling());
+			this.schedulings.add(n);
+
+			// this.session.getConnector().updateScheduling(n);
+
+			// If we've gotten this far there were no errors and we can hide all
+			// error messages
+			showEditError = false;
+
+			// Http request, consult Hanzki for any details
+			System.out.println("HttpConnector returned: "
+					+ httpConnector.editId(
+							SessionBean.COMPOSITES.get(t.getScheduling().getServiceID())
+									.getDestinationURL(), t.getScheduling().getId()));
+		} catch (IllegalOperationException e) {
+
+			/*
+			 * An error was thrown during the validation of the edited
+			 * Scheduling: we set the error message to be shown in Edit section
+			 * and set the visibility to true
+			 */
+			editErrorMessage = e.getMessage();
+			showEditError = true;
+		}
+
+	}
 
 	/**
 	 * Method to be called from the UI when the fields in the Edit view are to
@@ -389,21 +434,12 @@ public class SchedulingDataManager {
 	}
 
 	public void addTab(Scheduling s) {
-		boolean contains = false;
-		int index = 0;
-		for (SchedulingTab tab : this.tabs) {
-			if (tab.getScheduling().equals(s)) {
-				contains = true;
-				index = this.tabs.indexOf(tab);
-				break;
-			}
-		}
+		SchedulingTab t = new SchedulingTab();
+		t.setScheduling(s);
 
-		if (!contains) {
+		if (!tabs.contains(t)) {
 			counter++;
-			SchedulingTab t = new SchedulingTab();
-			t.setScheduling(s);
-
+			
 			List<Instance> temp = new ArrayList<Instance>();
 			for (Instance i : this.master.getInstances()) {
 
@@ -416,16 +452,15 @@ public class SchedulingDataManager {
 					.getLastComments(s.getId()));
 			t.setInstances(temp);
 			tabs.add(t);
-			index = tabs.size() - 1;
 		}
 
-		this.tabSet.setSelectedIndex(index + 3);
+		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
 	public void removeCurrent(SchedulingTab t) {
 		
 		tabs.remove(t);
-		this.tabSet.setSelectedIndex(tabs.size() - 1 + 3);
+		this.tabSet.setSelectedIndex(tabs.size() - 1 + STATIC_TABS);
 	}
 
 	/**

@@ -69,9 +69,15 @@
 	margin-left: 10px;
 	margin-right: 10px;
 }
+
 .tabbutton {
 	float: right;
 }
+
+.bold{
+	font-weight:bold;
+}
+
 </style>
 
 		
@@ -592,18 +598,103 @@
 				rendered="#{sessionBean.user.authenticated}">
 
 			</ace:tabPane>
-			
+			<ace:tabPane id="divider" label=""
+				disabled="true" />
 			 <c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}" var="tab">
                 <ace:tabPane label="#{tab.scheduling.id}" id="tab_#{tab.scheduling.id}">
                     <f:subview id="sub_#{tab.scheduling.id}">
-                        <h:panelGroup id="pnlGrp">
-                            <h3><h:outputText value="#{tab.scheduling.name}"/></h3>
-                            <h:outputText id="spn" value="#{tab.scheduling.name}"/>
                           		<ice:commandButton id="close_tab_button" value="Close tab"
 							actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>
-                        </h:panelGroup>
+                <ace:panel id="panel" header="Details - #{tab.scheduling.id}">
+                	<h:panelGrid columns="2">
+	                	<ice:outputText value="Name: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.name}"/>
+	                	<ice:outputText value="Description: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.description}"/>
+	                	<ice:outputText value="CRON: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.cron}"/>
+	                	<ice:outputText value="Java Agent Pollable: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.javaAgentPollable}"/>
+	                	<ice:outputText value="Bank Holiday Only: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.bankHolidayOnly}"/>
+	                	<ice:outputText value="Source: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.sourceName}"/>
+	                	<ice:outputText value="Target: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.targetName}"/>
+	                	<ice:outputText value="Mode: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.modeValue}"/>
+	                	<ice:outputText value="Composite: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.compositeText}"/>
+                	</h:panelGrid>
+                </ace:panel>
                 <ace:accordion id="tab_accordion" collapsible="true" autoHeight="false"
 					activeIndex="-1" rendered="#{sessionBean.user.addRights}">
+					
+					<ace:accordionPane id="tab_edit_scheduling" title="Edit">
+
+						<h:panelGrid id="edit_grid" columns="6">
+							<h:outputLabel id="tab_name_label" for="tab_name_input" value="Name: " />
+							<h:inputText id="tab_name_input"
+								value="#{tab.builder.name}" />
+							<h:outputLabel id="tab_desc_label" for="tab_desc_input"
+								value="Description: " />
+							<h:inputText id="tab_desc_input"
+								value="#{tab.builder.description}" />
+							<h:outputLabel id="tab_cron_label" for="tab_cron_input" value="CRON: " />
+							<h:inputText id="tab_cron_input"
+								value="#{tab.builder.cron}" />
+							<h:outputLabel id="tab_source_label" for="tab_source_input"
+								value="Source: " />
+							<h:selectOneMenu id="tab_source_input"
+								value="#{tab.builder.source}">
+								<f:selectItems value="#{schedulingDataManager.backends}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
+							<h:outputLabel id="tab_target_label" for="tab_target_input"
+								value="Target: " />
+							<h:selectOneMenu id="tab_target_input"
+								value="#{tab.builder.target}">
+								<f:selectItems value="#{schedulingDataManager.backends}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
+							<h:outputLabel id="tab_mode_label" for="tab_mode_input" value="Mode: " />
+							<h:selectOneMenu id="tab_mode_input"
+								value="#{tab.builder.mode}">
+								<f:selectItems value="#{schedulingDataManager.modes}" />
+								<f:converter converterId="entityConverter" />
+							</h:selectOneMenu>
+							<h:outputLabel id="tab_bank_label" for="tab_bank_input" value="Holiday: " />
+							<h:selectBooleanCheckbox id="tab_bank_input"
+								value="#{tab.builder.bankHolidayOnly}" />
+
+							<h:outputLabel id="tab_java_label" for="tab_java_input" value="Pollable: " />
+							<h:selectBooleanCheckbox id="tab_java_input"
+								value="#{tab.builder.javaAgentPollable}"
+								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+						<h:outputLabel id="tab_composite_label" for="tab_composite_input"
+								value="Composite: " />
+							<ice:selectOneMenu id="tab_composite_input"
+								value="#{tab.builder.composite}"
+								partialSubmit="true">
+								<f:selectItems value="#{schedulingDataManager.composites}" />
+								<f:converter converterId="entityConverter" />
+							</ice:selectOneMenu>
+						</h:panelGrid>
+						<ice:commandButton id="tab_confirm_edit" value="Confirm"
+							actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
+						<ice:commandButton id="tab_reset_edit" value="Reset"
+							actionListener="#{tab.reset}" />
+						<pre>
+							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
+								rendered="#{schedulingDataManager.showEditError}"
+								styleClass="red" />
+						</pre>
+						<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
+							autoCenter="true" blockUI="@source" />
+
+					</ace:accordionPane>
 					<ace:accordionPane id="tab_instances_acc" title="Instances">
                 <ace:dataTable id="tab_instance_table" value="#{tab.instances}"
 					var="instance" paginator="false" rows="5" emptyMessage="-- No Instances --">
@@ -697,7 +788,7 @@
 					</ace:column>
 
 				</ace:dataTable>
-                        
+                        	
                   </ace:accordionPane>
                         <ace:accordionPane id="tab_comments_acc" title="Comments">
                         <ace:dataTable id="tab_comment_table"
@@ -723,6 +814,7 @@
                     </f:subview>
                    
                 </ace:tabPane>
+                
             </c:forEach>
 
 		</ace:tabSet>
