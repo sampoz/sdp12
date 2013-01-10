@@ -263,7 +263,7 @@
 					paginator="true" paginatorPosition="bottom" rows="10"
 					stateMap="#{schedulingDataManager.stateMap}"
 					selectionMode="multiple" resizableColumns="true"
-					binding="#{schedulingDataManager.dataTable}">
+					binding="#{schedulingDataManager.dataTable}" emptyMessage="-- No Schedulings Available --">
 					<ace:ajax event="select" execute="@this" />
 					<ace:column id="edit" headerText="Edit">
 						<ace:expansionToggler
@@ -602,7 +602,104 @@
                           		<ice:commandButton id="close_tab_button" value="Close tab"
 							actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>
                         </h:panelGroup>
+                <ace:accordion id="tab_accordion" collapsible="true" autoHeight="false"
+					activeIndex="-1" rendered="#{sessionBean.user.addRights}">
+					<ace:accordionPane id="tab_instances_acc" title="Instances">
+                <ace:dataTable id="tab_instance_table" value="#{tab.instances}"
+					var="instance" paginator="false" rows="5" emptyMessage="-- No Instances --">
+
+					<ace:column id="tab_run_state" headerText="Was run"
+						sortBy="#{instance.statusID}">
+						<h:panelGrid id="tab_run_state_Id" columns="1">
+							<h:graphicImage id="correct_image" library="images"
+								name="correcticon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 1}" />
+							<h:graphicImage id="skipped_image" library="images"
+								name="skippedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID gt 1}" />
+						</h:panelGrid>
+						<ace:tooltip id="tooltip_skipped_image" for="skipped_image"
+							value="This instance was not run. Expand view for more information"
+							showDelay="100" hideDelay="200">
+						</ace:tooltip>
+						<ace:tooltip id="tooltip_correct_image" for="correct_image"
+							value="This instance was run normally" showDelay="100"
+							hideDelay="200">
+						</ace:tooltip>
+						<ace:expansionToggler/>
+					</ace:column>
+					<ace:panelExpansion>
+						<ace:panel styleClass="instanceleft">
+							<h:panelGrid id="instanceGrid" columns="4">
+
+								<h:outputLabel value="Error Message:" />
+								<h:outputText id="tab_instance_message"
+									value="#{instance.message}"
+									styleClass="instanceleft" />
+
+								<h:outputLabel value="Composite: " />
+								<h:outputText id="tab_instance_composite"
+									value="#{instance.process}"
+									styleClass="instanceleft" />
+
+								<h:outputLabel value="Input files:" />
+								<h:outputText id="tab_input_files"
+									value="#{instance.inputFileName}"
+									styleClass="instanceleft" />
+
+								<h:outputLabel value="Output files:" />
+								<h:outputText id="tab_output_files"
+									value="#{instance.outputFileName}"
+									styleClass="instanceleft" />
+
+							</h:panelGrid>
+						</ace:panel>
+					</ace:panelExpansion>
+					<ace:column id="tab_instance_name" headerText="Name" sortBy="#{instance.name}"
+						filterBy="#{instance.name}" filterMatchMode="contains">
+						<h:outputText id="tab_nameCell" value="#{instance.name}" />
+					</ace:column>
+
+					<ace:column id="tab_instance_statusID" headerText="StatusID"
+						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
+						filterMatchMode="contains">
+						<h:panelGrid>
+							<h:outputText id="tab_statusIDCell" value="#{instance.statusID}"
+								styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+					</ace:column>
+
+					<ace:column id="tab_startDate" headerText="StartDate"
+						sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
+						filterMatchMode="contains">
+						<h:outputText id="tab_startDateCell" value="#{instance.startDate}" />
+					</ace:column>
+
+					<ace:column id="tab_endDate" headerText="EndDate"
+						sortBy="#{instance.endDate}" filterBy="#{instance.endDate}"
+						filterMatchMode="contains">
+						<h:outputText id="tab_endDateCell" value="#{instance.endDate}" />
+					</ace:column>
+
+					<ace:column id="tab_inputFileAmmount" headerText="InputFiles"
+						sortBy="#{instance.inputFileAmmount}"
+						filterBy="#{instance.inputFileAmmount}" filterMatchMode="contains">
+						<h:outputText id="tab_inputFileAmmountCell"
+							value="#{instance.inputFileAmmount}" />
+					</ace:column>
+
+					<ace:column id="tab_outputFileAmmount" headerText="OutputFiles"
+						sortBy="#{instance.outputFileAmmount}"
+						filterBy="#{instance.outputFileAmmount}"
+						filterMatchMode="contains">
+						<h:outputText id="tab_outputFileAmmountCell"
+							value="#{instance.outputFileAmmount}" />
+					</ace:column>
+
+				</ace:dataTable>
                         
+                  </ace:accordionPane>
+                        <ace:accordionPane id="tab_comments_acc" title="Comments">
                         <ace:dataTable id="tab_comment_table"
 							value="#{tab.comments}"
 							var="comment" paginator="false" rows="5"  emptyMessage="-- No Comments --">
@@ -621,7 +718,10 @@
 						<ice:commandButton id="tab_sumbit_comment" value="Submit"
 							actionListener="#{schedulingDataManager.submitComment(tab)}"
 							rendered="#{sessionBean.user.editRights}" />
+							</ace:accordionPane>
+						</ace:accordion>
                     </f:subview>
+                   
                 </ace:tabPane>
             </c:forEach>
 

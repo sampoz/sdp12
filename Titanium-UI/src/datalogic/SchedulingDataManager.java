@@ -406,10 +406,12 @@ public class SchedulingDataManager {
 
 			List<Instance> temp = new ArrayList<Instance>();
 			for (Instance i : this.master.getInstances()) {
-				if (s.getName().substring(0, 3).equals(i.getInstance())) {
+
+				if (i.getProcess() != null  && s.getName().substring(0, 3).equals(i.getProcess().substring(0,3))) {
 					temp.add(i);
 				}
 			}
+			
 			t.setComments(this.session.getConnector()
 					.getLastComments(s.getId()));
 			t.setInstances(temp);
@@ -421,10 +423,9 @@ public class SchedulingDataManager {
 	}
 
 	public void removeCurrent(SchedulingTab t) {
-		int index = this.tabs.indexOf(t) - 1;
 		
 		tabs.remove(t);
-		this.tabSet.setSelectedIndex(index + 3);
+		this.tabSet.setSelectedIndex(tabs.size() - 1 + 3);
 	}
 
 	/**
