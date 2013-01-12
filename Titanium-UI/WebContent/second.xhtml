@@ -78,11 +78,41 @@
 	font-weight:bold;
 }
 
+.Skipped{
+	color: grey;
+	font-weight: bolder;
+}
+
+.Failed{
+	color: red;
+	font-weight: bolder;
+}
+
+.ManualHandling{
+	color: yellow;
+	font-wieght:bolder;
+}
+
+.Running{
+	color: blue;
+	font-wieght:bolder;
+}
+
+.Started{
+	color: blue;
+	font-wieght:bolder;
+}
+
+.Completed{
+	color: green;
+	font-weight:bolder;
+}
+
 </style>
 
 		
 		<ace:tabSet id="sampleTabSet" clientSide="false"
-				selectedIndex="#{schedulingDataManager.selectedTabIndex}" binding="#{schedulingDataManager.tabSet}">
+				selectedIndex="#{schedulingDataManager.selectedTabIndex}" binding="#{schedulingDataManager.tabSet}" style="padding: 0px;">
 
 			<ace:tabPane id="login_tab" label="Login"
 				rendered="#{sessionBean.user.authenticated eq false}">
@@ -558,13 +588,16 @@
 						<h:outputText id="i_nameCell" value="#{instance.name}" />
 					</ace:column>
 
-					<ace:column id="i_statusID" headerText="StatusID"
-						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
+					<ace:column id="i_status" headerText="Status"
+						sortBy="#{instance.statusValue}" filterBy="#{instance.statusValue}"
 						filterMatchMode="contains">
-						<h:panelGrid>
-							<h:outputText id="i_statusIDCell" value="#{instance.statusID}"
-								styleClass="tooltipTargetStyle" />
-						</h:panelGrid>
+						<ice:panelGroup style="width:100px;">
+							<f:facet name="status">
+								Status
+							</f:facet>
+						</ice:panelGroup>
+							<h:outputText id="i_statusCell" value="#{instance.statusValue}"
+								styleClass="#{instance.statusValue}"/>
 					</ace:column>
 
 					<ace:column id="i_startDate" headerText="StartDate"
@@ -605,7 +638,7 @@
 			<ace:tabPane id="divider" label=""
 				disabled="true" rendered="#{sessionBean.user.authenticated}"/>
 			 <c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}" var="tab">
-                <ace:tabPane label="#{tab.scheduling.id}" id="tab_#{tab.scheduling.id}">
+                <ace:tabPane label="#{tab.name}" id="tab_#{tab.scheduling.id}">
                     <f:subview id="sub_#{tab.scheduling.id}">
                           		<ace:menuButton id="close_tab_button" value="Close">
 								<ace:menuItem value="This Tab" actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>

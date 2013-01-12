@@ -13,6 +13,7 @@ import entities.Composite;
 import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
+import entities.Status;
 
 public class DatabaseConnector {
 	
@@ -121,6 +122,15 @@ public class DatabaseConnector {
 		this.manager.persist(c);
 		this.manager.getTransaction().commit();
 		return true;
+	}
+
+	public List<Status> getAllStatuses() {
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from Status");
+		List<Status> result = q.getResultList();
+		this.manager.getTransaction().commit();
+		return result;
 	}
 	
 	

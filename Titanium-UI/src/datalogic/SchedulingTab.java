@@ -9,6 +9,8 @@ import entities.Scheduling;
 
 public class SchedulingTab {
 	
+	private String name;
+	
 	private Scheduling scheduling;
 	
 	private String modeValue;
@@ -37,6 +39,7 @@ public class SchedulingTab {
 	
 	public void setScheduling(Scheduling scheduling) {
 		this.scheduling = scheduling;
+		this.name = scheduling.getName().substring(0,4);
 		this.builder = new SchedulingBuilder(scheduling);
 		this.modeValue = SessionBean.MODES.get(this.scheduling.getStatusID()).getValue();
 		if(this.scheduling.getSource() != null)
@@ -44,6 +47,7 @@ public class SchedulingTab {
 		if(this.scheduling.getTarget() != null)
 			this.targetName = SessionBean.BACKENDS.get(this.scheduling.getTarget()).getBackend();
 		this.compositeText = SessionBean.COMPOSITES.get(this.scheduling.getServiceID()).getOutputText();
+		
 	}
 	
 	public List<Instance> getInstances() {
@@ -108,6 +112,14 @@ public class SchedulingTab {
 
 	public void setCompositeText(String compositeText) {
 		this.compositeText = compositeText;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override

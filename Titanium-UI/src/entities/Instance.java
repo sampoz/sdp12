@@ -7,8 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import datalogic.SessionBean;
 
 @Entity
 @Table(name = "SOA_COMPOSITE_LOGS")
@@ -26,6 +29,9 @@ public class Instance implements Serializable {
 //	@ManyToOne
 //	@JoinColumn(name="STATUSID", insertable=false, updatable=false)
 //	private SchedulingStatus status;
+	
+	@Transient
+	private String statusValue;
 
 	@Column(name = "NAME")
 	private String name;
@@ -174,6 +180,15 @@ public class Instance implements Serializable {
 
 	public void setInstanceHiddenUI(Integer instanceHiddenUI) {
 		this.instanceHiddenUI = instanceHiddenUI;
+	}
+
+	public String getStatusValue() {
+		this.statusValue = SessionBean.STATUSES.get(this.statusID).getValue();
+		return statusValue;
+	}
+
+	public void setStatusValue(String statusValue) {
+		this.statusValue = statusValue;
 	}
 
 }
