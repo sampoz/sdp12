@@ -14,6 +14,7 @@ import entities.Backend;
 import entities.Comment;
 import entities.Composite;
 import entities.Mode;
+import entities.Status;
 
 @ManagedBean (name = SessionBean.BEAN_NAME, eager=true)
 @SessionScoped
@@ -24,9 +25,9 @@ public class SessionBean {
 	public static final HashMap<Integer, Backend> BACKENDS = new HashMap<Integer, Backend>();  
 	public static final HashMap<Integer,Mode> MODES = new HashMap<Integer, Mode>();
 	public static final HashMap<Integer,Composite> COMPOSITES = new HashMap<Integer, Composite>();
+	public static final HashMap<Integer, Status> STATUSES = new HashMap<Integer, Status>();
 	
 	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
-	
 	// Hard coded styleClasses for different modes
 	{
 		MODE_STYLES.put(1, "activated");
@@ -45,6 +46,11 @@ public class SessionBean {
 	
 	public SessionBean(){
 		
+		List<Status> tempStatuses = this.connector.getAllStatuses();
+		for(Status s: tempStatuses ){
+			STATUSES.put(s.getId(), s);
+		}
+		
 		List<Composite> tempComposites = this.connector.getAllComposites();
 		for(Composite c: tempComposites ){
 			COMPOSITES.put(c.getId(), c);
@@ -57,7 +63,6 @@ public class SessionBean {
 		List<Mode> tempModes = this.connector.getAllModes();
 		for (Mode m : tempModes) {
 			MODES.put(m.getId(), m);
-			System.out.println(m.getId() + " : " + m.getLabel());
 		}
 		
 		
@@ -83,7 +88,9 @@ public class SessionBean {
 		else
 			this.user = User.ADMINISTRATOR;
 	}
-
+	public void unAuthenticate() {
+		this.user = User.UNAUTHORISED;
+	}	
 
 
 	public User getUser() {
@@ -91,10 +98,11 @@ public class SessionBean {
 	}
 
 
-
 	public void setUser(User user) {
-		this.user = user;
+		//this.user = user;
+		throw new IllegalAccessError();
 	}
+
 
 	
 }
