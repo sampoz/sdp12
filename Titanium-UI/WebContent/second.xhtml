@@ -125,7 +125,7 @@
 					<h:outputLabel id="password_label" for="password_input"
 						value="AD Password: " />
 					<h:inputSecret id="password_input" value="#{loginManager.password}" />
-					<ice:commandButton id="login_button" value="Login"
+					<h:commandButton id="login_button" value="Login"
 						action="#{loginManager.authenticate}" />
 
 					<ace:submitMonitor for="login_button" activeLabel="Logging in"
@@ -873,7 +873,7 @@
 			<ace:tabPane id="log_out" label="Log out"
 				rendered="#{sessionBean.user.authenticated}">
 				<ice:commandButton id="logout_button" value="Log out"
-						action="#{schedulingDataManager.unAuthenticate}" />
+						action="logout" />
 			</ace:tabPane>
 			
 		</ace:tabSet>
