@@ -351,21 +351,35 @@
 						</h:panelGrid>
 					</ace:column>
 
-					<ace:column id="source" headerText="Source"
+					<ace:column id="source"
 						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
 						filterMatchMode="contains">
-
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
 						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
 					</ace:column>
 
 					<ace:column id="target" headerText="Target"
 						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
 						filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
 						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
 
 
 					</ace:column>
-
+					<ace:column headerText="Request URL"
+						sortBy="#{schedule.requestURL}"
+						filterBy="#{schedule.requestURL}" filterMatchMode="contains">
+						<h:outputText value="#{schedule.requestURL}" />
+					</ace:column>
+					
+					<ace:column headerText="Contacts"
+						sortBy="#{schedule.contacts}"
+						filterBy="#{schedule.contacts}" filterMatchMode="contains">
+						<h:outputText value="#{schedule.contacts}" />
+					</ace:column>
+					
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
