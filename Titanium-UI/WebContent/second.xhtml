@@ -576,7 +576,7 @@
 
 								<h:outputLabel value="Composite: " />
 								<h:outputText id="i_composite"
-									value="#{dataMaster.instanceEditBuffer.get(instance.id).process}"
+									value="#{dataMaster.instanceEditBuffer.get(instance.id).name}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Input files:" />
@@ -785,7 +785,7 @@
 
 								<h:outputLabel value="Composite: " />
 								<h:outputText id="tab_instance_composite"
-									value="#{instance.process}"
+									value="#{instance.name}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Input files:" />
@@ -801,9 +801,9 @@
 							</h:panelGrid>
 						</ace:panel>
 					</ace:panelExpansion>
-					<ace:column id="tab_instance_name" headerText="Name" sortBy="#{instance.name}"
-						filterBy="#{instance.name}" filterMatchMode="contains">
-						<h:outputText id="tab_nameCell" value="#{instance.name}" />
+					<ace:column id="tab_instance_name" headerText="Name" sortBy="#{instance.process}"
+						filterBy="#{instance.process}" filterMatchMode="contains">
+						<h:outputText id="tab_nameCell" value="#{instance.process}" />
 					</ace:column>
 
 					<ace:column id="i_statusID" headerText="Status"
