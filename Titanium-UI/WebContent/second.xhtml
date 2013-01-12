@@ -294,10 +294,12 @@
 
 					</ace:accordionPane>
 				</ace:accordion>
-
 				<ace:dataTable id="scheduleTable"
 					value="#{schedulingDataManager.schedulings}" var="schedule"
-					paginator="true" paginatorPosition="bottom" rows="10"
+					paginator="true" paginatorPosition="both" 
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,50,100,all"
+					rows="10" 
 					stateMap="#{schedulingDataManager.stateMap}"
 					selectionMode="multiple" resizableColumns="true"
 					binding="#{schedulingDataManager.dataTable}" emptyMessage="-- No Schedulings Available --">
@@ -525,7 +527,9 @@
 				<br/>
 
 				<ace:dataTable id="instanceTable" value="#{dataMaster.filteredInstances}"
-					var="instance" paginator="true" paginatorPosition="both" rows="10"
+					var="instance" paginator="true" paginatorPosition="both" 
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,50,100,all" rows="10"
 					stateMap="#{dataMaster.i_stateMap}" selectionMode="multiple"
 					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
@@ -538,10 +542,10 @@
 								name="erroricon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 1}" />
 							<h:graphicImage id="manual_handling" library="images"
-								name="skipedicon.png" style="height: 30px; width: 30px; "
+								name="skippedicon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 2}" />
 							<h:graphicImage id="running" library="images"
-								name="skippedicon.png" style="height: 30px; width: 30px; "
+								name="playicon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 3}" />
 							<h:graphicImage id="started" library="images"
 								name="skippedicon.png" style="height: 30px; width: 30px; "
@@ -754,7 +758,7 @@
 								name="skippedicon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 2}" />
 							<h:graphicImage id="running" library="images"
-								name="skippedicon.png" style="height: 30px; width: 30px; "
+								name="playicon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 3}" />
 							<h:graphicImage id="started" library="images"
 								name="skippedicon.png" style="height: 30px; width: 30px; "
