@@ -15,14 +15,7 @@
 		<!-- <from-outcome>goto2</from-outcome> -->
 		<!-- <to-view-id>/second.xhtml</to-view-id> -->
 		<!-- </navigation-case> -->
-		<navigation-case>
-			<from-outcome>goto3</from-outcome>
-			<to-view-id>/third.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto4</from-outcome>
-			<to-view-id>/fourth.xhtml</to-view-id>
-		</navigation-case>
+		
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
@@ -30,44 +23,6 @@
 			<from-outcome>logout</from-outcome>
 			<to-view-id>/logout.jsp</to-view-id>
 			<redirect />
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id>/third.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>goto1</from-outcome>
-			<to-view-id>/index.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto2</from-outcome>
-			<to-view-id>/second.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto3</from-outcome>
-			<to-view-id>/third.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto4</from-outcome>
-			<to-view-id>/fourth.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id>/fourth.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>goto1</from-outcome>
-			<to-view-id>/index.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto2</from-outcome>
-			<to-view-id>/second.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto3</from-outcome>
-			<to-view-id>/third.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>goto4</from-outcome>
-			<to-view-id>/fourth.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
