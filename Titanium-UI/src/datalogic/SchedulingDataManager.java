@@ -445,7 +445,7 @@ public class SchedulingDataManager {
 			List<Instance> temp = new ArrayList<Instance>();
 			for (Instance i : this.master.getInstances()) {
 
-				if (i.getProcess() != null  && s.getName().substring(0, 3).equals(i.getProcess().substring(0,3))) {
+				if (i.getProcess() != null  && s.getName().substring(0, 4).equals(i.getProcess().substring(0,4))) {
 					temp.add(i);
 				}
 			}
