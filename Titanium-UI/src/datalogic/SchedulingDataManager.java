@@ -488,7 +488,14 @@ public class SchedulingDataManager {
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
-
+	public void unAuthenticate(){
+		List<UIComponent> panes =  this.tabSet.getChildren();
+		for (UIComponent pane : panes) {
+				pane.setInView(false);
+			
+		}
+		this.session.unAuthenticate();
+	}
 	/**
 	 * Method for refreshing the contents of the data table.
 	 */

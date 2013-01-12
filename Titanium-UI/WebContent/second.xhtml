@@ -857,6 +857,13 @@
                 
             </c:forEach>
 
+
+			<ace:tabPane id="log_out" label="Log out"
+				rendered="#{sessionBean.user.authenticated}">
+				<ice:commandButton id="logout_button" value="Log out"
+						action="#{schedulingDataManager.unAuthenticate}" />
+			</ace:tabPane>
+			
 		</ace:tabSet>
 
 	</h:form>

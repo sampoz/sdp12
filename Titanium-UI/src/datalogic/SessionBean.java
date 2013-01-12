@@ -88,7 +88,9 @@ public class SessionBean {
 		else
 			this.user = User.ADMINISTRATOR;
 	}
-
+	public void unAuthenticate() {
+		this.user = User.UNAUTHORISED;
+	}	
 
 
 	public User getUser() {
@@ -96,10 +98,11 @@ public class SessionBean {
 	}
 
 
-
 	public void setUser(User user) {
-		this.user = user;
+		//this.user = user;
+		throw new IllegalAccessError();
 	}
+
 
 	
 }
