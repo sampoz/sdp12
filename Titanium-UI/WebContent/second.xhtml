@@ -538,21 +538,30 @@
 					<ace:column id="i_run_state" headerText="Was run"
 						sortBy="#{instance.statusID}">
 						<h:panelGrid id="i_run_state_Id" columns="1">
-							<h:graphicImage id="correct_image" library="images"
-								name="correcticon.png" style="height: 30px; width: 30px; "
+							<h:graphicImage id="failed" library="images"
+								name="erroricon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 1}" />
-							<h:graphicImage id="skipped_image" library="images"
+							<h:graphicImage id="manual_handling" library="images"
+								name="skipedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 2}" />
+							<h:graphicImage id="running" library="images"
 								name="skippedicon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID gt 1}" />
+								rendered="#{instance.statusID eq 3}" />
+							<h:graphicImage id="started" library="images"
+								name="skippedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 4}" />
+							<h:graphicImage id="completed" library="images"
+								name="correcticon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 5}" />
+							<h:graphicImage id="skipped" library="images"
+								name="skippedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 6}" />
 						</h:panelGrid>
-						<ace:tooltip id="tooltip_skipped_image" for="skipped_image"
-							value="This instance was not run. Expand view for more information"
-							showDelay="100" hideDelay="200">
-						</ace:tooltip>
-						<ace:tooltip id="tooltip_correct_image" for="correct_image"
-							value="This instance was run normally" showDelay="100"
-							hideDelay="200">
-						</ace:tooltip>
+<!-- 						<ace:tooltip id="tooltip_skipped_image" for="skipped_image" -->
+<!-- 							value="This instance was not run. Expand view for more information" -->
+<!-- 							showDelay="100" hideDelay="200"> -->
+<!-- 						</ace:tooltip> -->
+
 						<ace:expansionToggler
 							changeListener="#{dataMaster.instanceExpansion}" />
 					</ace:column>
@@ -741,22 +750,26 @@
 
 					<ace:column id="tab_run_state" headerText="Was run"
 						sortBy="#{instance.statusID}">
-						<h:panelGrid id="tab_run_state_Id" columns="1">
-							<h:graphicImage id="correct_image" library="images"
-								name="correcticon.png" style="height: 30px; width: 30px; "
+					<h:panelGrid id="i_run_state_Id" columns="1">
+							<h:graphicImage id="failed" library="images"
+								name="erroricon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 1}" />
-							<h:graphicImage id="skipped_image" library="images"
+							<h:graphicImage id="manual_handling" library="images"
+								name="skipedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 2}" />
+							<h:graphicImage id="running" library="images"
 								name="skippedicon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID gt 1}" />
+								rendered="#{instance.statusID eq 3}" />
+							<h:graphicImage id="started" library="images"
+								name="skippedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 4}" />
+							<h:graphicImage id="completed" library="images"
+								name="correcticon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 5}" />
+							<h:graphicImage id="skipped" library="images"
+								name="skippedicon.png" style="height: 30px; width: 30px; "
+								rendered="#{instance.statusID eq 6}" />
 						</h:panelGrid>
-						<ace:tooltip id="tooltip_skipped_image" for="skipped_image"
-							value="This instance was not run. Expand view for more information"
-							showDelay="100" hideDelay="200">
-						</ace:tooltip>
-						<ace:tooltip id="tooltip_correct_image" for="correct_image"
-							value="This instance was run normally" showDelay="100"
-							hideDelay="200">
-						</ace:tooltip>
 						<ace:expansionToggler/>
 					</ace:column>
 					<ace:panelExpansion>
@@ -791,13 +804,16 @@
 						<h:outputText id="tab_nameCell" value="#{instance.name}" />
 					</ace:column>
 
-					<ace:column id="tab_instance_statusID" headerText="StatusID"
-						sortBy="#{instance.statusID}" filterBy="#{instance.statusID}"
+					<ace:column id="i_statusID" headerText="Status"
+						sortBy="#{instance.statusValue}" filterBy="#{instance.statusValue}"
 						filterMatchMode="contains">
-						<h:panelGrid>
-							<h:outputText id="tab_statusIDCell" value="#{instance.statusID}"
-								styleClass="tooltipTargetStyle" />
-						</h:panelGrid>
+						<ice:panelGroup style="width:100px;">
+							<f:facet name="status">
+								Status
+							</f:facet>
+						</ice:panelGroup>
+							<h:outputText id="i_statusCell" value="#{instance.statusValue}"
+								styleClass="#{instance.statusValue}"/>
 					</ace:column>
 
 					<ace:column id="tab_startDate" headerText="StartDate"
