@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.CustomScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.event.ValueChangeEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.event.ExpansionChangeEvent;
@@ -36,6 +37,8 @@ public class DataMaster implements Serializable {
 	private DataTable i_dataTable;
 
 	private List<Instance> instances = new ArrayList<Instance>();
+	
+	private List<Instance> filteredInstances = new ArrayList<Instance>();
 
 	private RowStateMap i_stateMap = new RowStateMap();
 
@@ -55,6 +58,8 @@ public class DataMaster implements Serializable {
 	private String addErrorMessage;
 	private HashMap<Integer, Instance> instanceEditBuffer = new HashMap<Integer, Instance>();
 
+	private boolean showSkipped;
+	
 	@PostConstruct
 	private void init() {
 		this.builder = new SchedulingBuilder();
@@ -106,10 +111,28 @@ public class DataMaster implements Serializable {
 			this.refreshInstances();
 		}
 		return instances;
+//		if (this.showSkipped) return instances;
+		
+//		List<Instance> Return = new ArrayList<Instance>();
+//		for(Instance i: instances){
+//			if(i.getStatusID() != 6) Return.add(i);
+//		}
+//		return Return;
 	}
 
 	public void refreshInstances() {
 		this.instances = this.session.getConnector().getInstances();
+		filterInstances();
+	}
+	
+	public void filterInstances() {
+		if(this.showSkipped) this.filteredInstances = this.instances;
+		else {
+			this.filteredInstances = new ArrayList<Instance>();
+			for(Instance i: this.instances){
+				if(i.getStatusID() != 6) this.filteredInstances.add(i);
+			}
+		}
 	}
 
 	public void setInstances(List<Instance> instances) {
@@ -117,6 +140,17 @@ public class DataMaster implements Serializable {
 	}
 
 	
+
+	public List<Instance> getFilteredInstances() {
+		if (this.instances == null || this.instances.isEmpty()) {
+			this.refreshInstances();
+		}
+		return filteredInstances;
+	}
+
+	public void setFilteredInstances(List<Instance> filteredInstances) {
+		this.filteredInstances = filteredInstances;
+	}
 
 	public RowStateMap getI_stateMap() {
 		return i_stateMap;
@@ -196,5 +230,17 @@ public class DataMaster implements Serializable {
 
 	public void setAddErrorMessage(String addErrorMessage) {
 		this.addErrorMessage = addErrorMessage;
+	}
+
+	public void showSkippedMethod(ValueChangeEvent e){
+		this.showSkipped = Boolean.parseBoolean(e.getNewValue().toString());
+		this.filterInstances();
+	}
+	public boolean isShowSkipped() {
+		return showSkipped;
+	}
+
+	public void setShowSkipped(boolean showSkipped) {
+		this.showSkipped = showSkipped;
 	}
 }

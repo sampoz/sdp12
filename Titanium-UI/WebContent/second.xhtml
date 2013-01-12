@@ -488,17 +488,12 @@
 			<ace:tabPane id="instance_log" label="Instance Log"
 				rendered="#{sessionBean.user.authenticated}">
 
-				<h:panelGrid columns="2">
-					<ace:menuBar>
-						<ace:menuItem id="run_instances" value="Run selected instances"
-							actionListener="#{dataMaster.runInstances}"
-							icon="ui-icon ui-icon-gear">
-							<ace:ajax event="activate" execute="@this" />
-						</ace:menuItem>
-					</ace:menuBar>
-				</h:panelGrid>
+				<h:outputText style="float: right;" value="Show skipped"/>
+				<ice:selectBooleanCheckbox tittle="Show skipped" style="float: right;"
+				 value="#{dataMaster.showSkipped}" valueChangeListener="#{dataMaster.showSkippedMethod}" partialSubmit="true"/>
+				<br/>
 
-				<ace:dataTable id="instanceTable" value="#{dataMaster.instances}"
+				<ace:dataTable id="instanceTable" value="#{dataMaster.filteredInstances}"
 					var="instance" paginator="true" paginatorPosition="both" rows="10"
 					stateMap="#{dataMaster.i_stateMap}" selectionMode="multiple"
 					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
@@ -553,9 +548,9 @@
 							</h:panelGrid>
 						</ace:panel>
 					</ace:panelExpansion>
-					<ace:column id="i_name" headerText="Name" sortBy="#{instance.name}"
-						filterBy="#{instance.name}" filterMatchMode="contains">
-						<h:outputText id="i_nameCell" value="#{instance.name}" />
+					<ace:column id="i_name" headerText="Name" sortBy="#{instance.process}"
+						filterBy="#{instance.process}" filterMatchMode="contains">
+						<h:outputText id="i_nameCell" value="#{instance.process}" />
 					</ace:column>
 
 					<ace:column id="i_statusID" headerText="StatusID"
