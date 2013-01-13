@@ -108,6 +108,7 @@ public class DataMaster implements Serializable {
 
 	public List<Instance> getInstances() {
 		if (this.instances == null || this.instances.isEmpty()) {
+			System.out.println("sql call from getInstances()");
 			this.refreshInstances();
 		}
 		return instances;
@@ -143,6 +144,7 @@ public class DataMaster implements Serializable {
 
 	public List<Instance> getFilteredInstances() {
 		if (this.instances == null || this.instances.isEmpty()) {
+			System.out.println("sql call from getFilteredInstances()");
 			this.refreshInstances();
 		}
 		return filteredInstances;

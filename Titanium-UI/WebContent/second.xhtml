@@ -89,8 +89,8 @@
 }
 
 .ManualHandling{
-	color: yellow;
-	font-wieght:bolder;
+	color: orange;
+	font-weight: bolder;
 }
 
 .Running{
@@ -107,6 +107,8 @@
 	color: green;
 	font-weight:bolder;
 }
+
+a:link { text-decoration:underline; }
 
 </style>
 
@@ -607,8 +609,9 @@
 						</ice:panelGroup>
 							<h:outputText id="i_statusCell" value="#{instance.statusValue}"
 								styleClass="#{instance.statusValue}" rendered="#{not (instance.statusValue eq 'ManualHandling')}"/>
-							<h:outputLink rendered="#{instance.statusValue eq 'ManualHandling'}"
-							 value="http://www.meatspin.cc/">ManualHandling</h:outputLink>
+							<h:outputLink rendered="#{instance.statusValue eq 'ManualHandling'}" value="http://iambrony.jsmart.web.id/mlp/gif/pinkmailbox_hellobye.gif" target="blank">
+								<h:outputText value="#{instance.statusValue}" styleClass="#{instance.statusValue}"/>
+							</h:outputLink>
 					</ace:column>
 
 					<ace:column id="i_startDate" headerText="StartDate"
