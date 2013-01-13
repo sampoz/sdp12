@@ -95,12 +95,12 @@
 
 .Running{
 	color: blue;
-	font-wieght:bolder;
+	font-weight:bolder;
 }
 
 .Started{
 	color: blue;
-	font-wieght:bolder;
+	font-weight:bolder;
 }
 
 .Completed{
@@ -114,7 +114,7 @@ a:link { text-decoration:underline; }
 
 		
 		<ace:tabSet id="sampleTabSet" clientSide="false"
-				selectedIndex="#{schedulingDataManager.selectedTabIndex}" binding="#{schedulingDataManager.tabSet}" style="padding: 0px;">
+				selectedIndex="#{schedulingDataManager.selectedTabIndex}" binding="#{schedulingDataManager.tabSet}" tabChangeListener="#{schedulingDataManager.tabChange}">
 
 			<ace:tabPane id="login_tab" label="Login"
 				rendered="#{sessionBean.user.authenticated eq false}">
@@ -353,21 +353,35 @@ a:link { text-decoration:underline; }
 						</h:panelGrid>
 					</ace:column>
 
-					<ace:column id="source" headerText="Source"
+					<ace:column id="source"
 						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
 						filterMatchMode="contains">
-
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
 						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
 					</ace:column>
 
 					<ace:column id="target" headerText="Target"
 						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
 						filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
 						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
 
 
 					</ace:column>
-
+					<ace:column headerText="Request URL"
+						sortBy="#{schedule.requestURL}"
+						filterBy="#{schedule.requestURL}" filterMatchMode="contains">
+						<h:outputText value="#{schedule.requestURL}" />
+					</ace:column>
+					
+					<ace:column headerText="Contacts"
+						sortBy="#{schedule.contacts}"
+						filterBy="#{schedule.contacts}" filterMatchMode="contains">
+						<h:outputText value="#{schedule.contacts}" />
+					</ace:column>
+					
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
@@ -659,7 +673,7 @@ a:link { text-decoration:underline; }
 								<ace:menuItem value="All Tabs" actionListener="#{schedulingDataManager.removeAllTabs}"/>
 								<ace:menuItem value="Other Tabs" actionListener="#{schedulingDataManager.removeOtherTabs(tab)}"/>
 							</ace:menuButton>
-                <ace:panel id="panel" header="Details - #{tab.scheduling.id}">
+                <ace:panel id="details_panel" header="Details">
                 	<h:panelGrid columns="2">
 	                	<ice:outputText value="Name: " styleClass="bold"/>
 	                	<ice:outputText value="#{tab.scheduling.name}"/>
@@ -681,11 +695,8 @@ a:link { text-decoration:underline; }
 	                	<ice:outputText value="#{tab.compositeText}"/>
                 	</h:panelGrid>
                 </ace:panel>
-                <ace:accordion id="tab_accordion" collapsible="true" autoHeight="false"
-					activeIndex="-1" rendered="#{sessionBean.user.addRights}">
-					
-					<ace:accordionPane id="tab_edit_scheduling" title="Edit">
-
+                <br/>
+				<ace:panel id="edit_panel" header="Edit">
 						<h:panelGrid id="edit_grid" columns="6">
 							<h:outputLabel id="tab_name_label" for="tab_name_input" value="Name: " />
 							<h:inputText id="tab_name_input"
@@ -748,8 +759,10 @@ a:link { text-decoration:underline; }
 						<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
 							autoCenter="true" blockUI="@source" />
 
-					</ace:accordionPane>
-					<ace:accordionPane id="tab_instances_acc" title="Instances">
+				</ace:panel>
+				<br/>
+				<ace:panel id="instances_panel" header="Instances">
+                <br/>
                 <ace:dataTable id="tab_instance_table" value="#{tab.instances}"
 					var="instance" paginator="false" rows="5" emptyMessage="-- No Instances --">
 
@@ -849,9 +862,9 @@ a:link { text-decoration:underline; }
 					</ace:column>
 
 				</ace:dataTable>
-                        	
-                  </ace:accordionPane>
-                        <ace:accordionPane id="tab_comments_acc" title="Comments">
+                 </ace:panel>       
+                <br/>	
+ 				<ace:panel id="comments_panel" header="Comments">
                         <ace:dataTable id="tab_comment_table"
 							value="#{tab.comments}"
 							var="comment" paginator="false" rows="5"  emptyMessage="-- No Comments --">
@@ -870,20 +883,19 @@ a:link { text-decoration:underline; }
 						<ice:commandButton id="tab_sumbit_comment" value="Submit"
 							actionListener="#{schedulingDataManager.submitComment(tab)}"
 							rendered="#{sessionBean.user.editRights}" />
-							</ace:accordionPane>
-						</ace:accordion>
+					</ace:panel>
                     </f:subview>
                    
                 </ace:tabPane>
                 
             </c:forEach>
-
+			
+			<ace:tabPane id="second_divider" label=""
+				disabled="true" rendered="#{sessionBean.user.authenticated}"/>
 
 			<ace:tabPane id="log_out" label="Log out"
-				rendered="#{sessionBean.user.authenticated}">
-				<ice:commandButton id="logout_button" value="Log out"
-						action="logout" />
-			</ace:tabPane>
+				rendered="#{sessionBean.user.authenticated}" />
+				
 			
 		</ace:tabSet>
 

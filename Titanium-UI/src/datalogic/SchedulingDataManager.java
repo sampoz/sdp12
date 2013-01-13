@@ -1,6 +1,8 @@
 package datalogic;
 
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +15,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-
+import javax.faces.event.ValueChangeEvent;
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.component.dialog.Dialog;
 import org.icefaces.ace.component.tabset.TabPane;
@@ -22,6 +25,10 @@ import org.icefaces.ace.component.tabset.TabSet;
 import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
+import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 
 import entities.Backend;
 import entities.Comment;
@@ -64,6 +71,9 @@ public class SchedulingDataManager {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"dd-MM-yyyy HH:mm:ss");
 
+	private static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
+			"yyyy-dd-MM HH:mm:ss");
+
 	private static final int STATIC_TABS = 4;
 
 	private HttpConnector httpConnector = new HttpConnector();
@@ -72,8 +82,6 @@ public class SchedulingDataManager {
 	private String runReport;
 
 	private String schedulingList;
-
-	private int counter = 0;
 
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();;
 
@@ -102,7 +110,7 @@ public class SchedulingDataManager {
 	 * constructed from the {@link SchedulingBuilder}
 	 */
 	public void addScheduling() {
-		
+
 		try {
 
 			/*
@@ -252,7 +260,7 @@ public class SchedulingDataManager {
 		}
 
 	}
-	
+
 	public void confirmEdit(SchedulingTab t) {
 
 		try {
@@ -281,8 +289,10 @@ public class SchedulingDataManager {
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
 					+ httpConnector.editId(
-							SessionBean.COMPOSITES.get(t.getScheduling().getServiceID())
-									.getDestinationURL(), t.getScheduling().getId()));
+							SessionBean.COMPOSITES.get(
+									t.getScheduling().getServiceID())
+									.getDestinationURL(), t.getScheduling()
+									.getId()));
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -330,7 +340,7 @@ public class SchedulingDataManager {
 					.getLastComments(id));
 		}
 	}
-	
+
 	public void submitComment(SchedulingTab t) {
 		Comment c = t.getAddComment();
 
@@ -341,8 +351,8 @@ public class SchedulingDataManager {
 		// comment we can safely add it to the table
 		if (this.session.getConnector().addComment(c)) {
 			t.setAddComment(new Comment());
-			t.setComments(this.session.getConnector()
-					.getLastComments(t.getScheduling().getId()));
+			t.setComments(this.session.getConnector().getLastComments(
+					t.getScheduling().getId()));
 		}
 	}
 
@@ -435,21 +445,26 @@ public class SchedulingDataManager {
 		}
 	}
 
-	public void addTab(Scheduling s) {
+	public void addTab(Scheduling s) throws ParseException {
 		SchedulingTab t = new SchedulingTab();
 		t.setScheduling(s);
 
 		if (!tabs.contains(t)) {
-			counter++;
-			
+
 			List<Instance> temp = new ArrayList<Instance>();
 			for (Instance i : this.master.getInstances()) {
 
-				if (i.getProcess() != null  && s.getName().substring(0, 4).equals(i.getProcess().substring(0,4))) {
+				Date now = new Date();
+				Date then = ORACLE_DATE_FORMAT.parse(i.getStartDate());
+				if (i.getProcess() != null
+						&& s.getName().substring(0, 4)
+								.equals(i.getProcess().substring(0, 4))
+						&& Days.daysBetween(new DateTime(then),
+								new DateTime(now)).getDays() <= 40) {
 					temp.add(i);
 				}
 			}
-			
+
 			t.setComments(this.session.getConnector()
 					.getLastComments(s.getId()));
 			t.setInstances(temp);
@@ -461,25 +476,27 @@ public class SchedulingDataManager {
 
 	public void removeCurrent(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
-		TabPane pane = (TabPane) this.tabSet.getChildren().get(tabs.indexOf(t) + STATIC_TABS + 1);
+		TabPane pane = (TabPane) this.tabSet.getChildren().get(
+				tabs.indexOf(t) + STATIC_TABS + 1);
 		pane.setInView(false);
 		tabs.remove(t);
 	}
-	
+
 	public void removeAllTabs() {
 		this.tabSet.setSelectedIndex(0);
-		List<UIComponent> panes =  this.tabSet.getChildren();
+		List<UIComponent> panes = this.tabSet.getChildren();
 		for (UIComponent pane : panes) {
 			pane.setInView(false);
 		}
 		tabs.clear();
 	}
-	
+
 	public void removeOtherTabs(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
-		List<UIComponent> panes =  this.tabSet.getChildren();
+		List<UIComponent> panes = this.tabSet.getChildren();
 		for (UIComponent pane : panes) {
-			if(panes.indexOf(pane) > STATIC_TABS - 1 && panes.indexOf(pane) != tabs.indexOf(t) + STATIC_TABS) {
+			if (panes.indexOf(pane) > STATIC_TABS - 1
+					&& panes.indexOf(pane) != tabs.indexOf(t) + STATIC_TABS) {
 				pane.setInView(false);
 			}
 		}
@@ -488,14 +505,23 @@ public class SchedulingDataManager {
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
-	public void unAuthenticate(){
-		List<UIComponent> panes =  this.tabSet.getChildren();
+	public void unAuthenticate() {
+		List<UIComponent> panes = this.tabSet.getChildren();
 		for (UIComponent pane : panes) {
-				pane.setInView(false);
-			
+			pane.setInView(false);
+
 		}
 		this.session.unAuthenticate();
 	}
+	
+	public void tabChange(ValueChangeEvent e) throws IOException{
+		if((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 2) {
+			
+			FacesContext ctx =  FacesContext.getCurrentInstance();
+			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
+		}
+	}
+
 	/**
 	 * Method for refreshing the contents of the data table.
 	 */
