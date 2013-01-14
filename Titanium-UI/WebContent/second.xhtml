@@ -20,21 +20,21 @@
 }
 
 .left label {
-	display:block;
-	float:left;
-	margin-left:10px;
+	display: block;
+	float: left;
+	margin-left: 10px;
 }
 
 .left input {
-	display:block;
-	float:left;
-	margin-left:10px;
+	display: block;
+	float: left;
+	margin-left: 10px;
 }
 
 .left select {
-	display:block;
-	float:left;
-	margin-left:10px;
+	display: block;
+	float: left;
+	margin-left: 10px;
 }
 
 .red {
@@ -74,51 +74,54 @@
 	float: right;
 }
 
-.bold{
-	font-weight:bold;
+.bold {
+	font-weight: bold;
 }
 
-.Skipped{
+.Skipped {
 	color: grey;
 	font-weight: bolder;
 }
 
-.Failed{
+.Failed {
 	color: red;
 	font-weight: bolder;
 }
 
-.ManualHandling{
+.ManualHandling {
 	color: orange;
 	font-weight: bolder;
 }
 
-.Running{
+.Running {
 	color: blue;
-	font-weight:bolder;
+	font-weight: bolder;
 }
 
-.Started{
+.Started {
 	color: blue;
-	font-weight:bolder;
+	font-weight: bolder;
 }
 
-.Completed{
+.Completed {
 	color: green;
-	font-weight:bolder;
+	font-weight: bolder;
 }
 
-a:link { text-decoration:underline; }
-
+a:link {
+	text-decoration: underline;
+}
 </style>
 
-		
+
 		<ace:tabSet id="sampleTabSet" clientSide="false"
-				selectedIndex="#{schedulingDataManager.selectedTabIndex}" binding="#{schedulingDataManager.tabSet}" tabChangeListener="#{schedulingDataManager.tabChange}">
+			selectedIndex="#{schedulingDataManager.selectedTabIndex}"
+			binding="#{schedulingDataManager.tabSet}"
+			tabChangeListener="#{schedulingDataManager.tabChange}">
 
 			<ace:tabPane id="login_tab" label="Login"
 				rendered="#{sessionBean.user.authenticated eq false}">
-			<img src="resources/images/titaniclogo.png" alt="titanic"/>
+				<img src="resources/images/titaniclogo.png" alt="titanic" />
 				<h:panelGrid id="login_grid" columns="2"
 					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
 					<h:outputLabel id="username_label" for="username_input"
@@ -152,73 +155,101 @@ a:link { text-decoration:underline; }
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
 						<ace:menuItem id="run_selected" value="Run Selected"
-							onclick="run_conf.show()"
-							icon="ui-icon ui-icon-play"
+							onclick="run_conf.show()" icon="ui-icon ui-icon-play"
 							rendered="#{sessionBean.user.runRights}"
 							actionListener="#{schedulingDataManager.listSelected}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						
+
 						<ace:menuItem id="resume_selected" value="Resume Selected"
-							actionListener="#{schedulingDataManager.resumeSelected}"
+							onclick="resume_conf.show()"
 							icon="ui-icon ui-icon-circle-triangle-e"
-							rendered="#{sessionBean.user.editRights}">
+							rendered="#{sessionBean.user.editRights}"
+							actionListener="#{schedulingDataManager.listSelected}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
 						<ace:menuItem id="hold_selected" value="Hold Selected"
-							actionListener="#{schedulingDataManager.holdSelected}"
-							icon="ui-icon ui-icon-circle-close"
-							rendered="#{sessionBean.user.editRights}">
+							onclick="hold_conf.show()" icon="ui-icon ui-icon-circle-close"
+							rendered="#{sessionBean.user.editRights}"
+							actionListener="#{schedulingDataManager.listSelected}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						
+
 						<ace:menuItem id="refresh" value="Refresh"
 							actionListener="#{schedulingDataManager.refresh}"
 							icon="ui-icon ui-icon-refresh">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
-						
-						
+
+
 					</ace:menuBar>
 					<a href="https://google.com"> <img
 						src="resources/images/question.png"
 						style="width: 24px; height: 24px;" />
 					</a>
 				</h:panelGrid>
-				
-				<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf" 
-				message="Are you sure you want to run following schedulings?" 
-				header="Confirm Run" 
-				width="330" 
-				height="220">
-							<ice:outputText value="#{schedulingDataManager.schedulingList}" escape="false"/>
-						<h:panelGrid columns="2">
-		                    <h:commandButton id="yes" value="Yes" onclick="run_conf.hide()" actionListener="#{schedulingDataManager.runSelectedSchedules}" />
-		                    <h:commandButton id="no" value="No" onclick="run_conf.hide()"/>
-               			 </h:panelGrid>
+
+				<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
+					message="Are you sure you want to run following schedulings?"
+					header="Confirm Run" width="330" height="220">
+					<ice:outputText value="#{schedulingDataManager.schedulingList}"
+						escape="false" />
+					<h:panelGrid columns="2">
+						<h:commandButton value="Yes" onclick="run_conf.hide()"
+							actionListener="#{schedulingDataManager.runSelectedSchedules}" />
+						<h:commandButton value="No" onclick="run_conf.hide()" />
+					</h:panelGrid>
 				</ace:confirmationDialog>
-				
-				<ice:panelPopup visible="#{schedulingDataManager.responseDialogVisible}"
-                            rendered="#{schedulingDataManager.responseDialogVisible}"
-                            modal="true"
-                            autoCentre="true">
-                  <f:facet name="header">
-                    <h:panelGroup>
-                        <h:outputText value="Run Report" style="margin-left:5px"/>
-                    </h:panelGroup>
-                </f:facet>
-                <f:facet name="body">
-                    <pre>
-                   		 <h:outputText value="#{schedulingDataManager.runReport}"></h:outputText>
+
+				<ace:confirmationDialog id="resume_confirmation"
+					widgetVar="resume_conf"
+					message="Are you sure you want to resume following schedulings?"
+					header="Confirm Resume" width="330" height="220">
+					<ice:outputText value="#{schedulingDataManager.schedulingList}"
+						escape="false" />
+					<h:panelGrid columns="2">
+						<h:commandButton value="Yes" onclick="resume_conf.hide()"
+							actionListener="#{schedulingDataManager.resumeSelected}" />
+						<h:commandButton value="No" onclick="resume_conf.hide()" />
+					</h:panelGrid>
+				</ace:confirmationDialog>
+
+				<ace:confirmationDialog id="hold_confirmation" widgetVar="hold_conf"
+					message="Are you sure you want to put following schedulings on hold?"
+					header="Confirm Hold" width="330" height="220">
+					<ice:outputText value="#{schedulingDataManager.schedulingList}"
+						escape="false" />
+					<h:panelGrid columns="2">
+						<h:commandButton value="Yes" onclick="resume_conf.hide()"
+							actionListener="#{schedulingDataManager.holdSelected}" />
+						<h:commandButton value="No" onclick="resume_conf.hide()" />
+					</h:panelGrid>
+				</ace:confirmationDialog>
+
+				<ice:panelPopup
+					visible="#{schedulingDataManager.responseDialogVisible}"
+					rendered="#{schedulingDataManager.responseDialogVisible}"
+					modal="true" autoCentre="true">
+					<f:facet name="header">
+						<h:panelGroup>
+							<h:outputText value="Run Report" style="margin-left:5px" />
+						</h:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<pre>
+                   		 <h:outputText
+								value="#{schedulingDataManager.runReport}"></h:outputText>
                     </pre>
-                    <br/>
-                    <h:panelGroup>
-                            <h:commandButton value="Close" actionListener="#{schedulingDataManager.setResponseDialogVisible(false)}" style="margin-left: auto; margin-right: auto;"/>
-               		 </h:panelGroup>
-                </f:facet>
-                
-                </ice:panelPopup>
-				
+						<br />
+						<h:panelGroup>
+							<h:commandButton value="Close"
+								actionListener="#{schedulingDataManager.setResponseDialogVisible(false)}"
+								style="margin-left: auto; margin-right: auto;" />
+						</h:panelGroup>
+					</f:facet>
+
+				</ice:panelPopup>
+
 				<ace:submitMonitor for="refresh" activeLabel="Refreshing"
 					autoCenter="true" blockUI="@source" />
 
@@ -257,7 +288,7 @@ a:link { text-decoration:underline; }
 								<f:selectItems value="#{schedulingDataManager.modes}" />
 								<f:converter converterId="entityConverter" />
 							</h:selectOneMenu>
-							<h:outputLabel for="requestURL_input" value="Request URL: "/>
+							<h:outputLabel for="requestURL_input" value="Request URL: " />
 							<h:inputText id="requestURL_input"
 								value="#{schedulingDataManager.builder.requestURL}" />
 							<h:outputLabel id="bankLabel" for="bankInput" value="Holiday: " />
@@ -268,13 +299,13 @@ a:link { text-decoration:underline; }
 							<h:selectBooleanCheckbox id="javaInput"
 								value="#{schedulingDataManager.builder.javaAgentPollable}"
 								disabled="#{schedulingDataManager.builder.composite.javaAgentPollable eq 0}" />
-								<h:outputLabel for="contacts_input" value="Contacts: "/>
+							<h:outputLabel for="contacts_input" value="Contacts: " />
 							<h:outputLabel for="contacts_input" value="Contacts: " />
 							<h:inputText id="contacts_input"
 								value="#{schedulingDataManager.builder.contacts}" />
 						</h:panelGrid>
 						<h:panelGrid columns="2">
-						<h:outputLabel id="compositeLabel" for="compositeInput"
+							<h:outputLabel id="compositeLabel" for="compositeInput"
 								value="Composite: " />
 							<ice:selectOneMenu id="compositeInput"
 								value="#{schedulingDataManager.builder.composite}"
@@ -284,11 +315,11 @@ a:link { text-decoration:underline; }
 							</ice:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid columns="3">
-						<h:outputLabel id="add_comment_label" for="add_comment_input"
+							<h:outputLabel id="add_comment_label" for="add_comment_input"
 								value="Comment: " />
-								<h:inputText id="add_comment_input"
+							<h:inputText id="add_comment_input"
 								value="#{schedulingDataManager.addComment.text}" />
-								<h:outputLabel id="opt_comment_label" for="add_comment_input"
+							<h:outputLabel id="opt_comment_label" for="add_comment_input"
 								value="(Opt.)" />
 						</h:panelGrid>
 						<ice:commandButton id="add_scheduling" value="Add Scheduling"
@@ -305,13 +336,13 @@ a:link { text-decoration:underline; }
 				</ace:accordion>
 				<ace:dataTable id="scheduleTable"
 					value="#{schedulingDataManager.schedulings}" var="schedule"
-					paginator="true" paginatorPosition="both" 
+					paginator="true" paginatorPosition="both"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					rowsPerPageTemplate="10,50,100,all"
-					rows="10" 
+					rowsPerPageTemplate="10,50,100,all" rows="10"
 					stateMap="#{schedulingDataManager.stateMap}"
 					selectionMode="multiple" resizableColumns="true"
-					binding="#{schedulingDataManager.dataTable}" emptyMessage="-- No Schedulings Available --">
+					binding="#{schedulingDataManager.dataTable}"
+					emptyMessage="-- No Schedulings Available --">
 					<ace:ajax event="select" execute="@this" />
 					<ace:column id="edit" headerText="Edit">
 						<ace:expansionToggler
@@ -338,10 +369,10 @@ a:link { text-decoration:underline; }
 						filterMatchMode="exact">
 						<ice:panelGroup style="width:100px;">
 							<f:facet name="mode">
-							Mode
 							</f:facet>
 						</ice:panelGroup>
-						<h:outputText id="modeCell" value="#{schedule.modeLabel}" styleClass="#{schedule.styleClass}"/>
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}"
+							styleClass="#{schedule.styleClass}" />
 
 					</ace:column>
 
@@ -360,9 +391,8 @@ a:link { text-decoration:underline; }
 						</h:panelGrid>
 					</ace:column>
 
-					<ace:column id="source"
-						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
-						filterMatchMode="contains">
+					<ace:column id="source" sortBy="#{schedule.sourceName}"
+						filterBy="#{schedule.sourceName}" filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
 						</ice:panelGroup>
 						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
@@ -378,162 +408,160 @@ a:link { text-decoration:underline; }
 
 					</ace:column>
 					<ace:column headerText="Request URL"
-						sortBy="#{schedule.requestURL}"
-						filterBy="#{schedule.requestURL}" filterMatchMode="contains">
+						sortBy="#{schedule.requestURL}" filterBy="#{schedule.requestURL}"
+						filterMatchMode="contains">
 						<h:outputText value="#{schedule.requestURL}" />
 					</ace:column>
-					
-					<ace:column headerText="Contacts"
-						sortBy="#{schedule.contacts}"
+
+					<ace:column headerText="Contacts" sortBy="#{schedule.contacts}"
 						filterBy="#{schedule.contacts}" filterMatchMode="contains">
 						<h:outputText value="#{schedule.contacts}" />
 					</ace:column>
-					
+
 					<ace:column id="description" headerText="Description"
 						sortBy="#{schedule.description}"
 						filterBy="#{schedule.description}" filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
 							<f:facet name="description">
-							Description
-						</f:facet>
+							</f:facet>
 						</ice:panelGroup>
 						<h:outputText id="descCell" value="#{schedule.description}" />
 					</ace:column>
 
 					<ace:column id="details" headerText="Details">
 						<ice:commandButton id="details_button" value="Open in new tab"
-							image="resources/images/openinnewtabicon.jpg" 
-							actionListener="#{schedulingDataManager.addTab(schedule)}"/>
+							image="resources/images/openinnewtabicon.jpg"
+							actionListener="#{schedulingDataManager.addTab(schedule)}" />
 					</ace:column>
 
 					<ace:panelExpansion>
-<!-- 						<ace:panel id="edit_panel" header="Edit" > -->
+						<!-- 						<ace:panel id="edit_panel" header="Edit" > -->
 
-<!-- 							<ice:outputText value="#{schedulingDataManager.editErrorMessage}" -->
-<!-- 								rendered="#{schedulingDataManager.showEditError}" -->
-<!-- 								styleClass="red" /> -->
+						<!-- 							<ice:outputText value="#{schedulingDataManager.editErrorMessage}" -->
+						<!-- 								rendered="#{schedulingDataManager.showEditError}" -->
+						<!-- 								styleClass="red" /> -->
 
-<!-- 							<h:panelGrid id="editGrid" columns="6" -->
-<!-- 								 styleClass="left"> -->
+						<!-- 							<h:panelGrid id="editGrid" columns="6" -->
+						<!-- 								 styleClass="left"> -->
 
-<!-- 								<h:outputLabel id="editNameLabel" for="editNameInput" -->
-<!-- 									value="Name: " /> -->
+						<!-- 								<h:outputLabel id="editNameLabel" for="editNameInput" -->
+						<!-- 									value="Name: " /> -->
 
-<!-- 								<h:inputText id="editNameInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).name}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
+						<!-- 								<h:inputText id="editNameInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).name}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
 
-<!-- 								<h:outputLabel id="editDescLabel" for="editDescInput" -->
-<!-- 									value="Description: " /> -->
+						<!-- 								<h:outputLabel id="editDescLabel" for="editDescInput" -->
+						<!-- 									value="Description: " /> -->
 
-<!-- 								<h:inputText id="editDescInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).description}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
+						<!-- 								<h:inputText id="editDescInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).description}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
 
-<!-- 								<h:outputLabel id="editCronLabel" for="editCronInput" -->
-<!-- 									value="CRON: " /> -->
+						<!-- 								<h:outputLabel id="editCronLabel" for="editCronInput" -->
+						<!-- 									value="CRON: " /> -->
 
-<!-- 								<h:inputText id="editCronInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).cron}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
+						<!-- 								<h:inputText id="editCronInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).cron}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
 
-<!-- 								<h:outputLabel id="editSourceLabel" for="editSourceInput" -->
-<!-- 									value="Source: " /> -->
+						<!-- 								<h:outputLabel id="editSourceLabel" for="editSourceInput" -->
+						<!-- 									value="Source: " /> -->
 
-<!-- 								<h:selectOneMenu id="editSourceInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).source}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
-<!-- 									<f:selectItems value="#{schedulingDataManager.backends}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
+						<!-- 								<h:selectOneMenu id="editSourceInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).source}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+						<!-- 									<f:selectItems value="#{schedulingDataManager.backends}" /> -->
+						<!-- 									<f:converter converterId="entityConverter" /> -->
+						<!-- 								</h:selectOneMenu> -->
 
-<!-- 								<h:outputLabel id="editTargetLabel" for="editTargetInput" -->
-<!-- 									value="Target: " /> -->
+						<!-- 								<h:outputLabel id="editTargetLabel" for="editTargetInput" -->
+						<!-- 									value="Target: " /> -->
 
-<!-- 								<h:selectOneMenu id="editTargetInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).target}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
-<!-- 									<f:selectItems value="#{schedulingDataManager.backends}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
+						<!-- 								<h:selectOneMenu id="editTargetInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).target}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+						<!-- 									<f:selectItems value="#{schedulingDataManager.backends}" /> -->
+						<!-- 									<f:converter converterId="entityConverter" /> -->
+						<!-- 								</h:selectOneMenu> -->
 
-<!-- 								<h:outputLabel id="editModeLabel" for="editModeInput" -->
-<!-- 									value="Mode: " /> -->
+						<!-- 								<h:outputLabel id="editModeLabel" for="editModeInput" -->
+						<!-- 									value="Mode: " /> -->
 
-<!-- 								<h:selectOneMenu id="editModeInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).mode}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
-<!-- 									<f:selectItems value="#{schedulingDataManager.modes}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
-
-
-<!-- 								<h:outputLabel id="editBankLabel" for="editBankInput" -->
-<!-- 									value="Holiday: " /> -->
-
-<!-- 								<ice:selectBooleanCheckbox id="editBankInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).bankHolidayOnly}" -->
-<!-- 									partialSubmit="true" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}" /> -->
-
-<!-- 								<h:outputLabel id="editJavaLabel" for="editJavaInput" -->
-<!-- 									value="Pollable: " /> -->
-
-<!-- 								<ice:selectBooleanCheckbox id="editJavaInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).javaAgentPollable}" -->
-<!-- 									partialSubmit="true" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}" /> -->
-							
-<!-- 							</h:panelGrid> -->
-							
-<!-- 							<h:panelGrid columns="2" styleClass="left"> -->
-<!-- 							<h:outputLabel id="editCompositeLabel" for="editCompositeInput" -->
-<!-- 									value="Composite: " /> -->
-<!-- 								<h:selectOneMenu id="editCompositeInput" -->
-<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).composite}" -->
-<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
-<!-- 									<f:selectItems value="#{schedulingDataManager.composites}" /> -->
-<!-- 									<f:converter converterId="entityConverter" /> -->
-<!-- 								</h:selectOneMenu> -->
-<!-- 							</h:panelGrid> -->
+						<!-- 								<h:selectOneMenu id="editModeInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).mode}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+						<!-- 									<f:selectItems value="#{schedulingDataManager.modes}" /> -->
+						<!-- 									<f:converter converterId="entityConverter" /> -->
+						<!-- 								</h:selectOneMenu> -->
 
 
-<!-- 							<br /> -->
-<!-- 							<ice:commandButton id="confirm_edit" value="Confirm" -->
-<!-- 								actionListener="#{schedulingDataManager.confirmEdit(schedule)}" -->
-<!-- 								rendered="#{sessionBean.user.editRights}" /> -->
+						<!-- 								<h:outputLabel id="editBankLabel" for="editBankInput" -->
+						<!-- 									value="Holiday: " /> -->
 
-<!-- 							<ice:commandButton id="reset_edit" value="Reset" -->
-<!-- 								actionListener="#{schedulingDataManager.resetEdit(schedule)}" -->
-<!-- 								rendered="#{sessionBean.user.editRights}" /> -->
-								
-<!-- 							<ice:commandButton id="open_in_new_tab_button" value="Open in new tab" -->
-<!-- 							image="resources/images/openinnewtabicon.jpg"  -->
-<!-- 							actionListener="#{schedulingDataManager.addTab(schedule)}"/> -->
-							
-<!-- 							<ace:submitMonitor for="confirm_edit" /> -->
-<!-- 							<ace:submitMonitor for="reset_edit" activeLabel="Resetting" -->
-<!-- 								autoCenter="true" blockUI="@source" /> -->
-<!-- 						</ace:panel> -->
-<!-- 						<br/> -->
-<!-- 						<ace:dataTable id="comment_table" -->
-<!-- 							value="#{schedulingDataManager.commentLists.get(schedule.id)}" -->
-<!-- 							var="comment" paginator="false" rows="5"  emptyMessage=""> -->
-<!-- 							<ace:column id="creation_date" headerText="Date" > -->
-							
-<!-- 								<ice:outputText value="#{comment.creationDate}" /> -->
-<!-- 							</ace:column> -->
-<!-- 							<ace:column id="text" headerText="Text" > -->
-<!-- 								<h:outputText value="#{comment.text}" />	 -->
-<!-- 							</ace:column> -->
-<!-- 						</ace:dataTable> -->
-<!-- 						<br/> -->
-<!-- 						<ace:textEntry id="edit_comment_input" label="Comment: " labelPosition="left" -->
-<!-- 							value="#{schedulingDataManager.editCommentList.get(schedule.id).text}" -->
-<!-- 							rendered="#{sessionBean.user.editRights}" style="margin-right: 10px;"/> -->
-<!-- 						<ice:commandButton id="sumbit_comment" value="Submit" -->
-<!-- 							actionListener="#{schedulingDataManager.submitComment(schedule.id)}" -->
-<!-- 							rendered="#{sessionBean.user.editRights}" /> -->
+						<!-- 								<ice:selectBooleanCheckbox id="editBankInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).bankHolidayOnly}" -->
+						<!-- 									partialSubmit="true" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}" /> -->
+
+						<!-- 								<h:outputLabel id="editJavaLabel" for="editJavaInput" -->
+						<!-- 									value="Pollable: " /> -->
+
+						<!-- 								<ice:selectBooleanCheckbox id="editJavaInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).javaAgentPollable}" -->
+						<!-- 									partialSubmit="true" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}" /> -->
+
+						<!-- 							</h:panelGrid> -->
+
+						<!-- 							<h:panelGrid columns="2" styleClass="left"> -->
+						<!-- 							<h:outputLabel id="editCompositeLabel" for="editCompositeInput" -->
+						<!-- 									value="Composite: " /> -->
+						<!-- 								<h:selectOneMenu id="editCompositeInput" -->
+						<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).composite}" -->
+						<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+						<!-- 									<f:selectItems value="#{schedulingDataManager.composites}" /> -->
+						<!-- 									<f:converter converterId="entityConverter" /> -->
+						<!-- 								</h:selectOneMenu> -->
+						<!-- 							</h:panelGrid> -->
+
+
+						<!-- 							<br /> -->
+						<!-- 							<ice:commandButton id="confirm_edit" value="Confirm" -->
+						<!-- 								actionListener="#{schedulingDataManager.confirmEdit(schedule)}" -->
+						<!-- 								rendered="#{sessionBean.user.editRights}" /> -->
+
+						<!-- 							<ice:commandButton id="reset_edit" value="Reset" -->
+						<!-- 								actionListener="#{schedulingDataManager.resetEdit(schedule)}" -->
+						<!-- 								rendered="#{sessionBean.user.editRights}" /> -->
+
+						<!-- 							<ice:commandButton id="open_in_new_tab_button" value="Open in new tab" -->
+						<!-- 							image="resources/images/openinnewtabicon.jpg"  -->
+						<!-- 							actionListener="#{schedulingDataManager.addTab(schedule)}"/> -->
+
+						<!-- 							<ace:submitMonitor for="confirm_edit" /> -->
+						<!-- 							<ace:submitMonitor for="reset_edit" activeLabel="Resetting" -->
+						<!-- 								autoCenter="true" blockUI="@source" /> -->
+						<!-- 						</ace:panel> -->
+						<!-- 						<br/> -->
+						<!-- 						<ace:dataTable id="comment_table" -->
+						<!-- 							value="#{schedulingDataManager.commentLists.get(schedule.id)}" -->
+						<!-- 							var="comment" paginator="false" rows="5"  emptyMessage=""> -->
+						<!-- 							<ace:column id="creation_date" headerText="Date" > -->
+
+						<!-- 								<ice:outputText value="#{comment.creationDate}" /> -->
+						<!-- 							</ace:column> -->
+						<!-- 							<ace:column id="text" headerText="Text" > -->
+						<!-- 								<h:outputText value="#{comment.text}" />	 -->
+						<!-- 							</ace:column> -->
+						<!-- 						</ace:dataTable> -->
+						<!-- 						<br/> -->
+						<!-- 						<ace:textEntry id="edit_comment_input" label="Comment: " labelPosition="left" -->
+						<!-- 							value="#{schedulingDataManager.editCommentList.get(schedule.id).text}" -->
+						<!-- 							rendered="#{sessionBean.user.editRights}" style="margin-right: 10px;"/> -->
+						<!-- 						<ice:commandButton id="sumbit_comment" value="Submit" -->
+						<!-- 							actionListener="#{schedulingDataManager.submitComment(schedule.id)}" -->
+						<!-- 							rendered="#{sessionBean.user.editRights}" /> -->
 					</ace:panelExpansion>
 				</ace:dataTable>
 
@@ -544,13 +572,16 @@ a:link { text-decoration:underline; }
 			<ace:tabPane id="instance_log" label="Instance Log"
 				rendered="#{sessionBean.user.authenticated}">
 
-				<h:outputText style="float: right;" value="Show skipped"/>
-				<ice:selectBooleanCheckbox tittle="Show skipped" style="float: right;"
-				 value="#{dataMaster.showSkipped}" valueChangeListener="#{dataMaster.showSkippedMethod}" partialSubmit="true"/>
-				<br/>
+				<h:outputText style="float: right;" value="Show skipped" />
+				<ice:selectBooleanCheckbox tittle="Show skipped"
+					style="float: right;" value="#{dataMaster.showSkipped}"
+					valueChangeListener="#{dataMaster.showSkippedMethod}"
+					partialSubmit="true" />
+				<br />
 
-				<ace:dataTable id="instanceTable" value="#{dataMaster.filteredInstances}"
-					var="instance" paginator="true" paginatorPosition="both" 
+				<ace:dataTable id="instanceTable"
+					value="#{dataMaster.filteredInstances}" var="instance"
+					paginator="true" paginatorPosition="both"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,50,100,all" rows="10"
 					stateMap="#{dataMaster.i_stateMap}" selectionMode="multiple"
@@ -561,14 +592,14 @@ a:link { text-decoration:underline; }
 					<ace:column id="i_run_state" headerText="Was run"
 						sortBy="#{instance.statusID}">
 						<h:panelGrid id="i_run_state_Id" columns="1">
-							<h:graphicImage id="failed" library="images"
-								name="erroricon.png" style="height: 30px; width: 30px; "
+							<h:graphicImage id="failed" library="images" name="erroricon.png"
+								style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 1}" />
 							<h:graphicImage id="manual_handling" library="images"
 								name="skippedicon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 2}" />
-							<h:graphicImage id="running" library="images"
-								name="playicon.png" style="height: 30px; width: 30px; "
+							<h:graphicImage id="running" library="images" name="playicon.png"
+								style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 3}" />
 							<h:graphicImage id="started" library="images"
 								name="skippedicon.png" style="height: 30px; width: 30px; "
@@ -580,10 +611,10 @@ a:link { text-decoration:underline; }
 								name="skippedicon.png" style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 6}" />
 						</h:panelGrid>
-<!-- 						<ace:tooltip id="tooltip_skipped_image" for="skipped_image" -->
-<!-- 							value="This instance was not run. Expand view for more information" -->
-<!-- 							showDelay="100" hideDelay="200"> -->
-<!-- 						</ace:tooltip> -->
+						<!-- 						<ace:tooltip id="tooltip_skipped_image" for="skipped_image" -->
+						<!-- 							value="This instance was not run. Expand view for more information" -->
+						<!-- 							showDelay="100" hideDelay="200"> -->
+						<!-- 						</ace:tooltip> -->
 
 						<ace:expansionToggler
 							changeListener="#{dataMaster.instanceExpansion}" />
@@ -615,24 +646,30 @@ a:link { text-decoration:underline; }
 							</h:panelGrid>
 						</ace:panel>
 					</ace:panelExpansion>
-					<ace:column id="i_name" headerText="Name" sortBy="#{instance.process}"
-						filterBy="#{instance.process}" filterMatchMode="contains">
+					<ace:column id="i_name" headerText="Name"
+						sortBy="#{instance.process}" filterBy="#{instance.process}"
+						filterMatchMode="contains">
 						<h:outputText id="i_nameCell" value="#{instance.process}" />
 					</ace:column>
 
 					<ace:column id="i_status" headerText="Status"
-						sortBy="#{instance.statusValue}" filterBy="#{instance.statusValue}"
-						filterMatchMode="contains">
+						sortBy="#{instance.statusValue}"
+						filterBy="#{instance.statusValue}" filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
 							<f:facet name="status">
 								Status
 							</f:facet>
 						</ice:panelGroup>
-							<h:outputText id="i_statusCell" value="#{instance.statusValue}"
-								styleClass="#{instance.statusValue}" rendered="#{not (instance.statusValue eq 'ManualHandling')}"/>
-							<h:outputLink rendered="#{instance.statusValue eq 'ManualHandling'}" value="http://iambrony.jsmart.web.id/mlp/gif/pinkmailbox_hellobye.gif" target="blank">
-								<h:outputText value="#{instance.statusValue}" styleClass="#{instance.statusValue}"/>
-							</h:outputLink>
+						<h:outputText id="i_statusCell" value="#{instance.statusValue}"
+							styleClass="#{instance.statusValue}"
+							rendered="#{not (instance.statusValue eq 'ManualHandling')}" />
+						<h:outputLink
+							rendered="#{instance.statusValue eq 'ManualHandling'}"
+							value="http://iambrony.jsmart.web.id/mlp/gif/pinkmailbox_hellobye.gif"
+							target="blank">
+							<h:outputText value="#{instance.statusValue}"
+								styleClass="#{instance.statusValue}" />
+						</h:outputLink>
 					</ace:column>
 
 					<ace:column id="i_startDate" headerText="StartDate"
@@ -670,249 +707,247 @@ a:link { text-decoration:underline; }
 				rendered="#{sessionBean.user.authenticated}">
 
 			</ace:tabPane>
-			<ace:tabPane id="divider" label=""
-				disabled="true" rendered="#{sessionBean.user.authenticated}"/>
-			 <c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}" var="tab">
-                <ace:tabPane label="#{tab.name}" id="tab_#{tab.scheduling.id}">
-                    <f:subview id="sub_#{tab.scheduling.id}">
-                          		<ace:menuButton id="close_tab_button" value="Close">
-								<ace:menuItem value="This Tab" actionListener="#{schedulingDataManager.removeCurrent(tab)}"/>
-								<ace:menuItem value="All Tabs" actionListener="#{schedulingDataManager.removeAllTabs}"/>
-								<ace:menuItem value="Other Tabs" actionListener="#{schedulingDataManager.removeOtherTabs(tab)}"/>
-							</ace:menuButton>
-                <ace:panel id="details_panel" header="Details">
-                	<h:panelGrid columns="2">
-	                	<ice:outputText value="Name: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.name}"/>
-	                	<ice:outputText value="Description: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.description}"/>
-	                	<ice:outputText value="CRON: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.cron}"/>
-	                	<ice:outputText value="Java Agent Pollable: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.javaAgentPollable}"/>
-	                	<ice:outputText value="Bank Holiday Only: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.bankHolidayOnly}"/>
-	                	<ice:outputText value="Source: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.sourceName}"/>
-	                	<ice:outputText value="Target: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.targetName}"/>
-	                	<ice:outputText value="Mode: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.modeValue}"/>
-	                	<ice:outputText value="Composite: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.compositeText}"/>
-	                	<ice:outputText value="RequestURL: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.requestURL}"/>
-	                	<ice:outputText value="Contacts: " styleClass="bold"/>
-	                	<ice:outputText value="#{tab.scheduling.contacts}"/>
-                	</h:panelGrid>
-                </ace:panel>
-                <br/>
-				<ace:panel id="edit_panel" header="Edit" rendered="#{sessionBean.user.editRights}">
-						<h:panelGrid id="edit_grid" columns="6">
-							<h:outputLabel for="tab_name_input" value="Name: " />
-							<h:inputText id="tab_name_input"
-								value="#{tab.builder.name}" />
-							<h:outputLabel for="tab_desc_input"
-								value="Description: " />
-							<h:inputText id="tab_desc_input"
-								value="#{tab.builder.description}" />
-							<h:outputLabel  for="tab_cron_input" value="CRON: " />
-							<h:inputText id="tab_cron_input"
-								value="#{tab.builder.cron}" />
-							<h:outputLabel for="tab_source_input"
-								value="Source: " />
-							<h:selectOneMenu id="tab_source_input"
-								value="#{tab.builder.source}">
-								<f:selectItems value="#{schedulingDataManager.backends}" />
-								<f:converter converterId="entityConverter" />
-							</h:selectOneMenu>
-							<h:outputLabel for="tab_target_input"
-								value="Target: " />
-							<h:selectOneMenu id="tab_target_input"
-								value="#{tab.builder.target}">
-								<f:selectItems value="#{schedulingDataManager.backends}" />
-								<f:converter converterId="entityConverter" />
-							</h:selectOneMenu>
-							<h:outputLabel for="tab_mode_input" value="Mode: " />
-							<h:selectOneMenu id="tab_mode_input"
-								value="#{tab.builder.mode}">
-								<f:selectItems value="#{schedulingDataManager.modes}" />
-								<f:converter converterId="entityConverter" />
-							</h:selectOneMenu>
-							<h:outputLabel for="tab_requestURL_input" value="Request URL: "/>
-							<h:inputText id="tab_requestURL_input"
-								value="#{tab.builder.requestURL}" />
-							<h:outputLabel for="tab_bank_input" value="Holiday: " />
-							<h:selectBooleanCheckbox id="tab_bank_input"
-								value="#{tab.builder.bankHolidayOnly}" />
-
-							<h:outputLabel for="tab_java_input" value="Pollable: " />
-							<h:selectBooleanCheckbox id="tab_java_input"
-								value="#{tab.builder.javaAgentPollable}"
-								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
-							<h:outputLabel for="tab_contacts_input" value="Contacts: "/>
-							<h:inputText id="tab_contacts_input"
-								value="#{tab.builder.contacts}" />
-						</h:panelGrid>
-						<h:panelGrid columns="2">
-						<h:outputLabel for="tab_composite_input"
-								value="Composite: " />
-							<ice:selectOneMenu id="tab_composite_input"
-								value="#{tab.builder.composite}"
-								partialSubmit="true">
-								<f:selectItems value="#{schedulingDataManager.composites}" />
-								<f:converter converterId="entityConverter" />
-							</ice:selectOneMenu>
-						</h:panelGrid>
-						<ice:commandButton id="tab_confirm_edit" value="Confirm"
-							actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
-						<ice:commandButton id="tab_reset_edit" value="Reset"
-							actionListener="#{tab.reset}" />
-						<pre>
-							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
-								rendered="#{schedulingDataManager.showEditError}"
-								styleClass="red" />
-						</pre>
-						<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
-							autoCenter="true" blockUI="@source" />
-				</ace:panel>
-				<br/>
-				<ace:panel id="instances_panel" header="Instances">
-                <br/>
-                <ace:dataTable id="tab_instance_table" value="#{tab.instances}"
-					var="instance" paginator="false" rows="5" emptyMessage="-- No Instances --">
-
-					<ace:column id="tab_run_state" headerText="Was run"
-						sortBy="#{instance.statusID}">
-					<h:panelGrid id="i_run_state_Id" columns="1">
-							<h:graphicImage id="failed" library="images"
-								name="erroricon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID eq 1}" />
-							<h:graphicImage id="manual_handling" library="images"
-								name="skippedicon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID eq 2}" />
-							<h:graphicImage id="running" library="images"
-								name="playicon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID eq 3}" />
-							<h:graphicImage id="started" library="images"
-								name="skippedicon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID eq 4}" />
-							<h:graphicImage id="completed" library="images"
-								name="correcticon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID eq 5}" />
-							<h:graphicImage id="skipped" library="images"
-								name="skippedicon.png" style="height: 30px; width: 30px; "
-								rendered="#{instance.statusID eq 6}" />
-						</h:panelGrid>
-						<ace:expansionToggler/>
-					</ace:column>
-					<ace:panelExpansion>
-						<ace:panel styleClass="instanceleft">
-							<h:panelGrid id="instanceGrid" columns="4">
-
-								<h:outputLabel value="Error Message:" />
-								<h:outputText id="tab_instance_message"
-									value="#{instance.message}"
-									styleClass="instanceleft" />
-
-								<h:outputLabel value="Composite: " />
-								<h:outputText id="tab_instance_composite"
-									value="#{instance.name}"
-									styleClass="instanceleft" />
-
-								<h:outputLabel value="Input files:" />
-								<h:outputText id="tab_input_files"
-									value="#{instance.inputFileName}"
-									styleClass="instanceleft" />
-
-								<h:outputLabel value="Output files:" />
-								<h:outputText id="tab_output_files"
-									value="#{instance.outputFileName}"
-									styleClass="instanceleft" />
-
+			<ace:tabPane id="divider" label="" disabled="true"
+				rendered="#{sessionBean.user.authenticated}" />
+			<c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}"
+				var="tab">
+				<ace:tabPane label="#{tab.name}" id="tab_#{tab.scheduling.id}">
+					<f:subview id="sub_#{tab.scheduling.id}">
+						<ace:menuButton id="close_tab_button" value="Close">
+							<ace:menuItem value="This Tab"
+								actionListener="#{schedulingDataManager.removeCurrent(tab)}" />
+							<ace:menuItem value="All Tabs"
+								actionListener="#{schedulingDataManager.removeAllTabs}" />
+							<ace:menuItem value="Other Tabs"
+								actionListener="#{schedulingDataManager.removeOtherTabs(tab)}" />
+						</ace:menuButton>
+						<ace:panel id="details_panel" header="Details">
+							<h:panelGrid columns="2">
+								<ice:outputText value="Name: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.name}" />
+								<ice:outputText value="Description: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.description}" />
+								<ice:outputText value="CRON: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.cron}" />
+								<ice:outputText value="Java Agent Pollable: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.javaAgentPollable}" />
+								<ice:outputText value="Bank Holiday Only: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.bankHolidayOnly}" />
+								<ice:outputText value="Source: " styleClass="bold" />
+								<ice:outputText value="#{tab.sourceName}" />
+								<ice:outputText value="Target: " styleClass="bold" />
+								<ice:outputText value="#{tab.targetName}" />
+								<ice:outputText value="Mode: " styleClass="bold" />
+								<ice:outputText value="#{tab.modeValue}" />
+								<ice:outputText value="Composite: " styleClass="bold" />
+								<ice:outputText value="#{tab.compositeText}" />
+								<ice:outputText value="RequestURL: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.requestURL}" />
+								<ice:outputText value="Contacts: " styleClass="bold" />
+								<ice:outputText value="#{tab.scheduling.contacts}" />
 							</h:panelGrid>
 						</ace:panel>
-					</ace:panelExpansion>
-					<ace:column id="tab_instance_name" headerText="Name" sortBy="#{instance.process}"
-						filterBy="#{instance.process}" filterMatchMode="contains">
-						<h:outputText id="tab_nameCell" value="#{instance.process}" />
-					</ace:column>
+						<br />
+						<ace:panel id="edit_panel" header="Edit"
+							rendered="#{sessionBean.user.editRights}">
+							<h:panelGrid id="edit_grid" columns="6">
+								<h:outputLabel for="tab_name_input" value="Name: " />
+								<h:inputText id="tab_name_input" value="#{tab.builder.name}" />
+								<h:outputLabel for="tab_desc_input" value="Description: " />
+								<h:inputText id="tab_desc_input"
+									value="#{tab.builder.description}" />
+								<h:outputLabel for="tab_cron_input" value="CRON: " />
+								<h:inputText id="tab_cron_input" value="#{tab.builder.cron}" />
+								<h:outputLabel for="tab_source_input" value="Source: " />
+								<h:selectOneMenu id="tab_source_input"
+									value="#{tab.builder.source}">
+									<f:selectItems value="#{schedulingDataManager.backends}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
+								<h:outputLabel for="tab_target_input" value="Target: " />
+								<h:selectOneMenu id="tab_target_input"
+									value="#{tab.builder.target}">
+									<f:selectItems value="#{schedulingDataManager.backends}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
+								<h:outputLabel for="tab_mode_input" value="Mode: " />
+								<h:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
+									<f:selectItems value="#{schedulingDataManager.modes}" />
+									<f:converter converterId="entityConverter" />
+								</h:selectOneMenu>
+								<h:outputLabel for="tab_requestURL_input" value="Request URL: " />
+								<h:inputText id="tab_requestURL_input"
+									value="#{tab.builder.requestURL}" />
+								<h:outputLabel for="tab_bank_input" value="Holiday: " />
+								<h:selectBooleanCheckbox id="tab_bank_input"
+									value="#{tab.builder.bankHolidayOnly}" />
 
-					<ace:column id="i_statusID" headerText="Status"
-						sortBy="#{instance.statusValue}" filterBy="#{instance.statusValue}"
-						filterMatchMode="contains">
-						<ice:panelGroup style="width:100px;">
-							<f:facet name="status">
+								<h:outputLabel for="tab_java_input" value="Pollable: " />
+								<h:selectBooleanCheckbox id="tab_java_input"
+									value="#{tab.builder.javaAgentPollable}"
+									disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
+								<h:outputLabel for="tab_contacts_input" value="Contacts: " />
+								<h:inputText id="tab_contacts_input"
+									value="#{tab.builder.contacts}" />
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:outputLabel for="tab_composite_input" value="Composite: " />
+								<ice:selectOneMenu id="tab_composite_input"
+									value="#{tab.builder.composite}" partialSubmit="true">
+									<f:selectItems value="#{schedulingDataManager.composites}" />
+									<f:converter converterId="entityConverter" />
+								</ice:selectOneMenu>
+							</h:panelGrid>
+							<ice:commandButton id="tab_confirm_edit" value="Confirm"
+								actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
+							<ice:commandButton id="tab_reset_edit" value="Reset"
+								actionListener="#{tab.reset}" />
+							<pre>
+							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
+									rendered="#{schedulingDataManager.showEditError}"
+									styleClass="red" />
+						</pre>
+							<ace:submitMonitor for="tab_confirm_edit"
+								activeLabel="Confirming" autoCenter="true" blockUI="@source" />
+						</ace:panel>
+						<br />
+						<ace:panel id="instances_panel" header="Instances">
+							<br />
+							<ace:dataTable id="tab_instance_table" value="#{tab.instances}"
+								var="instance" paginator="false" rows="5"
+								emptyMessage="-- No Instances --">
+
+								<ace:column id="tab_run_state" headerText="Was run"
+									sortBy="#{instance.statusID}">
+									<h:panelGrid id="i_run_state_Id" columns="1">
+										<h:graphicImage id="failed" library="images"
+											name="erroricon.png" style="height: 30px; width: 30px; "
+											rendered="#{instance.statusID eq 1}" />
+										<h:graphicImage id="manual_handling" library="images"
+											name="skippedicon.png" style="height: 30px; width: 30px; "
+											rendered="#{instance.statusID eq 2}" />
+										<h:graphicImage id="running" library="images"
+											name="playicon.png" style="height: 30px; width: 30px; "
+											rendered="#{instance.statusID eq 3}" />
+										<h:graphicImage id="started" library="images"
+											name="skippedicon.png" style="height: 30px; width: 30px; "
+											rendered="#{instance.statusID eq 4}" />
+										<h:graphicImage id="completed" library="images"
+											name="correcticon.png" style="height: 30px; width: 30px; "
+											rendered="#{instance.statusID eq 5}" />
+										<h:graphicImage id="skipped" library="images"
+											name="skippedicon.png" style="height: 30px; width: 30px; "
+											rendered="#{instance.statusID eq 6}" />
+									</h:panelGrid>
+									<ace:expansionToggler />
+								</ace:column>
+								<ace:panelExpansion>
+									<ace:panel styleClass="instanceleft">
+										<h:panelGrid id="instanceGrid" columns="4">
+
+											<h:outputLabel value="Error Message:" />
+											<h:outputText id="tab_instance_message"
+												value="#{instance.message}" styleClass="instanceleft" />
+
+											<h:outputLabel value="Composite: " />
+											<h:outputText id="tab_instance_composite"
+												value="#{instance.name}" styleClass="instanceleft" />
+
+											<h:outputLabel value="Input files:" />
+											<h:outputText id="tab_input_files"
+												value="#{instance.inputFileName}" styleClass="instanceleft" />
+
+											<h:outputLabel value="Output files:" />
+											<h:outputText id="tab_output_files"
+												value="#{instance.outputFileName}" styleClass="instanceleft" />
+
+										</h:panelGrid>
+									</ace:panel>
+								</ace:panelExpansion>
+								<ace:column id="tab_instance_name" headerText="Name"
+									sortBy="#{instance.process}" filterBy="#{instance.process}"
+									filterMatchMode="contains">
+									<h:outputText id="tab_nameCell" value="#{instance.process}" />
+								</ace:column>
+
+								<ace:column id="i_statusID" headerText="Status"
+									sortBy="#{instance.statusValue}"
+									filterBy="#{instance.statusValue}" filterMatchMode="contains">
+									<ice:panelGroup style="width:100px;">
+										<f:facet name="status">
 								Status
 							</f:facet>
-						</ice:panelGroup>
-							<h:outputText id="i_statusCell" value="#{instance.statusValue}"
-								styleClass="#{instance.statusValue}"/>
-					</ace:column>
+									</ice:panelGroup>
+									<h:outputText id="i_statusCell" value="#{instance.statusValue}"
+										styleClass="#{instance.statusValue}" />
+								</ace:column>
 
-					<ace:column id="tab_startDate" headerText="StartDate"
-						sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
-						filterMatchMode="contains">
-						<h:outputText id="tab_startDateCell" value="#{instance.startDate}" />
-					</ace:column>
+								<ace:column id="tab_startDate" headerText="StartDate"
+									sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
+									filterMatchMode="contains">
+									<h:outputText id="tab_startDateCell"
+										value="#{instance.startDate}" />
+								</ace:column>
 
-					<ace:column id="tab_endDate" headerText="EndDate"
-						sortBy="#{instance.endDate}" filterBy="#{instance.endDate}"
-						filterMatchMode="contains">
-						<h:outputText id="tab_endDateCell" value="#{instance.endDate}" />
-					</ace:column>
+								<ace:column id="tab_endDate" headerText="EndDate"
+									sortBy="#{instance.endDate}" filterBy="#{instance.endDate}"
+									filterMatchMode="contains">
+									<h:outputText id="tab_endDateCell" value="#{instance.endDate}" />
+								</ace:column>
 
-					<ace:column id="tab_inputFileAmmount" headerText="InputFiles"
-						sortBy="#{instance.inputFileAmmount}"
-						filterBy="#{instance.inputFileAmmount}" filterMatchMode="contains">
-						<h:outputText id="tab_inputFileAmmountCell"
-							value="#{instance.inputFileAmmount}" />
-					</ace:column>
+								<ace:column id="tab_inputFileAmmount" headerText="InputFiles"
+									sortBy="#{instance.inputFileAmmount}"
+									filterBy="#{instance.inputFileAmmount}"
+									filterMatchMode="contains">
+									<h:outputText id="tab_inputFileAmmountCell"
+										value="#{instance.inputFileAmmount}" />
+								</ace:column>
 
-					<ace:column id="tab_outputFileAmmount" headerText="OutputFiles"
-						sortBy="#{instance.outputFileAmmount}"
-						filterBy="#{instance.outputFileAmmount}"
-						filterMatchMode="contains">
-						<h:outputText id="tab_outputFileAmmountCell"
-							value="#{instance.outputFileAmmount}" />
-					</ace:column>
+								<ace:column id="tab_outputFileAmmount" headerText="OutputFiles"
+									sortBy="#{instance.outputFileAmmount}"
+									filterBy="#{instance.outputFileAmmount}"
+									filterMatchMode="contains">
+									<h:outputText id="tab_outputFileAmmountCell"
+										value="#{instance.outputFileAmmount}" />
+								</ace:column>
 
-				</ace:dataTable>
-                 </ace:panel>       
-                <br/>	
- 				<ace:panel id="comments_panel" header="Comments">
-                        <ace:dataTable id="tab_comment_table"
-							value="#{tab.comments}"
-							var="comment" paginator="false" rows="5"  emptyMessage="-- No Comments --">
-							<ace:column id="tab_creation_date" headerText="Date" >
-							
-								<ice:outputText value="#{comment.creationDate}" />
-							</ace:column>
-							<ace:column id="tab_text" headerText="Text" >
-								<h:outputText value="#{comment.text}" />	
-							</ace:column>
-						</ace:dataTable>
-						<br/>
-						<ace:textEntry id="tab_edit_comment_input" label="Comment: " labelPosition="left"
-							value="#{tab.addComment.text}"
-							rendered="#{sessionBean.user.editRights}" style="margin-right: 10px;"/>
-						<ice:commandButton id="tab_sumbit_comment" value="Submit"
-							actionListener="#{schedulingDataManager.submitComment(tab)}"
-							rendered="#{sessionBean.user.editRights}" />
-					</ace:panel>
-                    </f:subview>
-                   
-                </ace:tabPane>
-                
-            </c:forEach>
-			
-			<ace:tabPane id="second_divider" label=""
-				disabled="true" rendered="#{sessionBean.user.authenticated}"/>
+							</ace:dataTable>
+						</ace:panel>
+						<br />
+						<ace:panel id="comments_panel" header="Comments">
+							<ace:dataTable id="tab_comment_table" value="#{tab.comments}"
+								var="comment" paginator="false" rows="5"
+								emptyMessage="-- No Comments --">
+								<ace:column id="tab_creation_date" headerText="Date">
+
+									<ice:outputText value="#{comment.creationDate}" />
+								</ace:column>
+								<ace:column id="tab_text" headerText="Text">
+									<h:outputText value="#{comment.text}" />
+								</ace:column>
+							</ace:dataTable>
+							<br />
+							<ace:textEntry id="tab_edit_comment_input" label="Comment: "
+								labelPosition="left" value="#{tab.addComment.text}"
+								rendered="#{sessionBean.user.editRights}"
+								style="margin-right: 10px;" />
+							<ice:commandButton id="tab_sumbit_comment" value="Submit"
+								actionListener="#{schedulingDataManager.submitComment(tab)}"
+								rendered="#{sessionBean.user.editRights}" />
+						</ace:panel>
+					</f:subview>
+
+				</ace:tabPane>
+
+			</c:forEach>
+
+			<ace:tabPane id="second_divider" label="" disabled="true"
+				rendered="#{sessionBean.user.authenticated}" />
 
 			<ace:tabPane id="log_out" label="Log out"
 				rendered="#{sessionBean.user.authenticated}" />
-				
-			
+
+
 		</ace:tabSet>
 
 	</h:form>
