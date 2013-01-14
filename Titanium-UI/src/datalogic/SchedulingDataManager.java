@@ -162,59 +162,6 @@ public class SchedulingDataManager {
 	}
 
 	/**
-	 * Method to be called from the UI when a row is expanded or closed to
-	 * initialize or clear the needed buffers for {@link Comment} and
-	 * {@link SchedulingBuilder} instances. The {@link ExpansionChangeEvent}
-	 * passed as a parameter contains the Scheduling corresponding to the row.
-	 */
-	public void expansion(ExpansionChangeEvent e) {
-
-		// Retrieve the Scheduling corresponding to the row
-		Scheduling s = (Scheduling) e.getRowData();
-
-		if (e.isExpanded()) {
-
-			/*
-			 * Initialize the editing for this row by creating a new
-			 * SchedulingBuilder and adding it to the editBuffer with the ID of
-			 * the corresponding Scheduling as its key
-			 */
-			this.editBuffer.put(s.getId(), new SchedulingBuilder(s));
-
-			/*
-			 * Retrieve the last five Comments of this Scheduling from the
-			 * database and add them to the HashMap of lists with the ID of the
-			 * Scheduling as key
-			 */
-			this.commentLists.put(s.getId(), this.session.getConnector()
-					.getLastComments(s.getId()));
-
-			/*
-			 * Create a new empty comment, set its SchedulingID to match this
-			 * Scheduling and add it to the comment buffer
-			 */
-			Comment c = new Comment();
-			this.editCommentList.put(s.getId(), c);
-
-			/*
-			 * Since we just expanded a new row, we want to clear all error
-			 * messages that would be shown in it
-			 */
-			this.showEditError = false;
-		} else {
-			/*
-			 * When the row is closed, we remove the SchedulingBuilder from the
-			 * editBuffer so it doesn't keep the changes that were made. We also
-			 * clear the list of comments assigned to this row so it will be
-			 * refreshed when the row is expanded again
-			 */
-			this.commentLists.remove(s.getId());
-			this.editBuffer.remove(s.getId());
-
-		}
-	}
-
-	/**
 	 * Method to be called from the UI when the edit of a {@link Scheduling} is
 	 * to be confirmed
 	 */
