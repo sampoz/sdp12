@@ -257,6 +257,9 @@ a:link { text-decoration:underline; }
 								<f:selectItems value="#{schedulingDataManager.modes}" />
 								<f:converter converterId="entityConverter" />
 							</h:selectOneMenu>
+							<h:outputLabel for="requestURL_input" value="Request URL: "/>
+							<h:inputText id="requestURL_input"
+								value="#{schedulingDataManager.builder.requestURL}" />
 							<h:outputLabel id="bankLabel" for="bankInput" value="Holiday: " />
 							<h:selectBooleanCheckbox id="bankInput"
 								value="#{schedulingDataManager.builder.bankHolidayOnly}" />
@@ -265,6 +268,10 @@ a:link { text-decoration:underline; }
 							<h:selectBooleanCheckbox id="javaInput"
 								value="#{schedulingDataManager.builder.javaAgentPollable}"
 								disabled="#{schedulingDataManager.builder.composite.javaAgentPollable eq 0}" />
+								<h:outputLabel for="contacts_input" value="Contacts: "/>
+							<h:outputLabel for="contacts_input" value="Contacts: " />
+							<h:inputText id="contacts_input"
+								value="#{schedulingDataManager.builder.contacts}" />
 						</h:panelGrid>
 						<h:panelGrid columns="2">
 						<h:outputLabel id="compositeLabel" for="compositeInput"
@@ -400,133 +407,133 @@ a:link { text-decoration:underline; }
 					</ace:column>
 
 					<ace:panelExpansion>
-						<ace:panel id="edit_panel" header="Edit" >
+<!-- 						<ace:panel id="edit_panel" header="Edit" > -->
 
-							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
-								rendered="#{schedulingDataManager.showEditError}"
-								styleClass="red" />
+<!-- 							<ice:outputText value="#{schedulingDataManager.editErrorMessage}" -->
+<!-- 								rendered="#{schedulingDataManager.showEditError}" -->
+<!-- 								styleClass="red" /> -->
 
-							<h:panelGrid id="editGrid" columns="6"
-								 styleClass="left">
+<!-- 							<h:panelGrid id="editGrid" columns="6" -->
+<!-- 								 styleClass="left"> -->
 
-								<h:outputLabel id="editNameLabel" for="editNameInput"
-									value="Name: " />
+<!-- 								<h:outputLabel id="editNameLabel" for="editNameInput" -->
+<!-- 									value="Name: " /> -->
 
-								<h:inputText id="editNameInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).name}"
-									disabled="#{not sessionBean.user.editRights}" styleClass="left"/>
+<!-- 								<h:inputText id="editNameInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).name}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
 
-								<h:outputLabel id="editDescLabel" for="editDescInput"
-									value="Description: " />
+<!-- 								<h:outputLabel id="editDescLabel" for="editDescInput" -->
+<!-- 									value="Description: " /> -->
 
-								<h:inputText id="editDescInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).description}"
-									disabled="#{not sessionBean.user.editRights}" styleClass="left"/>
+<!-- 								<h:inputText id="editDescInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).description}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
 
-								<h:outputLabel id="editCronLabel" for="editCronInput"
-									value="CRON: " />
+<!-- 								<h:outputLabel id="editCronLabel" for="editCronInput" -->
+<!-- 									value="CRON: " /> -->
 
-								<h:inputText id="editCronInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).cron}"
-									disabled="#{not sessionBean.user.editRights}" styleClass="left"/>
+<!-- 								<h:inputText id="editCronInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).cron}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}" styleClass="left"/> -->
 
-								<h:outputLabel id="editSourceLabel" for="editSourceInput"
-									value="Source: " />
+<!-- 								<h:outputLabel id="editSourceLabel" for="editSourceInput" -->
+<!-- 									value="Source: " /> -->
 
-								<h:selectOneMenu id="editSourceInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).source}"
-									disabled="#{not sessionBean.user.editRights}">
-									<f:selectItems value="#{schedulingDataManager.backends}" />
-									<f:converter converterId="entityConverter" />
-								</h:selectOneMenu>
+<!-- 								<h:selectOneMenu id="editSourceInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).source}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+<!-- 									<f:selectItems value="#{schedulingDataManager.backends}" /> -->
+<!-- 									<f:converter converterId="entityConverter" /> -->
+<!-- 								</h:selectOneMenu> -->
 
-								<h:outputLabel id="editTargetLabel" for="editTargetInput"
-									value="Target: " />
+<!-- 								<h:outputLabel id="editTargetLabel" for="editTargetInput" -->
+<!-- 									value="Target: " /> -->
 
-								<h:selectOneMenu id="editTargetInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).target}"
-									disabled="#{not sessionBean.user.editRights}">
-									<f:selectItems value="#{schedulingDataManager.backends}" />
-									<f:converter converterId="entityConverter" />
-								</h:selectOneMenu>
+<!-- 								<h:selectOneMenu id="editTargetInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).target}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+<!-- 									<f:selectItems value="#{schedulingDataManager.backends}" /> -->
+<!-- 									<f:converter converterId="entityConverter" /> -->
+<!-- 								</h:selectOneMenu> -->
 
-								<h:outputLabel id="editModeLabel" for="editModeInput"
-									value="Mode: " />
+<!-- 								<h:outputLabel id="editModeLabel" for="editModeInput" -->
+<!-- 									value="Mode: " /> -->
 
-								<h:selectOneMenu id="editModeInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).mode}"
-									disabled="#{not sessionBean.user.editRights}">
-									<f:selectItems value="#{schedulingDataManager.modes}" />
-									<f:converter converterId="entityConverter" />
-								</h:selectOneMenu>
+<!-- 								<h:selectOneMenu id="editModeInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).mode}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+<!-- 									<f:selectItems value="#{schedulingDataManager.modes}" /> -->
+<!-- 									<f:converter converterId="entityConverter" /> -->
+<!-- 								</h:selectOneMenu> -->
 
 
-								<h:outputLabel id="editBankLabel" for="editBankInput"
-									value="Holiday: " />
+<!-- 								<h:outputLabel id="editBankLabel" for="editBankInput" -->
+<!-- 									value="Holiday: " /> -->
 
-								<ice:selectBooleanCheckbox id="editBankInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).bankHolidayOnly}"
-									partialSubmit="true"
-									disabled="#{not sessionBean.user.editRights}" />
+<!-- 								<ice:selectBooleanCheckbox id="editBankInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).bankHolidayOnly}" -->
+<!-- 									partialSubmit="true" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}" /> -->
 
-								<h:outputLabel id="editJavaLabel" for="editJavaInput"
-									value="Pollable: " />
+<!-- 								<h:outputLabel id="editJavaLabel" for="editJavaInput" -->
+<!-- 									value="Pollable: " /> -->
 
-								<ice:selectBooleanCheckbox id="editJavaInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).javaAgentPollable}"
-									partialSubmit="true"
-									disabled="#{not sessionBean.user.editRights}" />
+<!-- 								<ice:selectBooleanCheckbox id="editJavaInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).javaAgentPollable}" -->
+<!-- 									partialSubmit="true" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}" /> -->
 							
-							</h:panelGrid>
+<!-- 							</h:panelGrid> -->
 							
-							<h:panelGrid columns="2" styleClass="left">
-							<h:outputLabel id="editCompositeLabel" for="editCompositeInput"
-									value="Composite: " />
-								<h:selectOneMenu id="editCompositeInput"
-									value="#{schedulingDataManager.editBuffer.get(schedule.id).composite}"
-									disabled="#{not sessionBean.user.editRights}">
-									<f:selectItems value="#{schedulingDataManager.composites}" />
-									<f:converter converterId="entityConverter" />
-								</h:selectOneMenu>
-							</h:panelGrid>
+<!-- 							<h:panelGrid columns="2" styleClass="left"> -->
+<!-- 							<h:outputLabel id="editCompositeLabel" for="editCompositeInput" -->
+<!-- 									value="Composite: " /> -->
+<!-- 								<h:selectOneMenu id="editCompositeInput" -->
+<!-- 									value="#{schedulingDataManager.editBuffer.get(schedule.id).composite}" -->
+<!-- 									disabled="#{not sessionBean.user.editRights}"> -->
+<!-- 									<f:selectItems value="#{schedulingDataManager.composites}" /> -->
+<!-- 									<f:converter converterId="entityConverter" /> -->
+<!-- 								</h:selectOneMenu> -->
+<!-- 							</h:panelGrid> -->
 
 
-							<br />
-							<ice:commandButton id="confirm_edit" value="Confirm"
-								actionListener="#{schedulingDataManager.confirmEdit(schedule)}"
-								rendered="#{sessionBean.user.editRights}" />
+<!-- 							<br /> -->
+<!-- 							<ice:commandButton id="confirm_edit" value="Confirm" -->
+<!-- 								actionListener="#{schedulingDataManager.confirmEdit(schedule)}" -->
+<!-- 								rendered="#{sessionBean.user.editRights}" /> -->
 
-							<ice:commandButton id="reset_edit" value="Reset"
-								actionListener="#{schedulingDataManager.resetEdit(schedule)}"
-								rendered="#{sessionBean.user.editRights}" />
+<!-- 							<ice:commandButton id="reset_edit" value="Reset" -->
+<!-- 								actionListener="#{schedulingDataManager.resetEdit(schedule)}" -->
+<!-- 								rendered="#{sessionBean.user.editRights}" /> -->
 								
-							<ice:commandButton id="open_in_new_tab_button" value="Open in new tab"
-							image="resources/images/openinnewtabicon.jpg" 
-							actionListener="#{schedulingDataManager.addTab(schedule)}"/>
+<!-- 							<ice:commandButton id="open_in_new_tab_button" value="Open in new tab" -->
+<!-- 							image="resources/images/openinnewtabicon.jpg"  -->
+<!-- 							actionListener="#{schedulingDataManager.addTab(schedule)}"/> -->
 							
-							<ace:submitMonitor for="confirm_edit" />
-							<ace:submitMonitor for="reset_edit" activeLabel="Resetting"
-								autoCenter="true" blockUI="@source" />
-						</ace:panel>
-						<br/>
-						<ace:dataTable id="comment_table"
-							value="#{schedulingDataManager.commentLists.get(schedule.id)}"
-							var="comment" paginator="false" rows="5"  emptyMessage="-- No Comments --">
-							<ace:column id="creation_date" headerText="Date" >
+<!-- 							<ace:submitMonitor for="confirm_edit" /> -->
+<!-- 							<ace:submitMonitor for="reset_edit" activeLabel="Resetting" -->
+<!-- 								autoCenter="true" blockUI="@source" /> -->
+<!-- 						</ace:panel> -->
+<!-- 						<br/> -->
+<!-- 						<ace:dataTable id="comment_table" -->
+<!-- 							value="#{schedulingDataManager.commentLists.get(schedule.id)}" -->
+<!-- 							var="comment" paginator="false" rows="5"  emptyMessage=""> -->
+<!-- 							<ace:column id="creation_date" headerText="Date" > -->
 							
-								<ice:outputText value="#{comment.creationDate}" />
-							</ace:column>
-							<ace:column id="text" headerText="Text" >
-								<h:outputText value="#{comment.text}" />	
-							</ace:column>
-						</ace:dataTable>
-						<br/>
-						<ace:textEntry id="edit_comment_input" label="Comment: " labelPosition="left"
-							value="#{schedulingDataManager.editCommentList.get(schedule.id).text}"
-							rendered="#{sessionBean.user.editRights}" style="margin-right: 10px;"/>
-						<ice:commandButton id="sumbit_comment" value="Submit"
-							actionListener="#{schedulingDataManager.submitComment(schedule.id)}"
-							rendered="#{sessionBean.user.editRights}" />
+<!-- 								<ice:outputText value="#{comment.creationDate}" /> -->
+<!-- 							</ace:column> -->
+<!-- 							<ace:column id="text" headerText="Text" > -->
+<!-- 								<h:outputText value="#{comment.text}" />	 -->
+<!-- 							</ace:column> -->
+<!-- 						</ace:dataTable> -->
+<!-- 						<br/> -->
+<!-- 						<ace:textEntry id="edit_comment_input" label="Comment: " labelPosition="left" -->
+<!-- 							value="#{schedulingDataManager.editCommentList.get(schedule.id).text}" -->
+<!-- 							rendered="#{sessionBean.user.editRights}" style="margin-right: 10px;"/> -->
+<!-- 						<ice:commandButton id="sumbit_comment" value="Submit" -->
+<!-- 							actionListener="#{schedulingDataManager.submitComment(schedule.id)}" -->
+<!-- 							rendered="#{sessionBean.user.editRights}" /> -->
 					</ace:panelExpansion>
 				</ace:dataTable>
 
@@ -693,52 +700,62 @@ a:link { text-decoration:underline; }
 	                	<ice:outputText value="#{tab.modeValue}"/>
 	                	<ice:outputText value="Composite: " styleClass="bold"/>
 	                	<ice:outputText value="#{tab.compositeText}"/>
+	                	<ice:outputText value="RequestURL: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.requestURL}"/>
+	                	<ice:outputText value="Contacts: " styleClass="bold"/>
+	                	<ice:outputText value="#{tab.scheduling.contacts}"/>
                 	</h:panelGrid>
                 </ace:panel>
                 <br/>
-				<ace:panel id="edit_panel" header="Edit">
+				<ace:panel id="edit_panel" header="Edit" rendered="#{sessionBean.user.editRights}">
 						<h:panelGrid id="edit_grid" columns="6">
-							<h:outputLabel id="tab_name_label" for="tab_name_input" value="Name: " />
+							<h:outputLabel for="tab_name_input" value="Name: " />
 							<h:inputText id="tab_name_input"
 								value="#{tab.builder.name}" />
-							<h:outputLabel id="tab_desc_label" for="tab_desc_input"
+							<h:outputLabel for="tab_desc_input"
 								value="Description: " />
 							<h:inputText id="tab_desc_input"
 								value="#{tab.builder.description}" />
-							<h:outputLabel id="tab_cron_label" for="tab_cron_input" value="CRON: " />
+							<h:outputLabel  for="tab_cron_input" value="CRON: " />
 							<h:inputText id="tab_cron_input"
 								value="#{tab.builder.cron}" />
-							<h:outputLabel id="tab_source_label" for="tab_source_input"
+							<h:outputLabel for="tab_source_input"
 								value="Source: " />
 							<h:selectOneMenu id="tab_source_input"
 								value="#{tab.builder.source}">
 								<f:selectItems value="#{schedulingDataManager.backends}" />
 								<f:converter converterId="entityConverter" />
 							</h:selectOneMenu>
-							<h:outputLabel id="tab_target_label" for="tab_target_input"
+							<h:outputLabel for="tab_target_input"
 								value="Target: " />
 							<h:selectOneMenu id="tab_target_input"
 								value="#{tab.builder.target}">
 								<f:selectItems value="#{schedulingDataManager.backends}" />
 								<f:converter converterId="entityConverter" />
 							</h:selectOneMenu>
-							<h:outputLabel id="tab_mode_label" for="tab_mode_input" value="Mode: " />
+							<h:outputLabel for="tab_mode_input" value="Mode: " />
 							<h:selectOneMenu id="tab_mode_input"
 								value="#{tab.builder.mode}">
 								<f:selectItems value="#{schedulingDataManager.modes}" />
 								<f:converter converterId="entityConverter" />
 							</h:selectOneMenu>
-							<h:outputLabel id="tab_bank_label" for="tab_bank_input" value="Holiday: " />
+							<h:outputLabel for="tab_requestURL_input" value="Request URL: "/>
+							<h:inputText id="tab_requestURL_input"
+								value="#{tab.builder.requestURL}" />
+							<h:outputLabel for="tab_bank_input" value="Holiday: " />
 							<h:selectBooleanCheckbox id="tab_bank_input"
 								value="#{tab.builder.bankHolidayOnly}" />
 
-							<h:outputLabel id="tab_java_label" for="tab_java_input" value="Pollable: " />
+							<h:outputLabel for="tab_java_input" value="Pollable: " />
 							<h:selectBooleanCheckbox id="tab_java_input"
 								value="#{tab.builder.javaAgentPollable}"
 								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
+							<h:outputLabel for="tab_contacts_input" value="Contacts: "/>
+							<h:inputText id="tab_contacts_input"
+								value="#{tab.builder.contacts}" />
 						</h:panelGrid>
 						<h:panelGrid columns="2">
-						<h:outputLabel id="tab_composite_label" for="tab_composite_input"
+						<h:outputLabel for="tab_composite_input"
 								value="Composite: " />
 							<ice:selectOneMenu id="tab_composite_input"
 								value="#{tab.builder.composite}"
@@ -758,7 +775,6 @@ a:link { text-decoration:underline; }
 						</pre>
 						<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
 							autoCenter="true" blockUI="@source" />
-
 				</ace:panel>
 				<br/>
 				<ace:panel id="instances_panel" header="Instances">

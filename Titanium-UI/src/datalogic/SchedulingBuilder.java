@@ -20,9 +20,10 @@ public class SchedulingBuilder {
 	private Composite composite;
 	private Backend source;
 	private Backend target;
-	private String requestURL;
+	private String requestURL = "";
 	private String cron = "*";
 	private String description = "";
+	private String contacts = "";
 	private int id;
 	
 	private static final String LINE_BREAK = "\n";
@@ -55,6 +56,7 @@ public class SchedulingBuilder {
 		this.requestURL = s.getRequestURL();
 		this.cron = s.getCron();
 		this.description = s.getDescription();
+		this.contacts = s.getContacts();
 		this.id = s.getId();
 	}
 
@@ -101,6 +103,7 @@ public class SchedulingBuilder {
 		Scheduling s = new Scheduling();
 		s.setName(name);
 		s.setId(id);
+		s.setContacts(contacts);
 
 		if (this.bankHolidayOnly)
 			s.setBankHolidayOnly(1);
@@ -142,6 +145,7 @@ public class SchedulingBuilder {
 		s.setStatusID(this.mode.getId());
 		s.setSource(this.source.getId());
 		s.setTarget(this.target.getId());
+		s.setContacts(contacts);
 	}
 
 	public String getName() {
@@ -232,6 +236,14 @@ public class SchedulingBuilder {
 
 	public void setTarget(Backend target) {
 		this.target = target;
+	}
+
+	public String getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
 	}
 
 }

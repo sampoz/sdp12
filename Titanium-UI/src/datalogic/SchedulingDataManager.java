@@ -279,6 +279,7 @@ public class SchedulingDataManager {
 			 */
 			this.schedulings.remove(t.getScheduling());
 			this.schedulings.add(n);
+			t.setScheduling(n);
 
 			// this.session.getConnector().updateScheduling(n);
 
@@ -453,7 +454,7 @@ public class SchedulingDataManager {
 
 			List<Instance> temp = new ArrayList<Instance>();
 			for (Instance i : this.master.getInstances()) {
-
+				
 				Date now = new Date();
 				Date then = ORACLE_DATE_FORMAT.parse(i.getStartDate());
 				if (i.getProcess() != null

@@ -42,11 +42,10 @@ public class DatabaseConnector {
 	public List<Instance> getInstances() {
 		lazyInit();
 		this.manager.getTransaction().begin();
-		Query q = this.manager.createQuery("from Instance");
+		Query q = this.manager.createQuery("from Instance order by startDate desc");
 		List<Instance> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;
-		
 	}
 	
 	public List<Mode> getAllModes(){
