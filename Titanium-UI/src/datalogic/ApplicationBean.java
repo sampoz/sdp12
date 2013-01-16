@@ -1,8 +1,10 @@
 package datalogic;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -22,6 +24,8 @@ public class ApplicationBean implements Serializable {
 	public static final HashMap<Integer, Status> STATUSES = new HashMap<Integer, Status>();
 	
 	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
+	
+	public TimeZone timezone;
 	// Hard coded styleClasses for different modes
 	{
 		MODE_STYLES.put(1, "activated");
@@ -56,7 +60,17 @@ public class ApplicationBean implements Serializable {
 			MODES.put(m.getId(), m);
 		}
 		
+		this.timezone =  Calendar.getInstance().getTimeZone();
+		System.out.println(this.timezone);
 		tempConnector.close();
+	}
+
+	public TimeZone getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(TimeZone timezone) {
+		this.timezone = timezone;
 	}
 	
 }

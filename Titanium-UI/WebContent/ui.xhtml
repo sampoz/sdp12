@@ -235,8 +235,8 @@ a:link {
 					autoCenter="true" blockUI="@source" />
 
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
-					activeIndex="1" rendered="#{sessionBean.user.addRights}">
-					<ace:accordionPane id="addScheduling" title="Add Scheduling">
+					activeIndex="-1" rendered="#{sessionBean.user.addRights}">
+					<ace:accordionPane id="add_scheduling" title="Add Scheduling">
 
 						<h:panelGrid id="addGrid" columns="6">
 							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
@@ -302,17 +302,44 @@ a:link {
 							<h:outputLabel id="opt_comment_label" for="add_comment_input"
 								value="(Opt.)" />
 						</h:panelGrid>
-						<ice:commandButton id="add_scheduling" value="Add Scheduling"
+						<ice:commandButton id="add_scheduling_button" value="Add Scheduling"
 							actionListener="#{schedulingDataManager.addScheduling}" />
 						<pre>
 							<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
 								rendered="#{schedulingDataManager.showAddError}"
 								styleClass="red" />
 						</pre>
-						<ace:submitMonitor for="add_scheduling" activeLabel="Adding"
+						<ace:submitMonitor for="add_scheduling_monitor" activeLabel="Adding"
 							autoCenter="true" blockUI="@source" />
 
 					</ace:accordionPane>
+					
+						<ace:accordionPane id="skipped_runs" title="Skipped Runs">
+						<h:panelGrid columns="2">
+								 <ace:dateTimeEntry id="start_date_entry"
+								 						value="#{schedulingDataManager.startDate}"
+		                                               timeZone="#{applicationBean.timezone}"
+		                                               pattern="dd-MM-yyyy HH:mm:ss"
+		                                               navigator="true"
+		                                               timeOnly="false"
+		                                               renderAsPopup="true"
+		                                               label="From: "
+		                                               labelPosition="top">
+		                		</ace:dateTimeEntry>
+		                		<ace:dateTimeEntry id="end_date_entry"
+								 						value="#{schedulingDataManager.endDate}"
+		                                               timeZone="#{applicationBean.timezone}"
+		                                               pattern="dd-MM-yyyy HH:mm:ss"
+		                                               navigator="true"
+		                                               timeOnly="false"
+		                                               renderAsPopup="true"
+		                                               label="To: "
+		                                               labelPosition="top">
+		                		</ace:dateTimeEntry>
+		                		</h:panelGrid>
+		                		<h:commandButton value="Submit" actionListener="#{schedulingDataManager.dateSubmit}"/>
+						</ace:accordionPane>
+					
 				</ace:accordion>
 				<ace:dataTable id="scheduleTable"
 					value="#{schedulingDataManager.schedulings}" var="schedule"

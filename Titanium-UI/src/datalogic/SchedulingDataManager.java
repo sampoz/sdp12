@@ -1,6 +1,7 @@
 package datalogic;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import javax.faces.bean.SessionScoped;
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
+import org.quartz.CronExpression;
 
 import entities.Backend;
 import entities.Comment;
@@ -56,6 +58,9 @@ public class SchedulingDataManager {
 	private String runReport;
 
 	private String schedulingList;
+	
+	private Date startDate = new Date();
+	private Date endDate = new Date();
 
 	@PostConstruct
 	private void init() {
@@ -291,6 +296,22 @@ public class SchedulingDataManager {
 		this.session.refreshSchedulings();
 		this.schedulings = this.session.getSchedulings();
 	}
+	
+	public void dateSubmit(){
+		for (Scheduling s : this.schedulings) {
+			CronExpression cron;
+			try {
+				cron = new CronExpression(s.getCron());
+				if(cron.getNextValidTimeAfter(this.startDate).before(this.endDate)){
+					System.out.println(s.getId() + " : " + s.getCron());
+				}
+			} catch (ParseException e) {
+				
+			}
+			
+		}
+		
+	}
 
 	public SessionBean getSession() {
 		return session;
@@ -418,6 +439,22 @@ public class SchedulingDataManager {
 
 	public void setSchedulingList(String schedulingList) {
 		this.schedulingList = schedulingList;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 }
