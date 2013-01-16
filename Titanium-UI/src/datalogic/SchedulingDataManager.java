@@ -1,39 +1,24 @@
 package datalogic;
 
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
+
 import org.icefaces.ace.component.datatable.DataTable;
-import org.icefaces.ace.component.dialog.Dialog;
-import org.icefaces.ace.component.tabset.TabPane;
-import org.icefaces.ace.component.tabset.TabSet;
-import org.icefaces.ace.event.ExpansionChangeEvent;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-
-import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 
 import entities.Backend;
 import entities.Comment;
 import entities.Composite;
-import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
 
@@ -44,9 +29,6 @@ public class SchedulingDataManager {
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 
-	@ManagedProperty(value = "#{dataMaster}")
-	private DataMaster master;
-
 	private SchedulingBuilder builder;
 	private Comment addComment = new Comment();
 
@@ -54,13 +36,10 @@ public class SchedulingDataManager {
 	private RowStateMap stateMap = new RowStateMap();
 	private DataTable dataTable;
 
-	private HashMap<Integer, SchedulingBuilder> editBuffer = new HashMap<Integer, SchedulingBuilder>();
-	private HashMap<Integer, List<Comment>> commentLists = new HashMap<Integer, List<Comment>>();
-	private HashMap<Integer, Comment> editCommentList = new HashMap<Integer, Comment>();
-
-	private Collection<Mode> modes = SessionBean.MODES.values();
-	private Collection<Composite> composites = SessionBean.COMPOSITES.values();
-	private Collection<Backend> backends = SessionBean.BACKENDS.values();
+	private Collection<Mode> modes = ApplicationBean.MODES.values();
+	private Collection<Composite> composites = ApplicationBean.COMPOSITES
+			.values();
+	private Collection<Backend> backends = ApplicationBean.BACKENDS.values();
 
 	private boolean showEditError;
 	private String editErrorMessage;
@@ -71,11 +50,6 @@ public class SchedulingDataManager {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"dd-MM-yyyy HH:mm:ss");
 
-	private static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
-			"yyyy-dd-MM HH:mm:ss");
-
-	private static final int STATIC_TABS = 4;
-
 	private HttpConnector httpConnector = new HttpConnector();
 
 	private boolean responseDialogVisible;
@@ -83,15 +57,10 @@ public class SchedulingDataManager {
 
 	private String schedulingList;
 
-	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();;
-
-	private int selectedTabIndex;
-
-	private TabSet tabSet;
-
 	@PostConstruct
 	private void init() {
 		this.builder = new SchedulingBuilder();
+		this.session.initSchedulingManager(this);
 	}
 
 	public void listSelected() {
@@ -99,9 +68,10 @@ public class SchedulingDataManager {
 			this.schedulingList = "None";
 			return;
 		}
+
 		this.schedulingList = "";
 		for (Scheduling s : (List<Scheduling>) stateMap.getSelected()) {
-			this.schedulingList += s.getId() + "<br/>";
+			this.schedulingList += s.getName().substring(0, 4) + "<br/>";
 		}
 	}
 
@@ -147,7 +117,7 @@ public class SchedulingDataManager {
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
 					+ httpConnector.addId(
-							SessionBean.COMPOSITES.get(s.getServiceID())
+							ApplicationBean.COMPOSITES.get(s.getServiceID())
 									.getDestinationURL(), s.getId()));
 		} catch (IllegalOperationException e) {
 
@@ -159,53 +129,6 @@ public class SchedulingDataManager {
 			addErrorMessage = e.getMessage();
 			showAddError = true;
 		}
-	}
-
-	/**
-	 * Method to be called from the UI when the edit of a {@link Scheduling} is
-	 * to be confirmed
-	 */
-	public void confirmEdit(Scheduling s) {
-
-		try {
-
-			/*
-			 * Retrieve the SchedulingBuilder corresponding to the id of
-			 * Scheduling passed as a parameter from the UI and build it.
-			 * Validation is carried out normally within the builder
-			 */
-			Scheduling n = this.editBuffer.get(s.getId()).build();
-
-			/*
-			 * In order to refresh the DataTable we need to "brute force" the
-			 * change by removing the unedited Scheduling and adding the newly
-			 * built one
-			 */
-			this.schedulings.remove(s);
-			this.schedulings.add(n);
-
-			// this.session.getConnector().updateScheduling(n);
-
-			// If we've gotten this far there were no errors and we can hide all
-			// error messages
-			showEditError = false;
-
-			// Http request, consult Hanzki for any details
-			System.out.println("HttpConnector returned: "
-					+ httpConnector.editId(
-							SessionBean.COMPOSITES.get(s.getServiceID())
-									.getDestinationURL(), s.getId()));
-		} catch (IllegalOperationException e) {
-
-			/*
-			 * An error was thrown during the validation of the edited
-			 * Scheduling: we set the error message to be shown in Edit section
-			 * and set the visibility to true
-			 */
-			editErrorMessage = e.getMessage();
-			showEditError = true;
-		}
-
 	}
 
 	public void confirmEdit(SchedulingTab t) {
@@ -237,7 +160,7 @@ public class SchedulingDataManager {
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
 					+ httpConnector.editId(
-							SessionBean.COMPOSITES.get(
+							ApplicationBean.COMPOSITES.get(
 									t.getScheduling().getServiceID())
 									.getDestinationURL(), t.getScheduling()
 									.getId()));
@@ -252,41 +175,6 @@ public class SchedulingDataManager {
 			showEditError = true;
 		}
 
-	}
-
-	/**
-	 * Method to be called from the UI when the fields in the Edit view are to
-	 * be reset to their initial state
-	 */
-	public void resetEdit(Scheduling s) {
-		/*
-		 * Reset the fields in the Edit view by replacing the SchedulingBuilder
-		 * by a new one initialized with the Scheduling passed as a parameter
-		 * from UI
-		 */
-		SchedulingBuilder b = new SchedulingBuilder(s);
-
-		this.editBuffer.put(s.getId(), b);
-	}
-
-	/**
-	 * Method to be called from the UI when the comment in the Edit view is to
-	 * be submitted to the database
-	 */
-	public void submitComment(int id) {
-		Comment c = this.editCommentList.get(id);
-
-		c.setCreationDate(DATE_FORMAT.format(new Date()));
-		c.setSchedulingID(id);
-
-		// If the database connector returns true from the persisting of the
-		// comment we can safely add it to the table
-		if (this.session.getConnector().addComment(c)) {
-			this.editCommentList.put(id, new Comment());
-			this.commentLists.get(id).add(c);
-			this.commentLists.put(id, this.session.getConnector()
-					.getLastComments(id));
-		}
 	}
 
 	public void submitComment(SchedulingTab t) {
@@ -347,10 +235,10 @@ public class SchedulingDataManager {
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 			runReport += "Response for scheduling "
-					+ s.getId()
+					+ s.getName().substring(0, 4)
 					+ " was "
 					+ httpConnector.runId(
-							SessionBean.COMPOSITES.get(s.getServiceID())
+							ApplicationBean.COMPOSITES.get(s.getServiceID())
 									.getDestinationURL(), s.getId()) + ".\n";
 		}
 		this.runReport = runReport;
@@ -363,13 +251,14 @@ public class SchedulingDataManager {
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
-			if (s.getStatusID() != SessionBean.REMOVED) {
-				s.setStatusID(SessionBean.ENABLED);
+			if (s.getStatusID() != ApplicationBean.REMOVED) {
+				s.setStatusID(ApplicationBean.ENABLED);
 
 				// this.session.getConnector().updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
-								SessionBean.COMPOSITES.get(s.getServiceID())
+								ApplicationBean.COMPOSITES
+										.get(s.getServiceID())
 										.getDestinationURL(), s.getId()));
 			}
 		}
@@ -381,92 +270,16 @@ public class SchedulingDataManager {
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
-			if (s.getStatusID() != SessionBean.REMOVED) {
-				s.setStatusID(SessionBean.DISABLED);
+			if (s.getStatusID() != ApplicationBean.REMOVED) {
+				s.setStatusID(ApplicationBean.DISABLED);
 
 				// this.session.getConnector().updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
-								SessionBean.COMPOSITES.get(s.getServiceID())
+								ApplicationBean.COMPOSITES
+										.get(s.getServiceID())
 										.getDestinationURL(), s.getId()));
 			}
-		}
-	}
-
-	public void addTab(Scheduling s) throws ParseException {
-		SchedulingTab t = new SchedulingTab();
-		t.setScheduling(s);
-
-		if (!tabs.contains(t)) {
-
-			List<Instance> temp = new ArrayList<Instance>();
-			for (Instance i : this.master.getInstances()) {
-				
-				Date now = new Date();
-				Date then = ORACLE_DATE_FORMAT.parse(i.getStartDate());
-				if (i.getProcess() != null
-						&& s.getName().substring(0, 4)
-								.equals(i.getProcess().substring(0, 4))
-						&& Days.daysBetween(new DateTime(then),
-								new DateTime(now)).getDays() <= 40) {
-					temp.add(i);
-				}
-			}
-
-			t.setComments(this.session.getConnector()
-					.getLastComments(s.getId()));
-			t.setInstances(temp);
-			tabs.add(t);
-		}
-
-		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
-	}
-
-	public void removeCurrent(SchedulingTab t) {
-		this.tabSet.setSelectedIndex(0);
-		TabPane pane = (TabPane) this.tabSet.getChildren().get(
-				tabs.indexOf(t) + STATIC_TABS + 1);
-		pane.setInView(false);
-		tabs.remove(t);
-	}
-
-	public void removeAllTabs() {
-		this.tabSet.setSelectedIndex(0);
-		List<UIComponent> panes = this.tabSet.getChildren();
-		for (UIComponent pane : panes) {
-			pane.setInView(false);
-		}
-		tabs.clear();
-	}
-
-	public void removeOtherTabs(SchedulingTab t) {
-		this.tabSet.setSelectedIndex(0);
-		List<UIComponent> panes = this.tabSet.getChildren();
-		for (UIComponent pane : panes) {
-			if (panes.indexOf(pane) > STATIC_TABS - 1
-					&& panes.indexOf(pane) != tabs.indexOf(t) + STATIC_TABS) {
-				pane.setInView(false);
-			}
-		}
-		tabs.clear();
-		tabs.add(t);
-		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
-	}
-
-	public void unAuthenticate() {
-		List<UIComponent> panes = this.tabSet.getChildren();
-		for (UIComponent pane : panes) {
-			pane.setInView(false);
-
-		}
-		this.session.unAuthenticate();
-	}
-	
-	public void tabChange(ValueChangeEvent e) throws IOException{
-		if((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 2) {
-			
-			FacesContext ctx =  FacesContext.getCurrentInstance();
-			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
 		}
 	}
 
@@ -475,7 +288,8 @@ public class SchedulingDataManager {
 	 */
 	public void refresh() {
 		this.schedulings.clear();
-		this.schedulings = this.session.getConnector().getSchedulings();
+		this.session.refreshSchedulings();
+		this.schedulings = this.session.getSchedulings();
 	}
 
 	public SessionBean getSession() {
@@ -503,9 +317,6 @@ public class SchedulingDataManager {
 	}
 
 	public List<Scheduling> getSchedulings() {
-		if (this.schedulings == null || this.schedulings.isEmpty()) {
-			this.refresh();
-		}
 		return schedulings;
 	}
 
@@ -519,30 +330,6 @@ public class SchedulingDataManager {
 
 	public void setStateMap(RowStateMap stateMap) {
 		this.stateMap = stateMap;
-	}
-
-	public HashMap<Integer, SchedulingBuilder> getEditBuffer() {
-		return editBuffer;
-	}
-
-	public void setEditBuffer(HashMap<Integer, SchedulingBuilder> editBuffer) {
-		this.editBuffer = editBuffer;
-	}
-
-	public HashMap<Integer, List<Comment>> getCommentLists() {
-		return commentLists;
-	}
-
-	public void setCommentList(HashMap<Integer, List<Comment>> commentList) {
-		// Cannot be set from the UI but the setter has to exist
-	}
-
-	public HashMap<Integer, Comment> getEditCommentList() {
-		return editCommentList;
-	}
-
-	public void setEditCommentList(HashMap<Integer, Comment> editCommentList) {
-		this.editCommentList = editCommentList;
 	}
 
 	public boolean isShowEditError() {
@@ -633,35 +420,4 @@ public class SchedulingDataManager {
 		this.schedulingList = schedulingList;
 	}
 
-	public List getTabs() {
-		return tabs;
-	}
-
-	public void setTabs(List tabs) {
-		this.tabs = tabs;
-	}
-
-	public int getSelectedTabIndex() {
-		return selectedTabIndex;
-	}
-
-	public void setSelectedTabIndex(int selectedTabIndex) {
-		this.selectedTabIndex = selectedTabIndex;
-	}
-
-	public TabSet getTabSet() {
-		return tabSet;
-	}
-
-	public void setTabSet(TabSet tabSet) {
-		this.tabSet = tabSet;
-	}
-
-	public DataMaster getMaster() {
-		return master;
-	}
-
-	public void setMaster(DataMaster master) {
-		this.master = master;
-	}
 }

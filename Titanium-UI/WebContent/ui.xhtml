@@ -19,24 +19,6 @@
 	background-color: lightgray !important;
 }
 
-.left label {
-	display: block;
-	float: left;
-	margin-left: 10px;
-}
-
-.left input {
-	display: block;
-	float: left;
-	margin-left: 10px;
-}
-
-.left select {
-	display: block;
-	float: left;
-	margin-left: 10px;
-}
-
 .red {
 	color: red;
 	float: left;
@@ -115,9 +97,8 @@ a:link {
 
 
 		<ace:tabSet id="sampleTabSet" clientSide="false"
-			selectedIndex="#{schedulingDataManager.selectedTabIndex}"
-			binding="#{schedulingDataManager.tabSet}"
-			tabChangeListener="#{schedulingDataManager.tabChange}">
+			binding="#{sessionBean.tabSet}"
+			tabChangeListener="#{sessionBean.tabChange}">
 
 			<ace:tabPane id="login_tab" label="Login"
 				rendered="#{sessionBean.user.authenticated eq false}">
@@ -191,7 +172,7 @@ a:link {
 
 				<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 					message="Are you sure you want to run following schedulings?"
-					header="Confirm Run" width="330" height="220">
+					header="Confirm Run" width="330" height="300">
 					<ice:outputText value="#{schedulingDataManager.schedulingList}"
 						escape="false" />
 					<h:panelGrid columns="2">
@@ -204,7 +185,7 @@ a:link {
 				<ace:confirmationDialog id="resume_confirmation"
 					widgetVar="resume_conf"
 					message="Are you sure you want to resume following schedulings?"
-					header="Confirm Resume" width="330" height="220">
+					header="Confirm Resume" width="330" height="300">
 					<ice:outputText value="#{schedulingDataManager.schedulingList}"
 						escape="false" />
 					<h:panelGrid columns="2">
@@ -216,7 +197,7 @@ a:link {
 
 				<ace:confirmationDialog id="hold_confirmation" widgetVar="hold_conf"
 					message="Are you sure you want to put following schedulings on hold?"
-					header="Confirm Hold" width="330" height="220">
+					header="Confirm Hold" width="330" height="300">
 					<ice:outputText value="#{schedulingDataManager.schedulingList}"
 						escape="false" />
 					<h:panelGrid columns="2">
@@ -335,7 +316,7 @@ a:link {
 				</ace:accordion>
 				<ace:dataTable id="scheduleTable"
 					value="#{schedulingDataManager.schedulings}" var="schedule"
-					paginator="true" paginatorPosition="both"
+					paginator="true" paginatorPosition="both" 
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,25,50,100" rows="10"
 					stateMap="#{schedulingDataManager.stateMap}"
@@ -409,7 +390,7 @@ a:link {
 					<ace:column id="details" headerText="Details">
 						<ice:commandButton id="details_button" value="Open in new tab"
 							image="resources/images/openinnewtabicon.jpg"
-							actionListener="#{schedulingDataManager.addTab(schedule)}" />
+							actionListener="#{sessionBean.addTab(schedule)}" />
 					</ace:column>
 				</ace:dataTable>
 			</ace:tabPane>
@@ -419,18 +400,18 @@ a:link {
 
 				<h:outputText style="float: right;" value="Show skipped" />
 				<ice:selectBooleanCheckbox tittle="Show skipped"
-					style="float: right;" value="#{dataMaster.showSkipped}"
-					valueChangeListener="#{dataMaster.showSkippedMethod}"
+					style="float: right;" value="#{instanceDataManager.showSkipped}"
+					valueChangeListener="#{instanceDataManager.showSkippedMethod}"
 					partialSubmit="true" />
 				<br />
 
 				<ace:dataTable id="instanceTable"
-					value="#{dataMaster.filteredInstances}" var="instance"
+					value="#{instanceDataManager.filteredInstances}" var="instance"
 					paginator="true" paginatorPosition="both"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,25,50,100" rows="10"
-					stateMap="#{dataMaster.i_stateMap}" selectionMode="multiple"
-					resizableColumns="true" binding="#{dataMaster.i_dataTable}">
+					stateMap="#{instanceDataManager.i_stateMap}" selectionMode="multiple"
+					resizableColumns="true" binding="#{instanceDataManager.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
 
@@ -460,8 +441,7 @@ a:link {
 						<!-- 							showDelay="100" hideDelay="200"> -->
 						<!-- 						</ace:tooltip> -->
 
-						<ace:expansionToggler
-							changeListener="#{dataMaster.instanceExpansion}" />
+						<ace:expansionToggler/>
 					</ace:column>
 					<ace:panelExpansion>
 						<ace:panel styleClass="instanceleft">
@@ -469,22 +449,22 @@ a:link {
 
 								<h:outputLabel value="Error Message:" />
 								<h:outputText id="i_message"
-									value="#{dataMaster.instanceEditBuffer.get(instance.id).message}"
+									value="#{instance.message}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Composite: " />
 								<h:outputText id="i_composite"
-									value="#{dataMaster.instanceEditBuffer.get(instance.id).name}"
+									value="#{instance.name}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Input files:" />
 								<h:outputText id="i_input_files"
-									value="#{dataMaster.instanceEditBuffer.get(instance.id).inputFileName}"
+									value="#{instance.inputFileName}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Output files:" />
 								<h:outputText id="i_output_files"
-									value="#{dataMaster.instanceEditBuffer.get(instance.id).outputFileName}"
+									value="#{instance.outputFileName}"
 									styleClass="instanceleft" />
 
 							</h:panelGrid>
@@ -550,17 +530,17 @@ a:link {
 			</ace:tabPane>
 			<ace:tabPane id="divider" label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
-			<c:forEach id="cForEachId" items="#{schedulingDataManager.tabs}"
+			<c:forEach id="cForEachId" items="#{sessionBean.tabs}"
 				var="tab">
 				<ace:tabPane label="#{tab.name}" id="tab_#{tab.scheduling.id}">
 					<f:subview id="sub_#{tab.scheduling.id}">
 						<ace:menuButton id="close_tab_button" value="Close">
 							<ace:menuItem value="This Tab"
-								actionListener="#{schedulingDataManager.removeCurrent(tab)}" />
+								actionListener="#{sessionBean.removeCurrent(tab)}" />
 							<ace:menuItem value="All Tabs"
-								actionListener="#{schedulingDataManager.removeAllTabs}" />
+								actionListener="#{sessionBean.removeAllTabs}" />
 							<ace:menuItem value="Other Tabs"
-								actionListener="#{schedulingDataManager.removeOtherTabs(tab)}" />
+								actionListener="#{sessionBean.removeOtherTabs(tab)}" />
 						</ace:menuButton>
 						<ace:panel id="details_panel" header="Details">
 							<h:panelGrid columns="2">

@@ -76,7 +76,7 @@ public class SchedulingTab {
 	}
 	
 	public String getModeValue() {
-		this.modeValue = SessionBean.MODES.get(this.scheduling.getStatusID()).getValue();
+		this.modeValue = ApplicationBean.MODES.get(this.scheduling.getStatusID()).getValue();
 		return modeValue;
 	}
 
@@ -86,7 +86,7 @@ public class SchedulingTab {
 
 	public String getSourceName() {
 		if(this.scheduling.getSource() != null)
-			this.sourceName = SessionBean.BACKENDS.get(this.scheduling.getSource()).getBackend();
+			this.sourceName = ApplicationBean.BACKENDS.get(this.scheduling.getSource()).getBackend();
 		return sourceName;
 	}
 
@@ -96,7 +96,7 @@ public class SchedulingTab {
 
 	public String getTargetName() {
 		if(this.scheduling.getTarget() != null)
-			this.targetName = SessionBean.BACKENDS.get(this.scheduling.getTarget()).getBackend();
+			this.targetName = ApplicationBean.BACKENDS.get(this.scheduling.getTarget()).getBackend();
 		return targetName;
 	}
 
@@ -105,7 +105,7 @@ public class SchedulingTab {
 	}
 
 	public String getCompositeText() {
-		this.compositeText = SessionBean.COMPOSITES.get(this.scheduling.getServiceID()).getOutputText();
+		this.compositeText = ApplicationBean.COMPOSITES.get(this.scheduling.getServiceID()).getOutputText();
 		return compositeText;
 	}
 

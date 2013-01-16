@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import datalogic.SessionBean;
+import datalogic.ApplicationBean;
 
 @Entity
 @Table(name = "SOA_COMPOSITE_LOGS")
@@ -183,7 +183,7 @@ public class Instance implements Serializable {
 	}
 
 	public String getStatusValue() {
-		this.statusValue = SessionBean.STATUSES.get(this.statusID).getValue();
+		this.statusValue = ApplicationBean.STATUSES.get(this.statusID).getValue();
 		return statusValue;
 	}
 

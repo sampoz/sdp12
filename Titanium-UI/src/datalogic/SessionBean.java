@@ -1,74 +1,91 @@
 package datalogic;
 
-
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+
+import org.icefaces.ace.component.tabset.TabPane;
+import org.icefaces.ace.component.tabset.TabSet;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import users.User;
-
 
 import entities.Backend;
 import entities.Comment;
 import entities.Composite;
+import entities.Instance;
 import entities.Mode;
+import entities.Scheduling;
 import entities.Status;
 
-@ManagedBean (name = SessionBean.BEAN_NAME, eager=true)
+@ManagedBean(name = "sessionBean")
 @SessionScoped
 public class SessionBean {
-	
-	public static final String BEAN_NAME = "sessionBean";
-	
-	public static final HashMap<Integer, Backend> BACKENDS = new HashMap<Integer, Backend>();  
-	public static final HashMap<Integer,Mode> MODES = new HashMap<Integer, Mode>();
-	public static final HashMap<Integer,Composite> COMPOSITES = new HashMap<Integer, Composite>();
-	public static final HashMap<Integer, Status> STATUSES = new HashMap<Integer, Status>();
-	
-	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
-	// Hard coded styleClasses for different modes
-	{
-		MODE_STYLES.put(1, "activated");
-		MODE_STYLES.put(2, "deactivated");
-		MODE_STYLES.put(3, "removed");
-	}
-	
-	// Hard coded states. Better options?
-	public static final int ENABLED = 1;
-	public static final int DISABLED = 2;
-	public static final int REMOVED = 3;
-	
+
+	private InstanceDataManager instanceManager;
+	private SchedulingDataManager schedulingManager;
+
 	private DatabaseConnector connector = new DatabaseConnector();
 
-	private User user = User.UNAUTHORISED;
-	
-	public SessionBean(){
-		
-		List<Status> tempStatuses = this.connector.getAllStatuses();
-		for(Status s: tempStatuses ){
-			STATUSES.put(s.getId(), s);
-		}
-		
-		List<Composite> tempComposites = this.connector.getAllComposites();
-		for(Composite c: tempComposites ){
-			COMPOSITES.put(c.getId(), c);
-		}
-		
-		List<Backend> tempBackends = this.connector.getAllBackends();
-		for(Backend b: tempBackends){
-			BACKENDS.put(b.getId(), b);
-		}
-		List<Mode> tempModes = this.connector.getAllModes();
-		for (Mode m : tempModes) {
-			MODES.put(m.getId(), m);
-		}
-		
-		
+	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
+	private List<Instance> instances = new ArrayList<Instance>();
+
+	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
+	private TabSet tabSet;
+	public List<SchedulingTab> getTabs() {
+		return tabs;
 	}
-	
-	
+
+	private static final int STATIC_TABS = 4;
+
+	private static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
+			"yyyy-dd-MM HH:mm:ss");
+
+	private User user = User.UNAUTHORISED;
+
+	@PreDestroy
+	public void closeConnector() {
+		this.connector.close();
+	}
+
+	private void initData() {
+		refreshSchedulings();
+		refreshInstances();
+		this.schedulingManager.setSchedulings(this.schedulings);
+		this.instanceManager.setInstances(this.instances);
+		this.instanceManager.filterInstances();
+	}
+
+	public void initSchedulingManager(SchedulingDataManager schedulingManager) {
+		this.schedulingManager = schedulingManager;
+	}
+
+	public void initInstanceManager(InstanceDataManager instanceManager) {
+		this.instanceManager = instanceManager;
+	}
+
+	public void refreshSchedulings() {
+		this.schedulings.clear();
+		this.schedulings = this.connector.getSchedulings();
+	}
+
+	public void refreshInstances() {
+		this.instances.clear();
+		this.instances = this.connector.getInstances();
+	}
 
 	public DatabaseConnector getConnector() {
 		return connector;
@@ -78,31 +95,120 @@ public class SessionBean {
 		this.connector = connector;
 	}
 
-
-
 	public void authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
-		
-		if(username.toLowerCase().contains("business"))
+
+		if (username.toLowerCase().contains("business"))
 			this.user = User.BUSINESS;
 		else
 			this.user = User.ADMINISTRATOR;
+
+		if (this.user.isAuthenticated()) {
+			this.initData();
+		}
 	}
-	public void unAuthenticate() {
-		this.user = User.UNAUTHORISED;
-	}	
 
+	public void addTab(Scheduling s) throws ParseException {
+		SchedulingTab t = new SchedulingTab();
+		t.setScheduling(s);
 
+		if (!tabs.contains(t)) {
+
+			List<Instance> temp = new ArrayList<Instance>();
+			for (Instance i : this.instances) {
+
+				Date now = new Date();
+				Date then = ORACLE_DATE_FORMAT.parse(i.getStartDate());
+				if (i.getProcess() != null
+						&& s.getName().substring(0, 4)
+								.equals(i.getProcess().substring(0, 4))
+						&& Days.daysBetween(new DateTime(then),
+								new DateTime(now)).getDays() <= 40) {
+					temp.add(i);
+				}
+			}
+
+			t.setComments(this.connector.getLastComments(s.getId()));
+			t.setInstances(temp);
+			tabs.add(t);
+		}
+
+		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
+	}
+
+	public void removeCurrent(SchedulingTab t) {
+		this.tabSet.setSelectedIndex(0);
+		TabPane pane = (TabPane) this.tabSet.getChildren().get(
+				tabs.indexOf(t) + STATIC_TABS + 1);
+		pane.setInView(false);
+		tabs.remove(t);
+	}
+
+	public void removeAllTabs() {
+		this.tabSet.setSelectedIndex(0);
+		List<UIComponent> panes = this.tabSet.getChildren();
+		for (UIComponent pane : panes) {
+			pane.setInView(false);
+		}
+		tabs.clear();
+	}
+
+	public void removeOtherTabs(SchedulingTab t) {
+		this.tabSet.setSelectedIndex(0);
+		List<UIComponent> panes = this.tabSet.getChildren();
+		for (UIComponent pane : panes) {
+			if (panes.indexOf(pane) > STATIC_TABS - 1
+					&& panes.indexOf(pane) != tabs.indexOf(t) + STATIC_TABS) {
+				pane.setInView(false);
+			}
+		}
+		tabs.clear();
+		tabs.add(t);
+		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
+	}
+	
+	public void tabChange(ValueChangeEvent e) throws IOException{
+		if((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 2) {
+			
+			FacesContext ctx =  FacesContext.getCurrentInstance();
+			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
+		}
+	}
+	
 	public User getUser() {
 		return user;
 	}
 
-
 	public void setUser(User user) {
-		//this.user = user;
 		throw new IllegalAccessError();
 	}
 
+	public List<Scheduling> getSchedulings() {
+		return schedulings;
+	}
 
-	
+	public void setSchedulings(List<Scheduling> schedulings) {
+		this.schedulings = schedulings;
+	}
+
+	public List<Instance> getInstances() {
+		return instances;
+	}
+
+	public void setInstances(List<Instance> instances) {
+		this.instances = instances;
+	}
+
+	public void setTabs(List<SchedulingTab> tabs) {
+		this.tabs = tabs;
+	}
+
+	public TabSet getTabSet() {
+		return tabSet;
+	}
+
+	public void setTabSet(TabSet tabSet) {
+		this.tabSet = tabSet;
+	}
+
 }

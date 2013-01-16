@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import datalogic.SessionBean;
+import datalogic.ApplicationBean;
 
 import javax.persistence.Id;
 
@@ -164,7 +164,7 @@ public class Scheduling implements Serializable {
 	}
 
 	public String getModeLabel() {
-		this.modeLabel = SessionBean.MODES.get(this.statusID).getLabel();
+		this.modeLabel = ApplicationBean.MODES.get(this.statusID).getLabel();
 		return modeLabel;
 	}
 
@@ -175,7 +175,7 @@ public class Scheduling implements Serializable {
 	public String getSourceName() {
 		try {
 
-			this.sourceName = SessionBean.BACKENDS.get(this.source)
+			this.sourceName = ApplicationBean.BACKENDS.get(this.source)
 					.getBackend();
 
 		} catch (NullPointerException e) {
@@ -190,7 +190,7 @@ public class Scheduling implements Serializable {
 
 	public String getTargetName() {
 		try {
-			this.targetName = SessionBean.BACKENDS.get(this.target)
+			this.targetName = ApplicationBean.BACKENDS.get(this.target)
 					.getBackend();
 		} catch (NullPointerException e) {
 			return "SAMPSA UPDATEE RIVIT";
@@ -227,7 +227,7 @@ public class Scheduling implements Serializable {
 	}
 
 	public String getStyleClass() {
-		this.styleClass = SessionBean.MODE_STYLES.get(this.statusID);
+		this.styleClass = ApplicationBean.MODE_STYLES.get(this.statusID);
 		return styleClass;
 	}
 

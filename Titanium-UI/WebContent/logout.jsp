@@ -5,7 +5,7 @@
 <%
 	session.invalidate();
 	
-	response.sendRedirect("./second.jsf");
+	response.sendRedirect("./ui.jsf");
 %>
 </body>
 </html>

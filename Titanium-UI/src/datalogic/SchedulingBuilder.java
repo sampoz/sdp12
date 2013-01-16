@@ -36,7 +36,7 @@ public class SchedulingBuilder {
 		Composite c = null;
 		int i = 0;
 		while(c == null){
-			c = SessionBean.COMPOSITES.get(i);
+			c = ApplicationBean.COMPOSITES.get(i);
 			i++;
 		}
 		this.composite = c;
@@ -44,10 +44,10 @@ public class SchedulingBuilder {
 
 	public SchedulingBuilder(Scheduling s) {
 		this.name = s.getName();
-		this.mode = SessionBean.MODES.get(s.getStatusID());
-		this.composite = SessionBean.COMPOSITES.get(s.getServiceID());
-		this.source = SessionBean.BACKENDS.get(s.getSource());
-		this.target = SessionBean.BACKENDS.get(s.getTarget());
+		this.mode = ApplicationBean.MODES.get(s.getStatusID());
+		this.composite = ApplicationBean.COMPOSITES.get(s.getServiceID());
+		this.source = ApplicationBean.BACKENDS.get(s.getSource());
+		this.target = ApplicationBean.BACKENDS.get(s.getTarget());
 		if (this.composite.getJavaAgentPollable() == 1 && s.getJavaAgentPollable() == 1)
 			this.javaAgentPollable = true;
 

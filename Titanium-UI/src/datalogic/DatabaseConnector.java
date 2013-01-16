@@ -20,7 +20,6 @@ public class DatabaseConnector {
 	private EntityManager manager;
 	
 	public boolean addScheduling(Scheduling s){
-		
 		// Initialize entity manager if it isn't already
 		lazyInit();
 		
@@ -132,6 +131,8 @@ public class DatabaseConnector {
 		return result;
 	}
 	
-	
+	public void close(){
+		this.manager.close();
+	}
 	
 }
