@@ -16,8 +16,8 @@ public class LoginManager {
 	private String password;
 	private String username;
 	
-	public void authenticate(){
-		this.session.authenticate(username,password);
+	public boolean authenticate(){
+		return this.session.authenticate(username,password);
 	}
 
 	public String getPassword() {

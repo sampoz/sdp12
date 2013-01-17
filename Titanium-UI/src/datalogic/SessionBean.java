@@ -45,11 +45,13 @@ public class SessionBean {
 
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
 	private TabSet tabSet;
+	
 	public List<SchedulingTab> getTabs() {
 		return tabs;
 	}
 
 	private static final int STATIC_TABS = 4;
+	private static final int HIDDEN_TABS = 0;
 
 	private static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
 			"yyyy-dd-MM HH:mm:ss");
@@ -64,9 +66,6 @@ public class SessionBean {
 	private void initData() {
 		refreshSchedulings();
 		refreshInstances();
-		this.schedulingManager.setSchedulings(this.schedulings);
-		this.instanceManager.setInstances(this.instances);
-		this.instanceManager.filterInstances();
 	}
 
 	public void initSchedulingManager(SchedulingDataManager schedulingManager) {
@@ -95,17 +94,16 @@ public class SessionBean {
 		this.connector = connector;
 	}
 
-	public void authenticate(String username, String password) {
+	public boolean authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
 
 		if (username.toLowerCase().contains("business"))
 			this.user = User.BUSINESS;
 		else
 			this.user = User.ADMINISTRATOR;
-
-		if (this.user.isAuthenticated()) {
-			this.initData();
-		}
+		
+		initData();
+		return true;
 	}
 
 	public void addTab(Scheduling s) throws ParseException {
@@ -168,7 +166,7 @@ public class SessionBean {
 	}
 	
 	public void tabChange(ValueChangeEvent e) throws IOException{
-		if((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 2) {
+		if((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1 -  HIDDEN_TABS) {
 			
 			FacesContext ctx =  FacesContext.getCurrentInstance();
 			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
@@ -209,6 +207,13 @@ public class SessionBean {
 
 	public void setTabSet(TabSet tabSet) {
 		this.tabSet = tabSet;
+	}
+	
+	public void validate(){
+		if(!this.user.isAuthenticated()){
+			FacesContext ctx =  FacesContext.getCurrentInstance();
+			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
+		}
 	}
 
 }

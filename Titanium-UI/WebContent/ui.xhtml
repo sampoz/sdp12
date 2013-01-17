@@ -9,7 +9,7 @@
 	xmlns:ace="http://www.icefaces.org/icefaces/components"
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 <h:head>
-	<title>Titanium UI</title>
+	<title>Titanic</title>
 	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
 </h:head>
 <h:body>
@@ -95,29 +95,14 @@ a:link {
 }
 </style>
 
+		<f:view>
+			<f:event listener="#{sessionBean.validate}" type="preRenderView" />
+		</f:view>
 
 		<ace:tabSet id="sampleTabSet" clientSide="false"
 			binding="#{sessionBean.tabSet}"
 			tabChangeListener="#{sessionBean.tabChange}">
 
-			<ace:tabPane id="login_tab" label="Login"
-				rendered="#{sessionBean.user.authenticated eq false}">
-				<img src="resources/images/titaniclogo.png" alt="titanic" />
-				<h:panelGrid id="login_grid" columns="2"
-					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
-					<h:outputLabel id="username_label" for="username_input"
-						value="AD Username: " />
-					<h:inputText id="username_input" value="#{loginManager.username}" />
-					<h:outputLabel id="password_label" for="password_input"
-						value="AD Password: " />
-					<h:inputSecret id="password_input" value="#{loginManager.password}" />
-					<h:commandButton id="login_button" value="Login"
-						action="#{loginManager.authenticate}" />
-
-					<ace:submitMonitor for="login_button" activeLabel="Logging in"
-						autoCenter="true" blockUI="@source" />
-				</h:panelGrid>
-			</ace:tabPane>
 			<ace:tabPane id="schedulings" label="Schedulings"
 				rendered="#{sessionBean.user.authenticated}">
 
@@ -235,7 +220,7 @@ a:link {
 					autoCenter="true" blockUI="@source" />
 
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
-					activeIndex="-1" rendered="#{sessionBean.user.addRights}">
+					activeIndex="3" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="add_scheduling" title="Add Scheduling">
 
 						<h:panelGrid id="addGrid" columns="6">
@@ -302,48 +287,115 @@ a:link {
 							<h:outputLabel id="opt_comment_label" for="add_comment_input"
 								value="(Opt.)" />
 						</h:panelGrid>
-						<ice:commandButton id="add_scheduling_button" value="Add Scheduling"
+						<ice:commandButton id="add_scheduling_button"
+							value="Add Scheduling"
 							actionListener="#{schedulingDataManager.addScheduling}" />
 						<pre>
 							<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
 								rendered="#{schedulingDataManager.showAddError}"
 								styleClass="red" />
 						</pre>
-						<ace:submitMonitor for="add_scheduling_monitor" activeLabel="Adding"
-							autoCenter="true" blockUI="@source" />
+						<ace:submitMonitor for="add_scheduling_monitor"
+							activeLabel="Adding" autoCenter="true" blockUI="@source" />
 
 					</ace:accordionPane>
-					
-						<ace:accordionPane id="skipped_runs" title="Skipped Runs">
+
+					<ace:accordionPane id="skipped_runs" title="Skipped Runs">
 						<h:panelGrid columns="2">
-								 <ace:dateTimeEntry id="start_date_entry"
-								 						value="#{schedulingDataManager.startDate}"
-		                                               timeZone="#{applicationBean.timezone}"
-		                                               pattern="dd-MM-yyyy HH:mm:ss"
-		                                               navigator="true"
-		                                               timeOnly="false"
-		                                               renderAsPopup="true"
-		                                               label="From: "
-		                                               labelPosition="top">
-		                		</ace:dateTimeEntry>
-		                		<ace:dateTimeEntry id="end_date_entry"
-								 						value="#{schedulingDataManager.endDate}"
-		                                               timeZone="#{applicationBean.timezone}"
-		                                               pattern="dd-MM-yyyy HH:mm:ss"
-		                                               navigator="true"
-		                                               timeOnly="false"
-		                                               renderAsPopup="true"
-		                                               label="To: "
-		                                               labelPosition="top">
-		                		</ace:dateTimeEntry>
-		                		</h:panelGrid>
-		                		<h:commandButton value="Submit" actionListener="#{schedulingDataManager.dateSubmit}"/>
-						</ace:accordionPane>
-					
+							<ace:dateTimeEntry id="start_date_entry"
+								value="#{schedulingDataManager.startDate}"
+								timeZone="#{applicationBean.timezone}"
+								pattern="dd-MM-yyyy HH:mm:ss" navigator="true" timeOnly="false"
+								renderAsPopup="true" label="From: " labelPosition="top">
+							</ace:dateTimeEntry>
+							<ace:dateTimeEntry id="end_date_entry"
+								value="#{schedulingDataManager.endDate}"
+								timeZone="#{applicationBean.timezone}"
+								pattern="dd-MM-yyyy HH:mm:ss" navigator="true" timeOnly="false"
+								renderAsPopup="true" label="To: " labelPosition="top">
+							</ace:dateTimeEntry>
+						</h:panelGrid>
+						<h:commandButton value="Submit"
+							actionListener="#{schedulingDataManager.dateSubmit}" />
+
+						<ace:dataTable id="matching_schedulings"
+							value="#{schedulingDataManager.matching}" var="match"
+							paginator="true" paginatorPosition="both"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,25,50" rows="5"
+							emptyMessage="-- No Matches --">
+							<ace:ajax event="select" execute="@this" />
+
+							<ace:column  headerText="Name" sortBy="#{match.name}"
+								filterBy="#{match.name}" filterMatchMode="contains">
+
+								<h:panelGrid>
+									<h:outputText value="#{match.name}"
+										styleClass="tooltipTargetStyle" />
+								</h:panelGrid>
+							</ace:column>
+
+
+							<ace:column headerText="Mode"
+								sortBy="#{match.modeLabel}" filterBy="#{match.modeLabel}"
+								filterMatchMode="exact">
+								<ice:panelGroup style="width:100px;">
+								</ice:panelGroup>
+								<h:outputText value="#{match.modeLabel}"
+									styleClass="#{match.styleClass}" />
+
+							</ace:column>
+
+							<ace:column headerText="Time" sortBy="#{match.cron}"
+								filterBy="#{match.cron}" filterMatchMode="contains">
+								<h:outputText  value="#{match.cron}" />
+							</ace:column>
+							<ace:column headerText="Vars">
+								<h:panelGrid id="icon_grid" columns="2">
+									<h:graphicImage  library="images"
+										name="javaicon.png" style="height: 30px; width: 30px; "
+										rendered="#{match.javaAgentPollable gt 0}" />
+									<h:graphicImage library="images"
+										name="bankicon.jpg" style="height: 30px; width: 30px; "
+										rendered="#{match.bankHolidayOnly gt 0}" />
+								</h:panelGrid>
+							</ace:column>
+
+							<ace:column sortBy="#{match.sourceName}"
+								filterBy="#{match.sourceName}" filterMatchMode="contains">
+								<ice:panelGroup style="width:100px;">
+								</ice:panelGroup>
+								<h:outputText value="#{match.sourceName}" />
+							</ace:column>
+
+							<ace:column headerText="Target"
+								sortBy="#{match.targetName}"
+								filterBy="#{match.targetName}" filterMatchMode="contains">
+								<ice:panelGroup style="width:100px;">
+								</ice:panelGroup>
+								<h:outputText  value="#{match.targetName}"></h:outputText>
+
+							</ace:column>
+							<ace:column headerText="Description"
+								sortBy="#{match.description}"
+								filterBy="#{match.description}" filterMatchMode="contains">
+								<ice:panelGroup style="width:100px;">
+								</ice:panelGroup>
+								<h:outputText value="#{match.description}" />
+							</ace:column>
+
+							<ace:column headerText="Details">
+								<ice:commandButton value="Open in new tab"
+									image="resources/images/openinnewtabicon.jpg"
+									actionListener="#{sessionBean.addTab(match)}" />
+							</ace:column>
+						</ace:dataTable>
+					</ace:accordionPane>
+
 				</ace:accordion>
 				<ace:dataTable id="scheduleTable"
 					value="#{schedulingDataManager.schedulings}" var="schedule"
-					paginator="true" paginatorPosition="both" 
+					paginator="true" paginatorPosition="both"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,25,50,100" rows="10"
 					stateMap="#{schedulingDataManager.stateMap}"
@@ -437,8 +489,9 @@ a:link {
 					paginator="true" paginatorPosition="both"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,25,50,100" rows="10"
-					stateMap="#{instanceDataManager.i_stateMap}" selectionMode="multiple"
-					resizableColumns="true" binding="#{instanceDataManager.i_dataTable}">
+					stateMap="#{instanceDataManager.i_stateMap}"
+					selectionMode="multiple" resizableColumns="true"
+					binding="#{instanceDataManager.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
 
 
@@ -449,7 +502,8 @@ a:link {
 								style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 1}" />
 							<h:graphicImage id="manual_handling" library="images"
-								name="skippedicon.png" style="height: 30px; width: 30px;" rendered="#{instance.statusID eq 2}" />
+								name="skippedicon.png" style="height: 30px; width: 30px;"
+								rendered="#{instance.statusID eq 2}" />
 							<h:graphicImage id="running" library="images" name="playicon.png"
 								style="height: 30px; width: 30px; "
 								rendered="#{instance.statusID eq 3}" />
@@ -468,31 +522,27 @@ a:link {
 						<!-- 							showDelay="100" hideDelay="200"> -->
 						<!-- 						</ace:tooltip> -->
 
-						<ace:expansionToggler/>
+						<ace:expansionToggler />
 					</ace:column>
 					<ace:panelExpansion>
 						<ace:panel styleClass="instanceleft">
 							<h:panelGrid id="instanceGrid" columns="4">
 
 								<h:outputLabel value="Error Message:" />
-								<h:outputText id="i_message"
-									value="#{instance.message}"
+								<h:outputText id="i_message" value="#{instance.message}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Composite: " />
-								<h:outputText id="i_composite"
-									value="#{instance.name}"
+								<h:outputText id="i_composite" value="#{instance.name}"
 									styleClass="instanceleft" />
 
 								<h:outputLabel value="Input files:" />
 								<h:outputText id="i_input_files"
-									value="#{instance.inputFileName}"
-									styleClass="instanceleft" />
+									value="#{instance.inputFileName}" styleClass="instanceleft" />
 
 								<h:outputLabel value="Output files:" />
 								<h:outputText id="i_output_files"
-									value="#{instance.outputFileName}"
-									styleClass="instanceleft" />
+									value="#{instance.outputFileName}" styleClass="instanceleft" />
 
 							</h:panelGrid>
 						</ace:panel>
@@ -557,8 +607,7 @@ a:link {
 			</ace:tabPane>
 			<ace:tabPane id="divider" label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
-			<c:forEach id="cForEachId" items="#{sessionBean.tabs}"
-				var="tab">
+			<c:forEach id="cForEachId" items="#{sessionBean.tabs}" var="tab">
 				<ace:tabPane label="#{tab.name}" id="tab_#{tab.scheduling.id}">
 					<f:subview id="sub_#{tab.scheduling.id}">
 						<ace:menuButton id="close_tab_button" value="Close">
@@ -596,7 +645,7 @@ a:link {
 							</h:panelGrid>
 						</ace:panel>
 						<br />
-						<ace:panel id="edit_panel" header="Edit"
+						<ace:panel id="edit_panel" header="Edit" toggleable="true"
 							rendered="#{sessionBean.user.editRights}">
 							<h:panelGrid id="edit_grid" columns="6">
 								<h:outputLabel for="tab_name_input" value="Name: " />
@@ -659,7 +708,8 @@ a:link {
 								activeLabel="Confirming" autoCenter="true" blockUI="@source" />
 						</ace:panel>
 						<br />
-						<ace:panel id="instances_panel" header="Instances">
+						<ace:panel id="instances_panel" header="Instances"
+							toggleable="true">
 							<br />
 							<ace:dataTable id="tab_instance_table" value="#{tab.instances}"
 								var="instance" paginator="false" rows="5"
@@ -759,7 +809,7 @@ a:link {
 							</ace:dataTable>
 						</ace:panel>
 						<br />
-						<ace:panel id="comments_panel" header="Comments">
+						<ace:panel id="comments_panel" header="Comments" toggleable="true">
 							<ace:dataTable id="tab_comment_table" value="#{tab.comments}"
 								var="comment" paginator="false" rows="5"
 								emptyMessage="-- No Comments --">

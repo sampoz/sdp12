@@ -41,7 +41,8 @@ public class InstanceDataManager implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		this.session.initInstanceManager(this);
+		this.instances = this.session.getInstances();
+		filterInstances();
 	}
 
 	public void runInstances() {

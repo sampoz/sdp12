@@ -61,7 +61,7 @@ public class ApplicationBean implements Serializable {
 		}
 		
 		this.timezone =  Calendar.getInstance().getTimeZone();
-		System.out.println(this.timezone);
+		
 		tempConnector.close();
 	}
 

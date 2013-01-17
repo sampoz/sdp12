@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -58,14 +59,16 @@ public class SchedulingDataManager {
 	private String runReport;
 
 	private String schedulingList;
-	
+
 	private Date startDate = new Date();
 	private Date endDate = new Date();
+
+	private List<Scheduling> matching;
 
 	@PostConstruct
 	private void init() {
 		this.builder = new SchedulingBuilder();
-		this.session.initSchedulingManager(this);
+		this.schedulings = this.session.getSchedulings();
 	}
 
 	public void listSelected() {
@@ -296,21 +299,40 @@ public class SchedulingDataManager {
 		this.session.refreshSchedulings();
 		this.schedulings = this.session.getSchedulings();
 	}
-	
-	public void dateSubmit(){
+
+	public void dateSubmit() {
+		Date today = new Date();
+		if(this.startDate.after(today) || this.endDate.after(today))
+			return;
+		if(this.endDate.equals(this.startDate) || this.endDate.before(this.startDate))
+			return;
+		this.matching = new ArrayList<Scheduling>();
 		for (Scheduling s : this.schedulings) {
+
+			if (s.getStatusID() != 1)
+				continue;
+
 			CronExpression cron;
 			try {
 				cron = new CronExpression(s.getCron());
-				if(cron.getNextValidTimeAfter(this.startDate).before(this.endDate)){
-					System.out.println(s.getId() + " : " + s.getCron());
+				
+				if (cron.getNextValidTimeAfter(this.startDate).before(
+						this.endDate)
+						&& cron.getNextValidTimeAfter(this.endDate)
+								.after(today)) {
+
+					Calendar cal = Calendar.getInstance(); // creates calendar
+					cal.setTime(today); // sets calendar time/date
+					cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+					if (cron.getNextValidTimeAfter(today).after(cal.getTime()))
+						this.matching.add(s);
+
 				}
 			} catch (ParseException e) {
-				
+				System.out.println("HIENO CRONI HERMANNI " + s.getCron());
 			}
-			
 		}
-		
+
 	}
 
 	public SessionBean getSession() {
@@ -455,6 +477,14 @@ public class SchedulingDataManager {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public List<Scheduling> getMatching() {
+		return matching;
+	}
+
+	public void setMatching(List<Scheduling> matching) {
+		this.matching = matching;
 	}
 
 }

@@ -5,7 +5,7 @@
 <%
 	session.invalidate();
 	
-	response.sendRedirect("./ui.jsf");
+	response.sendRedirect("./login.jsf");
 %>
 </body>
 </html>

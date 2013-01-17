@@ -3,7 +3,7 @@
 </head>
 <body>
 	<%
-		response.sendRedirect("./second.jsf");
+		response.sendRedirect("./login.jsf");
 	%>
 </body>
 </html>
