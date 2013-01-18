@@ -1,9 +1,7 @@
 package datalogic;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +10,7 @@ import java.util.List;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -23,57 +22,33 @@ import org.joda.time.Days;
 
 import users.User;
 
-import entities.Backend;
-import entities.Comment;
-import entities.Composite;
 import entities.Instance;
-import entities.Mode;
 import entities.Scheduling;
-import entities.Status;
 
 @ManagedBean(name = "sessionBean")
 @SessionScoped
 public class SessionBean {
 
-	private InstanceDataManager instanceManager;
-	private SchedulingDataManager schedulingManager;
-
 	private DatabaseConnector connector = new DatabaseConnector();
 
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 	private List<Instance> instances = new ArrayList<Instance>();
+	private HashMap<Date,List<Instance>> instancesByDate = new HashMap<Date, List<Instance>>();
 
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
 	private TabSet tabSet;
 	
-	public List<SchedulingTab> getTabs() {
-		return tabs;
-	}
-
-	private static final int STATIC_TABS = 4;
-	private static final int HIDDEN_TABS = 0;
-
-	private static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
-			"yyyy-dd-MM HH:mm:ss");
+	//Magic numbers
+	private static final int STATIC_TABS = 4; 
+	private static final int HIDDEN_TABS = 0; 
+	public static final int DAYS_AFTER_INSTANCE = 40;
+	public static final int INFINITE_DAYS = -1;
 
 	private User user = User.UNAUTHORISED;
 
 	@PreDestroy
 	public void closeConnector() {
 		this.connector.close();
-	}
-
-	private void initData() {
-		refreshSchedulings();
-		refreshInstances();
-	}
-
-	public void initSchedulingManager(SchedulingDataManager schedulingManager) {
-		this.schedulingManager = schedulingManager;
-	}
-
-	public void initInstanceManager(InstanceDataManager instanceManager) {
-		this.instanceManager = instanceManager;
 	}
 
 	public void refreshSchedulings() {
@@ -83,7 +58,21 @@ public class SessionBean {
 
 	public void refreshInstances() {
 		this.instances.clear();
+		this.instancesByDate.clear();
 		this.instances = this.connector.getInstances();
+		
+		for (Instance i : this.instances) {
+			try {
+				Date launch = ApplicationBean.ORACLE_DATE_FORMAT.parse(i.getStartDate());
+				List<Instance> list = this.instancesByDate.get(launch);
+				if(list == null)
+					this.instancesByDate.put(launch, new ArrayList<Instance>());
+				
+				this.instancesByDate.get(launch).add(i);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public DatabaseConnector getConnector() {
@@ -101,37 +90,40 @@ public class SessionBean {
 			this.user = User.BUSINESS;
 		else
 			this.user = User.ADMINISTRATOR;
-		
-		initData();
+
 		return true;
 	}
-
+	
 	public void addTab(Scheduling s) throws ParseException {
 		SchedulingTab t = new SchedulingTab();
 		t.setScheduling(s);
 
 		if (!tabs.contains(t)) {
-
-			List<Instance> temp = new ArrayList<Instance>();
-			for (Instance i : this.instances) {
-
-				Date now = new Date();
-				Date then = ORACLE_DATE_FORMAT.parse(i.getStartDate());
-				if (i.getProcess() != null
-						&& s.getName().substring(0, 4)
-								.equals(i.getProcess().substring(0, 4))
-						&& Days.daysBetween(new DateTime(then),
-								new DateTime(now)).getDays() <= 40) {
-					temp.add(i);
-				}
-			}
-
 			t.setComments(this.connector.getLastComments(s.getId()));
-			t.setInstances(temp);
+			t.setInstances(this.getInstancesForScheduling(s,
+					DAYS_AFTER_INSTANCE));
 			tabs.add(t);
 		}
 
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
+	}
+
+	private List<Instance> getInstancesForScheduling(Scheduling s, int daysAgo)
+			throws ParseException {
+		
+		List<Instance> temp = new ArrayList<Instance>();
+		for (Instance i : this.instances) {
+			Date now = new Date();
+			Date then = ApplicationBean.ORACLE_DATE_FORMAT.parse(i.getStartDate());
+			if (s.matchesInstance(i)) {
+				if (daysAgo == INFINITE_DAYS
+						|| Days.daysBetween(new DateTime(then),
+								new DateTime(now)).getDays() <= daysAgo) {
+					temp.add(i);
+				}
+			}
+		}
+		return temp;
 	}
 
 	public void removeCurrent(SchedulingTab t) {
@@ -164,15 +156,17 @@ public class SessionBean {
 		tabs.add(t);
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
-	
-	public void tabChange(ValueChangeEvent e) throws IOException{
-		if((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1 -  HIDDEN_TABS) {
-			
-			FacesContext ctx =  FacesContext.getCurrentInstance();
-			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
+
+	public void tabChange(ValueChangeEvent e) throws IOException {
+		if ((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1
+				- HIDDEN_TABS) {
+
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.getApplication().getNavigationHandler()
+					.handleNavigation(ctx, null, "logout");
 		}
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -201,6 +195,10 @@ public class SessionBean {
 		this.tabs = tabs;
 	}
 
+	public List<SchedulingTab> getTabs() {
+		return tabs;
+	}
+
 	public TabSet getTabSet() {
 		return tabSet;
 	}
@@ -208,11 +206,20 @@ public class SessionBean {
 	public void setTabSet(TabSet tabSet) {
 		this.tabSet = tabSet;
 	}
-	
-	public void validate(){
-		if(!this.user.isAuthenticated()){
-			FacesContext ctx =  FacesContext.getCurrentInstance();
-			ctx.getApplication().getNavigationHandler().handleNavigation(ctx, null, "logout");
+
+	public HashMap<Date, List<Instance>> getInstancesByDate() {
+		return instancesByDate;
+	}
+
+	public void setInstancesByDate(HashMap<Date, List<Instance>> instancesByDate) {
+		this.instancesByDate = instancesByDate;
+	}
+
+	public void validate() {
+		if (!this.user.isAuthenticated()) {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.getApplication().getNavigationHandler()
+					.handleNavigation(ctx, null, "logout");
 		}
 	}
 

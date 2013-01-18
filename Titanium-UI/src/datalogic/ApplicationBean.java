@@ -1,6 +1,8 @@
 package datalogic;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,12 @@ public class ApplicationBean implements Serializable {
 	public static final int ENABLED = 1;
 	public static final int DISABLED = 2;
 	public static final int REMOVED = 3;
+	
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat(
+			"dd-MM-yyyy HH:mm:ss");
+	
+	public static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
+			"yyyy-dd-MM HH:mm:ss");
 	
 	public ApplicationBean(){
 		

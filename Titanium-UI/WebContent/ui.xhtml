@@ -90,6 +90,11 @@
 	font-weight: bolder;
 }
 
+.None {
+	color: grey;
+	font-weight: bolder;
+}
+
 a:link {
 	text-decoration: underline;
 }
@@ -223,7 +228,7 @@ a:link {
 					activeIndex="3" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="add_scheduling" title="Add Scheduling">
 
-						<h:panelGrid id="addGrid" columns="6">
+						<h:panelGrid columns="6">
 							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
 							<h:inputText id="nameInput"
 								value="#{schedulingDataManager.builder.name}" />
@@ -300,94 +305,89 @@ a:link {
 
 					</ace:accordionPane>
 
-					<ace:accordionPane id="skipped_runs" title="Skipped Runs">
-						<h:panelGrid columns="2">
+					<ace:accordionPane id="failed_runs" title="Failed Runs">
+
+						<h:panelGrid columns="3">
+							<h:outputLabel for="start_date_entry" value="From: " />
+							<h:outputLabel for="start_date_entry" value="To: " />
+							<ace:submitMonitor for="search_date" blockUI="@source"
+								activeLabel="Searching" />
 							<ace:dateTimeEntry id="start_date_entry"
 								value="#{schedulingDataManager.startDate}"
 								timeZone="#{applicationBean.timezone}"
 								pattern="dd-MM-yyyy HH:mm:ss" navigator="true" timeOnly="false"
-								renderAsPopup="true" label="From: " labelPosition="top">
+								renderAsPopup="true"
+								maxdate="#{schedulingDataManager.maxStartDate}">
 							</ace:dateTimeEntry>
 							<ace:dateTimeEntry id="end_date_entry"
 								value="#{schedulingDataManager.endDate}"
 								timeZone="#{applicationBean.timezone}"
 								pattern="dd-MM-yyyy HH:mm:ss" navigator="true" timeOnly="false"
-								renderAsPopup="true" label="To: " labelPosition="top">
+								renderAsPopup="true"
+								maxdate="#{schedulingDataManager.maxEndDate}">
 							</ace:dateTimeEntry>
+							<h:commandButton id="search_date" value="Search"
+								actionListener="#{schedulingDataManager.dateSubmit}" />
 						</h:panelGrid>
-						<h:commandButton value="Submit"
-							actionListener="#{schedulingDataManager.dateSubmit}" />
+						<h:outputText value="#{schedulingDataManager.dateError}"
+							rendered="#{schedulingDataManager.showDateError}"
+							styleClass="red" />
 
-						<ace:dataTable id="matching_schedulings"
-							value="#{schedulingDataManager.matching}" var="match"
-							paginator="true" paginatorPosition="both"
+						<ace:dataTable id="matching_runs"
+							value="#{schedulingDataManager.matching}" var="run"
+							paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,25,50" rows="5"
 							emptyMessage="-- No Matches --">
 							<ace:ajax event="select" execute="@this" />
 
-							<ace:column  headerText="Name" sortBy="#{match.name}"
-								filterBy="#{match.name}" filterMatchMode="contains">
+							<ace:column headerText="Name" sortBy="#{run.scheduling.name}"
+								filterBy="#{run.scheduling.name}" filterMatchMode="contains">
 
 								<h:panelGrid>
-									<h:outputText value="#{match.name}"
+									<h:outputText value="#{run.scheduling.name}"
 										styleClass="tooltipTargetStyle" />
 								</h:panelGrid>
 							</ace:column>
 
 
 							<ace:column headerText="Mode"
-								sortBy="#{match.modeLabel}" filterBy="#{match.modeLabel}"
-								filterMatchMode="exact">
+								sortBy="#{run.scheduling.modeLabel}"
+								filterBy="#{run.scheduling.modeLabel}" filterMatchMode="exact">
 								<ice:panelGroup style="width:100px;">
 								</ice:panelGroup>
-								<h:outputText value="#{match.modeLabel}"
-									styleClass="#{match.styleClass}" />
+								<h:outputText value="#{run.scheduling.modeLabel}"
+									styleClass="#{run.scheduling.styleClass}" />
 
 							</ace:column>
 
-							<ace:column headerText="Time" sortBy="#{match.cron}"
-								filterBy="#{match.cron}" filterMatchMode="contains">
-								<h:outputText  value="#{match.cron}" />
-							</ace:column>
-							<ace:column headerText="Vars">
-								<h:panelGrid id="icon_grid" columns="2">
-									<h:graphicImage  library="images"
-										name="javaicon.png" style="height: 30px; width: 30px; "
-										rendered="#{match.javaAgentPollable gt 0}" />
-									<h:graphicImage library="images"
-										name="bankicon.jpg" style="height: 30px; width: 30px; "
-										rendered="#{match.bankHolidayOnly gt 0}" />
-								</h:panelGrid>
+							<ace:column headerText="Time" sortBy="#{run.scheduling.cron}"
+								filterBy="#{run.scheduling.cron}" filterMatchMode="contains">
+								<h:outputText value="#{run.scheduling.cron}" />
 							</ace:column>
 
-							<ace:column sortBy="#{match.sourceName}"
-								filterBy="#{match.sourceName}" filterMatchMode="contains">
-								<ice:panelGroup style="width:100px;">
-								</ice:panelGroup>
-								<h:outputText value="#{match.sourceName}" />
+							<ace:column headerText="Status" sortBy="#{run.status}"
+								filterBy="#{run.status}" filterMatchMode="contains">
+								<ice:panelGroup style="width:100px;" />
+								<h:outputText value="#{run.status}" styleClass="#{run.status}" />
 							</ace:column>
 
-							<ace:column headerText="Target"
-								sortBy="#{match.targetName}"
-								filterBy="#{match.targetName}" filterMatchMode="contains">
-								<ice:panelGroup style="width:100px;">
-								</ice:panelGroup>
-								<h:outputText  value="#{match.targetName}"></h:outputText>
-
+							<ace:column headerText="Previous Run" sortBy="#{run.prev}"
+								filterBy="#{run.prev}" filterMatchMode="contains">
+								<ice:panelGroup style="width:120px;" />
+								<h:outputText value="#{run.prev}" />
 							</ace:column>
-							<ace:column headerText="Description"
-								sortBy="#{match.description}"
-								filterBy="#{match.description}" filterMatchMode="contains">
-								<ice:panelGroup style="width:100px;">
-								</ice:panelGroup>
-								<h:outputText value="#{match.description}" />
+
+							<ace:column headerText="Next Run" sortBy="#{run.next}"
+								filterBy="#{run.next}" filterMatchMode="contains">
+								<ice:panelGroup style="width:100px;" />
+								<h:outputText value="#{run.next}" />
 							</ace:column>
 
 							<ace:column headerText="Details">
 								<ice:commandButton value="Open in new tab"
 									image="resources/images/openinnewtabicon.jpg"
-									actionListener="#{sessionBean.addTab(match)}" />
+									actionListener="#{sessionBean.addTab(run.scheduling)}" />
 							</ace:column>
 						</ace:dataTable>
 					</ace:accordionPane>
@@ -493,7 +493,6 @@ a:link {
 					selectionMode="multiple" resizableColumns="true"
 					binding="#{instanceDataManager.i_dataTable}">
 					<ace:ajax event="select" execute="@this" />
-
 
 					<ace:column id="i_run_state" headerText="Was run"
 						sortBy="#{instance.statusID}">

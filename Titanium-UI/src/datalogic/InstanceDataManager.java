@@ -11,6 +11,7 @@ import javax.faces.bean.CustomScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
@@ -23,7 +24,7 @@ import entities.Instance;
 import entities.Mode;
 
 @ManagedBean(name="instanceDataManager")
-@SessionScoped
+@ViewScoped
 public class InstanceDataManager implements Serializable {
 
 	@ManagedProperty(value = "#{sessionBean}")
@@ -40,7 +41,9 @@ public class InstanceDataManager implements Serializable {
 	private boolean showSkipped;
 
 	@PostConstruct
-	private void init() {
+	public void init() {
+		this.instances.clear();
+		this.session.refreshInstances();
 		this.instances = this.session.getInstances();
 		filterInstances();
 	}

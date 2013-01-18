@@ -1,8 +1,6 @@
 package datalogic;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -12,7 +10,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.model.table.RowState;
@@ -22,11 +20,12 @@ import org.quartz.CronExpression;
 import entities.Backend;
 import entities.Comment;
 import entities.Composite;
+import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
 
 @ManagedBean(name = "schedulingDataManager")
-@SessionScoped
+@ViewScoped
 public class SchedulingDataManager {
 
 	@ManagedProperty(value = "#{sessionBean}")
@@ -50,9 +49,6 @@ public class SchedulingDataManager {
 	private boolean showAddError;
 	private String addErrorMessage;
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
-			"dd-MM-yyyy HH:mm:ss");
-
 	private HttpConnector httpConnector = new HttpConnector();
 
 	private boolean responseDialogVisible;
@@ -60,14 +56,30 @@ public class SchedulingDataManager {
 
 	private String schedulingList;
 
-	private Date startDate = new Date();
-	private Date endDate = new Date();
+	private Date startDate;
+	private Date endDate;
 
-	private List<Scheduling> matching;
+	private Date maxStartDate;
+	private Date maxEndDate = new Date();
+	
+	private String dateError;
+	private boolean showDateError = false;
+
+	private List<Run> matching;
 
 	@PostConstruct
 	private void init() {
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(maxEndDate);
+		c.add(Calendar.DATE, -1);
+		this.maxStartDate = c.getTime();
+		this.startDate = this.maxStartDate;
+		this.endDate = this.maxEndDate;
+
 		this.builder = new SchedulingBuilder();
+
+		this.session.refreshSchedulings();
 		this.schedulings = this.session.getSchedulings();
 	}
 
@@ -114,7 +126,8 @@ public class SchedulingDataManager {
 			if (addComment.getText() != null
 					&& !"".equals(addComment.getText())) {
 				addComment.setSchedulingID(s.getId());
-				addComment.setCreationDate(DATE_FORMAT.format(new Date()));
+				addComment.setCreationDate(ApplicationBean.DATE_FORMAT
+						.format(new Date()));
 				session.getConnector().addComment(addComment);
 			}
 
@@ -159,7 +172,7 @@ public class SchedulingDataManager {
 			this.schedulings.add(n);
 			t.setScheduling(n);
 
-			// this.session.getConnector().updateScheduling(n);
+			this.session.getConnector().updateScheduling(n);
 
 			// If we've gotten this far there were no errors and we can hide all
 			// error messages
@@ -188,7 +201,7 @@ public class SchedulingDataManager {
 	public void submitComment(SchedulingTab t) {
 		Comment c = t.getAddComment();
 
-		c.setCreationDate(DATE_FORMAT.format(new Date()));
+		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(t.getScheduling().getId());
 
 		// If the database connector returns true from the persisting of the
@@ -211,8 +224,7 @@ public class SchedulingDataManager {
 
 		/*
 		 * If the filtered data is empty or null, we do not currently have a
-		 * filter. To prevent a NullPointerException we use the standard method
-		 * of the stateMap for selecting all rows
+		 * filter and do not wish to select anything.
 		 */
 		if (filteredRows == null || filteredRows.isEmpty()) {
 			return;
@@ -262,7 +274,7 @@ public class SchedulingDataManager {
 			if (s.getStatusID() != ApplicationBean.REMOVED) {
 				s.setStatusID(ApplicationBean.ENABLED);
 
-				// this.session.getConnector().updateScheduling(s);
+				this.session.getConnector().updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES
@@ -281,7 +293,7 @@ public class SchedulingDataManager {
 			if (s.getStatusID() != ApplicationBean.REMOVED) {
 				s.setStatusID(ApplicationBean.DISABLED);
 
-				// this.session.getConnector().updateScheduling(s);
+				this.session.getConnector().updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES
@@ -292,7 +304,9 @@ public class SchedulingDataManager {
 	}
 
 	/**
-	 * Method for refreshing the contents of the data table.
+	 * Method for refreshing the contents of the data table. We need to tell
+	 * {@link SessionBean} to refresh the [@link Scheduling} list and then
+	 * retrieve it to a local variable.
 	 */
 	public void refresh() {
 		this.schedulings.clear();
@@ -300,41 +314,158 @@ public class SchedulingDataManager {
 		this.schedulings = this.session.getSchedulings();
 	}
 
+	/**
+	 * Executed when a date interval is submitted from the UI. We want to search
+	 * for active {@link Scheduling} instances that should've had their previous
+	 * run during the interval. Then we check for any {@link Instance} objects
+	 * belonging to the {@link Scheduling} and with a date matching the previous
+	 * run. If we don't find any matches or the matching {@link Instance}
+	 * failed, we want to show the {@link Scheduling} in UI.
+	 */
 	public void dateSubmit() {
+		
+		try {
+			if(validateDates(this.startDate,this.endDate));
+			this.showDateError = false;
+		} catch (IllegalOperationException e) {
+			this.dateError = e.getMessage();
+			this.showDateError = true;
+			return;
+		}
+		
 		Date today = new Date();
-		if(this.startDate.after(today) || this.endDate.after(today))
-			return;
-		if(this.endDate.equals(this.startDate) || this.endDate.before(this.startDate))
-			return;
-		this.matching = new ArrayList<Scheduling>();
+		
+		// Clear any previous results
+		this.matching = new ArrayList<Run>();
+
 		for (Scheduling s : this.schedulings) {
 
+			// If the status isn't active we can skip this scheduling
 			if (s.getStatusID() != 1)
 				continue;
 
-			CronExpression cron;
 			try {
-				cron = new CronExpression(s.getCron());
-				
-				if (cron.getNextValidTimeAfter(this.startDate).before(
-						this.endDate)
-						&& cron.getNextValidTimeAfter(this.endDate)
-								.after(today)) {
 
-					Calendar cal = Calendar.getInstance(); // creates calendar
-					cal.setTime(today); // sets calendar time/date
-					cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
-					if (cron.getNextValidTimeAfter(today).after(cal.getTime()))
-						this.matching.add(s);
+				CronExpression cron = new CronExpression(s.getCron());
 
+				/*
+				 * Initialize a calendar and retrieve date one hour from this
+				 * moment
+				 */
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(today);
+				cal.add(Calendar.HOUR_OF_DAY, 1);
+
+				// Earliest allowed launch from this moment
+				Date threshold = cal.getTime();
+
+				// Previous launch from this moment
+				Date prev = this.getPreviousLaunch(cron, this.startDate, today);
+
+				// Next launch from this moment
+				Date next = cron.getNextValidTimeAfter(today);
+
+				/*
+				 * Check that previous run is after given start date (this
+				 * should never happen but just to be sure) and before given end
+				 * date. Also check that next run isn't earlier than one hour
+				 * from now
+				 */
+				if (prev != null && prev.after(this.startDate)
+						&& prev.before(this.endDate) && next.after(threshold)) {
+
+					// Get instances matching the previous run
+					List<Instance> instances = this.session
+							.getInstancesByDate().get(prev);
+
+					Run r = new Run();
+					r.setScheduling(s);
+					r.setNext(next.toString());
+					r.setPrev(prev.toString());
+
+					/*
+					 * If instances is null, we know Scheduling was not run and
+					 * can add it to the list straight away
+					 */
+					if (instances == null || instances.isEmpty()) {
+						r.setStatus("None");
+						this.matching.add(r);
+					} else {
+
+						// If there were instances, iterate through them
+						for (Instance i : instances) {
+
+							/*
+							 * We want the instance to match the scheduling, but
+							 * its status musn't be Completed or Skipped. If we
+							 * get a match, no need to look further
+							 */
+							if (s.matchesInstance(i)
+									&& !(i.getStatusValue().equals("Completed") || i
+											.getStatusValue().equals("Skipped"))) {
+								r.setStatus(i.getStatusValue());
+								this.matching.add(r);
+								break;
+							}
+						}
+
+					}
 				}
+
 			} catch (ParseException e) {
-				System.out.println("HIENO CRONI HERMANNI " + s.getCron());
+				// The CRON was invalid
 			}
 		}
 
 	}
+	
+	private boolean validateDates(Date start, Date end) throws IllegalOperationException{
+		boolean error = false;
+		Date today = new Date();
+		String msg = "";
+		if (this.startDate.after(today)){
+			error = true;
+			msg += "Start date cannot be after present!\n";
+		} 
+		
+		if( this.endDate.after(today)){
+			error = true;
+			msg += "End date cannot be after present!\n";
+		}
+		
+		if (this.endDate.equals(this.startDate)) {
+			error = true;
+			msg += "End date cannot be the same as start date!\n";
+		}
+		
+		if(this.endDate.before(this.startDate)){
+			error = true;
+			msg += "End date cannot be before start date!\n";
+		}
+			
+		if(error)
+			throw new IllegalOperationException(msg);
+		
+		return true;
+	}
 
+	/*
+	 * Helper method to retrieve the previous run of the CRON between given
+	 * dates since CronExpression doesn't have this functionality.
+	 */
+	private Date getPreviousLaunch(CronExpression cron, Date min, Date max) {
+		Date candidate = min;
+		do {
+			candidate = cron.getNextValidTimeAfter(candidate);
+		} while (cron.getNextValidTimeAfter(candidate).before(max));
+
+		if (candidate.before(max))
+			return candidate;
+		else
+			return null;
+	}
+
+	// ==================== GETTERS & SETTERS ====================
 	public SessionBean getSession() {
 		return session;
 	}
@@ -479,12 +610,44 @@ public class SchedulingDataManager {
 		this.endDate = endDate;
 	}
 
-	public List<Scheduling> getMatching() {
+	public List<Run> getMatching() {
 		return matching;
 	}
 
-	public void setMatching(List<Scheduling> matching) {
+	public void setMatching(List<Run> matching) {
 		this.matching = matching;
+	}
+
+	public Date getMaxStartDate() {
+		return maxStartDate;
+	}
+
+	public void setMaxStartDate(Date maxStartDate) {
+		this.maxStartDate = maxStartDate;
+	}
+
+	public Date getMaxEndDate() {
+		return maxEndDate;
+	}
+
+	public void setMaxEndDate(Date maxEndDate) {
+		this.maxEndDate = maxEndDate;
+	}
+
+	public String getDateError() {
+		return dateError;
+	}
+
+	public void setDateError(String dateError) {
+		this.dateError = dateError;
+	}
+
+	public boolean getShowDateError() {
+		return showDateError;
+	}
+
+	public void setShowDateError(boolean showDateError) {
+		this.showDateError = showDateError;
 	}
 
 }

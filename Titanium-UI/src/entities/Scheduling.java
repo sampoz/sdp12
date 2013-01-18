@@ -27,7 +27,7 @@ public class Scheduling implements Serializable {
 
 	@Transient
 	private String targetName;
-	
+
 	@Transient
 	private String styleClass;
 
@@ -73,6 +73,17 @@ public class Scheduling implements Serializable {
 	private String contacts;
 
 	public Scheduling() {
+	}
+
+	public boolean matchesInstance(Instance i) {
+		if (this.name != null
+				&& i.getProcess() != null
+				&& this.name.length() >= 4
+				&& i.getProcess().length() >= 4
+				&& this.name.substring(0, 4).equals(
+						i.getProcess().substring(0, 4)))
+			return true;
+		return false;
 	}
 
 	public int getId() {
@@ -234,6 +245,5 @@ public class Scheduling implements Serializable {
 	public void setStyleClass(String styleClass) {
 		this.styleClass = styleClass;
 	}
-
 
 }
