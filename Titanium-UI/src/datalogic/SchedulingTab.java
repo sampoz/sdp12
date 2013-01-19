@@ -22,6 +22,7 @@ public class SchedulingTab {
 	private List<Comment> comments = new ArrayList<Comment>();
 	
 	private Comment addComment = new Comment();
+	private Comment editComment = new Comment();
 	
 	private SchedulingBuilder builder;
 	
@@ -119,6 +120,14 @@ public class SchedulingTab {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Comment getEditComment() {
+		return editComment;
+	}
+
+	public void setEditComment(Comment editComment) {
+		this.editComment = editComment;
 	}
 
 	@Override

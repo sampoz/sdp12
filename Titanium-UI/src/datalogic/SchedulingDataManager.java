@@ -61,7 +61,7 @@ public class SchedulingDataManager {
 
 	private Date maxStartDate;
 	private Date maxEndDate = new Date();
-	
+
 	private String dateError;
 	private boolean showDateError = false;
 
@@ -162,7 +162,10 @@ public class SchedulingDataManager {
 			 * Validation is carried out normally within the builder
 			 */
 			Scheduling n = t.getBuilder().build();
-
+			if(n.equals(t.getScheduling())) {
+				System.out.println("No changes");
+				return;
+			}
 			/*
 			 * In order to refresh the DataTable we need to "brute force" the
 			 * change by removing the unedited Scheduling and adding the newly
@@ -173,11 +176,14 @@ public class SchedulingDataManager {
 			t.setScheduling(n);
 
 			this.session.getConnector().updateScheduling(n);
-
+			
 			// If we've gotten this far there were no errors and we can hide all
 			// error messages
 			showEditError = false;
-
+			String comment = t.getEditComment().getText();
+			if(comment != null && !comment.isEmpty())
+				this.submitEditComment(t);
+			
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
 					+ httpConnector.editId(
@@ -196,6 +202,21 @@ public class SchedulingDataManager {
 			showEditError = true;
 		}
 
+	}
+	
+	private void submitEditComment(SchedulingTab t){
+		Comment c = t.getEditComment();
+
+		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
+		c.setSchedulingID(t.getScheduling().getId());
+
+		// If the database connector returns true from the persisting of the
+		// comment we can safely add it to the table
+		if (this.session.getConnector().addComment(c)) {
+			t.setEditComment(new Comment());
+			t.setComments(this.session.getConnector().getLastComments(
+					t.getScheduling().getId()));
+		}
 	}
 
 	public void submitComment(SchedulingTab t) {
@@ -316,25 +337,26 @@ public class SchedulingDataManager {
 
 	/**
 	 * Executed when a date interval is submitted from the UI. We want to search
-	 * for active {@link Scheduling} instances that should've had their previous
-	 * run during the interval. Then we check for any {@link Instance} objects
-	 * belonging to the {@link Scheduling} and with a date matching the previous
-	 * run. If we don't find any matches or the matching {@link Instance}
-	 * failed, we want to show the {@link Scheduling} in UI.
+	 * for active {@link Scheduling} instances that should've had a CRON trigger
+	 * during the interval. Then we check for any {@link Instance} objects
+	 * belonging to the {@link Scheduling} and with a date matching that trigger
+	 * . If we don't find any matches or the matching {@link Instance} failed,
+	 * we want to show the {@link Scheduling} in UI.
 	 */
 	public void dateSubmit() {
-		
+
 		try {
-			if(validateDates(this.startDate,this.endDate));
+			if (validateDates(this.startDate, this.endDate))
+				;
 			this.showDateError = false;
 		} catch (IllegalOperationException e) {
 			this.dateError = e.getMessage();
 			this.showDateError = true;
 			return;
 		}
-		
+
 		Date today = new Date();
-		
+
 		// Clear any previous results
 		this.matching = new ArrayList<Run>();
 
@@ -359,8 +381,8 @@ public class SchedulingDataManager {
 				// Earliest allowed launch from this moment
 				Date threshold = cal.getTime();
 
-				// Previous launch from this moment
-				Date prev = this.getPreviousLaunch(cron, this.startDate, today);
+				// The last launch between start date and end date
+				Date prev = this.getPreviousLaunch(cron, this.startDate, this.endDate);
 
 				// Next launch from this moment
 				Date next = cron.getNextValidTimeAfter(today);
@@ -418,34 +440,35 @@ public class SchedulingDataManager {
 		}
 
 	}
-	
-	private boolean validateDates(Date start, Date end) throws IllegalOperationException{
+
+	private boolean validateDates(Date start, Date end)
+			throws IllegalOperationException {
 		boolean error = false;
 		Date today = new Date();
 		String msg = "";
-		if (this.startDate.after(today)){
+		if (this.startDate.after(today)) {
 			error = true;
 			msg += "Start date cannot be after present!\n";
-		} 
-		
-		if( this.endDate.after(today)){
+		}
+
+		if (this.endDate.after(today)) {
 			error = true;
 			msg += "End date cannot be after present!\n";
 		}
-		
+
 		if (this.endDate.equals(this.startDate)) {
 			error = true;
 			msg += "End date cannot be the same as start date!\n";
 		}
-		
-		if(this.endDate.before(this.startDate)){
+
+		if (this.endDate.before(this.startDate)) {
 			error = true;
 			msg += "End date cannot be before start date!\n";
 		}
-			
-		if(error)
+
+		if (error)
 			throw new IllegalOperationException(msg);
-		
+
 		return true;
 	}
 

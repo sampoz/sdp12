@@ -245,5 +245,75 @@ public class Scheduling implements Serializable {
 	public void setStyleClass(String styleClass) {
 		this.styleClass = styleClass;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Scheduling other = (Scheduling) obj;
+		if (bankHolidayOnly == null) {
+			if (other.bankHolidayOnly != null)
+				return false;
+		} else if (!bankHolidayOnly.equals(other.bankHolidayOnly))
+			return false;
+		if (contacts == null) {
+			if (other.contacts != null)
+				return false;
+		} else if (!contacts.equals(other.contacts))
+			return false;
+		if (cron == null) {
+			if (other.cron != null)
+				return false;
+		} else if (!cron.equals(other.cron))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (id != other.id)
+			return false;
+		if (javaAgentPollable == null) {
+			if (other.javaAgentPollable != null)
+				return false;
+		} else if (!javaAgentPollable.equals(other.javaAgentPollable))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (requestURL == null) {
+			if (other.requestURL != null)
+				return false;
+		} else if (!requestURL.equals(other.requestURL))
+			return false;
+		if (serviceID == null) {
+			if (other.serviceID != null)
+				return false;
+		} else if (!serviceID.equals(other.serviceID))
+			return false;
+		if (source == null) {
+			if (other.source != null)
+				return false;
+		} else if (!source.equals(other.source))
+			return false;
+		if (statusID == null) {
+			if (other.statusID != null)
+				return false;
+		} else if (!statusID.equals(other.statusID))
+			return false;
+		if (target == null) {
+			if (other.target != null)
+				return false;
+		} else if (!target.equals(other.target))
+			return false;
+		
+		return true;
+	}
 
 }

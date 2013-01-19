@@ -227,7 +227,6 @@ a:link {
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="3" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="add_scheduling" title="Add Scheduling">
-
 						<h:panelGrid columns="6">
 							<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
 							<h:inputText id="nameInput"
@@ -273,6 +272,12 @@ a:link {
 							<h:outputLabel for="contacts_input" value="Contacts: " />
 							<h:inputText id="contacts_input"
 								value="#{schedulingDataManager.builder.contacts}" />
+							<h:outputLabel id="add_comment_label" for="add_comment_input"
+								value="Comment: " />
+							<h:inputText id="add_comment_input"
+								value="#{schedulingDataManager.addComment.text}" />
+							<h:outputLabel id="opt_comment_label" for="add_comment_input"
+								value="(Opt.)" />
 						</h:panelGrid>
 						<h:panelGrid columns="2">
 							<h:outputLabel id="compositeLabel" for="compositeInput"
@@ -284,27 +289,15 @@ a:link {
 								<f:converter converterId="entityConverter" />
 							</ice:selectOneMenu>
 						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<h:outputLabel id="add_comment_label" for="add_comment_input"
-								value="Comment: " />
-							<h:inputText id="add_comment_input"
-								value="#{schedulingDataManager.addComment.text}" />
-							<h:outputLabel id="opt_comment_label" for="add_comment_input"
-								value="(Opt.)" />
-						</h:panelGrid>
 						<ice:commandButton id="add_scheduling_button"
 							value="Add Scheduling"
 							actionListener="#{schedulingDataManager.addScheduling}" />
-						<pre>
-							<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
+						<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
 								rendered="#{schedulingDataManager.showAddError}"
 								styleClass="red" />
-						</pre>
-						<ace:submitMonitor for="add_scheduling_monitor"
-							activeLabel="Adding" autoCenter="true" blockUI="@source" />
-
 					</ace:accordionPane>
-
+					<ace:submitMonitor for="add_scheduling_monitor"
+						activeLabel="Adding" autoCenter="true" blockUI="@source" />
 					<ace:accordionPane id="failed_runs" title="Failed Runs">
 
 						<h:panelGrid columns="3">
@@ -685,6 +678,11 @@ a:link {
 								<h:outputLabel for="tab_contacts_input" value="Contacts: " />
 								<h:inputText id="tab_contacts_input"
 									value="#{tab.builder.contacts}" />
+								<h:outputLabel for="tab_edit_comment_input"
+									value="Comment: " />
+								<h:inputText id="tab_edit_comment_input"
+									value="#{tab.editComment.text}" />
+								<h:outputLabel value="(Opt.)" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
 								<h:outputLabel for="tab_composite_input" value="Composite: " />
@@ -821,7 +819,7 @@ a:link {
 								</ace:column>
 							</ace:dataTable>
 							<br />
-							<ace:textEntry id="tab_edit_comment_input" label="Comment: "
+							<ace:textEntry id="tab_comment_input" label="Comment: "
 								labelPosition="left" value="#{tab.addComment.text}"
 								rendered="#{sessionBean.user.editRights}"
 								style="margin-right: 10px;" />

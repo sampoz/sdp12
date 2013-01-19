@@ -60,7 +60,8 @@ public class SessionBean {
 		this.instances.clear();
 		this.instancesByDate.clear();
 		this.instances = this.connector.getInstances();
-		
+		long time = System.currentTimeMillis(); 
+		System.out.println("Indexing instances for optimization...");
 		for (Instance i : this.instances) {
 			try {
 				Date launch = ApplicationBean.ORACLE_DATE_FORMAT.parse(i.getStartDate());
@@ -73,6 +74,8 @@ public class SessionBean {
 				e.printStackTrace();
 			}
 		}
+		time =  System.currentTimeMillis() -time;
+		System.out.println("Done. " + this.instances.size() + " instances indexed. Time spent was: " + time + " milliseconds. ");
 	}
 
 	public DatabaseConnector getConnector() {
@@ -166,7 +169,16 @@ public class SessionBean {
 					.handleNavigation(ctx, null, "logout");
 		}
 	}
-
+	
+	public void validate() {
+		if (!this.user.isAuthenticated()) {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.getApplication().getNavigationHandler()
+					.handleNavigation(ctx, null, "logout");
+		}
+	}
+	
+	// ==================== GETTERS & SETTERS ====================
 	public User getUser() {
 		return user;
 	}
@@ -213,14 +225,6 @@ public class SessionBean {
 
 	public void setInstancesByDate(HashMap<Date, List<Instance>> instancesByDate) {
 		this.instancesByDate = instancesByDate;
-	}
-
-	public void validate() {
-		if (!this.user.isAuthenticated()) {
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.getApplication().getNavigationHandler()
-					.handleNavigation(ctx, null, "logout");
-		}
 	}
 
 }
