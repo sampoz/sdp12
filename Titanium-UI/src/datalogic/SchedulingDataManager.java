@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -65,7 +66,9 @@ public class SchedulingDataManager {
 	private String dateError;
 	private boolean showDateError = false;
 
-	private List<Run> matching;
+	private List<Run> matching = new ArrayList<Run>();
+	private RowStateMap runStateMap = new RowStateMap();
+	private DataTable runDataTable;
 
 	@PostConstruct
 	private void init() {
@@ -162,7 +165,7 @@ public class SchedulingDataManager {
 			 * Validation is carried out normally within the builder
 			 */
 			Scheduling n = t.getBuilder().build();
-			if(n.equals(t.getScheduling())) {
+			if (n.equals(t.getScheduling())) {
 				System.out.println("No changes");
 				return;
 			}
@@ -176,14 +179,14 @@ public class SchedulingDataManager {
 			t.setScheduling(n);
 
 			this.session.getConnector().updateScheduling(n);
-			
+
 			// If we've gotten this far there were no errors and we can hide all
 			// error messages
 			showEditError = false;
 			String comment = t.getEditComment().getText();
-			if(comment != null && !comment.isEmpty())
+			if (comment != null && !comment.isEmpty())
 				this.submitEditComment(t);
-			
+
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
 					+ httpConnector.editId(
@@ -203,8 +206,8 @@ public class SchedulingDataManager {
 		}
 
 	}
-	
-	private void submitEditComment(SchedulingTab t){
+
+	private void submitEditComment(SchedulingTab t) {
 		Comment c = t.getEditComment();
 
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
@@ -273,15 +276,11 @@ public class SchedulingDataManager {
 	public void runSelectedSchedules() {
 		String runReport = stateMap.getSelected().size()
 				+ " schedulings were run.\n";
-		for (Object rowData : stateMap.getSelected()) {
-			Scheduling s = (Scheduling) rowData;
-			runReport += "Response for scheduling "
-					+ s.getName().substring(0, 4)
-					+ " was "
-					+ httpConnector.runId(
-							ApplicationBean.COMPOSITES.get(s.getServiceID())
-									.getDestinationURL(), s.getId()) + ".\n";
+		HashMap<Integer, Integer> results = run(stateMap.getSelected());
+		for (Integer i : results.keySet()) {
+			runReport += "Response for " + results.get(i) + " schedulings was " + i +"\n";
 		}
+		
 		this.runReport = runReport;
 		this.responseDialogVisible = true;
 	}
@@ -313,6 +312,25 @@ public class SchedulingDataManager {
 
 			if (s.getStatusID() != ApplicationBean.REMOVED) {
 				s.setStatusID(ApplicationBean.DISABLED);
+
+				this.session.getConnector().updateScheduling(s);
+				System.out.println("HttpConnector returned: "
+						+ httpConnector.editId(
+								ApplicationBean.COMPOSITES
+										.get(s.getServiceID())
+										.getDestinationURL(), s.getId()));
+			}
+		}
+	}
+
+	// TODO comments
+	public void removeSelected() {
+
+		for (Object rowData : stateMap.getSelected()) {
+			Scheduling s = (Scheduling) rowData;
+
+			if (s.getStatusID() != ApplicationBean.REMOVED) {
+				s.setStatusID(ApplicationBean.REMOVED);
 
 				this.session.getConnector().updateScheduling(s);
 				System.out.println("HttpConnector returned: "
@@ -382,7 +400,8 @@ public class SchedulingDataManager {
 				Date threshold = cal.getTime();
 
 				// The last launch between start date and end date
-				Date prev = this.getPreviousLaunch(cron, this.startDate, this.endDate);
+				Date prev = this.getPreviousLaunch(cron, this.startDate,
+						this.endDate);
 
 				// Next launch from this moment
 				Date next = cron.getNextValidTimeAfter(today);
@@ -486,6 +505,79 @@ public class SchedulingDataManager {
 			return candidate;
 		else
 			return null;
+	}
+
+	public void selectFilteredRuns() {
+		List<Run> filteredRows = runDataTable.getFilteredData();
+
+		/*
+		 * If the filtered data is empty or null, we do not currently have a
+		 * filter and do not wish to select anything.
+		 */
+		if (filteredRows == null || filteredRows.isEmpty()) {
+			return;
+		}
+
+		// Iterate through the filtered data and set all rows to be selected
+		for (Run r : filteredRows) {
+			runStateMap.get(r).setSelected(true);
+		}
+	}
+
+	public void deselectAllRuns() {
+		Collection<RowState> allRows = runStateMap.values();
+
+		for (RowState r : allRows) {
+			r.setSelected(false);
+		}
+	}
+
+	public void runSelectedRuns() {
+		String runReport = runStateMap.getSelected().size()
+				+ " schedulings were run.\n";
+		List<Scheduling> schedulings = new ArrayList<Scheduling>();
+		for (Object r : runStateMap.getSelected()) {
+			schedulings.add(((Run) r).getScheduling());
+		}
+		
+		HashMap<Integer, Integer> results = run(schedulings);
+		for (Integer i : results.keySet()) {
+			runReport += "Response for " + results.get(i) + " schedulings was " + i +"\n";
+		}
+		this.runReport = runReport;
+		this.responseDialogVisible = true;
+	}
+
+	public void runAllRuns() {
+		String runReport = this.matching.size() + " schedulings were run.\n";
+		List<Scheduling> schedulings = new ArrayList<Scheduling>();
+		for (Run r : this.matching) {
+			schedulings.add(r.getScheduling());
+		}
+		
+		HashMap<Integer, Integer> results = run(schedulings);
+		for (Integer i : results.keySet()) {
+			runReport += "Response for " + results.get(i) + " schedulings was " + i +"\n";
+		}
+		
+		this.runReport = runReport;
+		this.responseDialogVisible = true;
+	}
+
+	private HashMap<Integer, Integer> run(List<Scheduling> schedulings) {
+		HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
+		for (Scheduling s : schedulings) {
+			int response = httpConnector.runId(
+					ApplicationBean.COMPOSITES.get(s.getServiceID())
+							.getDestinationURL(), s.getId());
+
+			if (results.get(response) == null)
+				results.put(response, 1);
+			else
+				results.put(response, results.get(response) + 1);
+		}
+
+		return results;
 	}
 
 	// ==================== GETTERS & SETTERS ====================
@@ -671,6 +763,22 @@ public class SchedulingDataManager {
 
 	public void setShowDateError(boolean showDateError) {
 		this.showDateError = showDateError;
+	}
+
+	public RowStateMap getRunStateMap() {
+		return runStateMap;
+	}
+
+	public void setRunStateMap(RowStateMap runStateMap) {
+		this.runStateMap = runStateMap;
+	}
+
+	public DataTable getRunDataTable() {
+		return runDataTable;
+	}
+
+	public void setRunDataTable(DataTable runDataTable) {
+		this.runDataTable = runDataTable;
 	}
 
 }

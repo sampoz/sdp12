@@ -145,6 +145,12 @@ a:link {
 							actionListener="#{schedulingDataManager.listSelected}">
 							<ace:ajax event="activate" execute="@this" />
 						</ace:menuItem>
+						<ace:menuItem id="remove_selected" value="Remove Selected"
+							onclick="remove_conf.show()" icon="ui-icon ui-icon-alert"
+							rendered="#{sessionBean.user.editRights}"
+							actionListener="#{schedulingDataManager.listSelected}">
+							<ace:ajax event="activate" execute="@this" />
+						</ace:menuItem>
 
 						<ace:menuItem id="refresh" value="Refresh"
 							actionListener="#{schedulingDataManager.refresh}"
@@ -194,6 +200,19 @@ a:link {
 						<h:commandButton value="Yes" onclick="hold_conf.hide()"
 							actionListener="#{schedulingDataManager.holdSelected}" />
 						<h:commandButton value="No" onclick="hold_conf.hide()" />
+					</h:panelGrid>
+				</ace:confirmationDialog>
+
+				<ace:confirmationDialog id="remove_confirmation"
+					widgetVar="remove_conf"
+					message="Are you sure you want to remove following schedulings?"
+					header="Confirm Hold" width="330" height="300">
+					<ice:outputText value="#{schedulingDataManager.schedulingList}"
+						escape="false" />
+					<h:panelGrid columns="2">
+						<h:commandButton value="Yes" onclick="remove_conf.hide()"
+							actionListener="#{schedulingDataManager.removeSelected}" />
+						<h:commandButton value="No" onclick="remove_conf.hide()" />
 					</h:panelGrid>
 				</ace:confirmationDialog>
 
@@ -293,8 +312,7 @@ a:link {
 							value="Add Scheduling"
 							actionListener="#{schedulingDataManager.addScheduling}" />
 						<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
-								rendered="#{schedulingDataManager.showAddError}"
-								styleClass="red" />
+							rendered="#{schedulingDataManager.showAddError}" styleClass="red" />
 					</ace:accordionPane>
 					<ace:submitMonitor for="add_scheduling_monitor"
 						activeLabel="Adding" autoCenter="true" blockUI="@source" />
@@ -326,12 +344,27 @@ a:link {
 							rendered="#{schedulingDataManager.showDateError}"
 							styleClass="red" />
 
+						<ace:menuBar>
+							<ace:menuItem value="Select Filtered"
+								icon="ui-icon ui-icon-check"
+								actionListener="#{schedulingDataManager.selectFilteredRuns}" />
+							<ace:menuItem value="Deselect All"
+								icon="ui-icon ui-icon-closethick"
+								actionListener="#{schedulingDataManager.deselectAllRuns}" />
+							<ace:menuItem value="Run Selected" icon="ui-icon ui-icon-play"
+								actionListener="#{schedulingDataManager.runSelectedRuns}" />
+							<ace:menuItem value="Run All" icon="ui-icon ui-icon-seek-next"
+								actionListener="#{schedulingDataManager.runAllRuns}" />
+						</ace:menuBar>
 						<ace:dataTable id="matching_runs"
 							value="#{schedulingDataManager.matching}" var="run"
 							paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,25,50" rows="5"
-							emptyMessage="-- No Matches --">
+							emptyMessage="-- No Matches --"
+							stateMap="#{schedulingDataManager.runStateMap}"
+							selectionMode="multiple"
+							binding="#{schedulingDataManager.runDataTable}">
 							<ace:ajax event="select" execute="@this" />
 
 							<ace:column headerText="Name" sortBy="#{run.scheduling.name}"
@@ -678,8 +711,7 @@ a:link {
 								<h:outputLabel for="tab_contacts_input" value="Contacts: " />
 								<h:inputText id="tab_contacts_input"
 									value="#{tab.builder.contacts}" />
-								<h:outputLabel for="tab_edit_comment_input"
-									value="Comment: " />
+								<h:outputLabel for="tab_edit_comment_input" value="Comment: " />
 								<h:inputText id="tab_edit_comment_input"
 									value="#{tab.editComment.text}" />
 								<h:outputLabel value="(Opt.)" />
