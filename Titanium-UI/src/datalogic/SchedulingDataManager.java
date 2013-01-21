@@ -1,5 +1,6 @@
 package datalogic;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.icefaces.ace.component.datatable.DataTable;
+import org.icefaces.ace.component.dialog.Dialog;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
 import org.quartz.CronExpression;
@@ -27,7 +29,7 @@ import entities.Scheduling;
 
 @ManagedBean(name = "schedulingDataManager")
 @ViewScoped
-public class SchedulingDataManager {
+public class SchedulingDataManager implements Serializable{
 
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
@@ -53,8 +55,8 @@ public class SchedulingDataManager {
 	private HttpConnector httpConnector = new HttpConnector();
 
 	private boolean responseDialogVisible;
-	private String runReport;
-
+	private List<String> runReport = new ArrayList<String>();
+	
 	private String schedulingList;
 
 	private Date startDate;
@@ -82,7 +84,6 @@ public class SchedulingDataManager {
 
 		this.builder = new SchedulingBuilder();
 
-		this.session.refreshSchedulings();
 		this.schedulings = this.session.getSchedulings();
 	}
 
@@ -274,15 +275,7 @@ public class SchedulingDataManager {
 
 	// TODO Comments
 	public void runSelectedSchedules() {
-		String runReport = stateMap.getSelected().size()
-				+ " schedulings were run.\n";
-		HashMap<Integer, Integer> results = run(stateMap.getSelected());
-		for (Integer i : results.keySet()) {
-			runReport += "Response for " + results.get(i) + " schedulings was " + i +"\n";
-		}
-		
-		this.runReport = runReport;
-		this.responseDialogVisible = true;
+		run(stateMap.getSelected());
 	}
 
 	// TODO comments
@@ -533,38 +526,26 @@ public class SchedulingDataManager {
 	}
 
 	public void runSelectedRuns() {
-		String runReport = runStateMap.getSelected().size()
-				+ " schedulings were run.\n";
 		List<Scheduling> schedulings = new ArrayList<Scheduling>();
 		for (Object r : runStateMap.getSelected()) {
 			schedulings.add(((Run) r).getScheduling());
 		}
 		
-		HashMap<Integer, Integer> results = run(schedulings);
-		for (Integer i : results.keySet()) {
-			runReport += "Response for " + results.get(i) + " schedulings was " + i +"\n";
-		}
-		this.runReport = runReport;
-		this.responseDialogVisible = true;
+		run(schedulings);
 	}
 
 	public void runAllRuns() {
-		String runReport = this.matching.size() + " schedulings were run.\n";
 		List<Scheduling> schedulings = new ArrayList<Scheduling>();
 		for (Run r : this.matching) {
 			schedulings.add(r.getScheduling());
 		}
 		
-		HashMap<Integer, Integer> results = run(schedulings);
-		for (Integer i : results.keySet()) {
-			runReport += "Response for " + results.get(i) + " schedulings was " + i +"\n";
-		}
-		
-		this.runReport = runReport;
-		this.responseDialogVisible = true;
+		run(schedulings);
 	}
 
-	private HashMap<Integer, Integer> run(List<Scheduling> schedulings) {
+	private void run(List<Scheduling> schedulings) {
+		this.runReport.clear();
+		this.runReport.add(schedulings.size() + " schedulings were run.");
 		HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
 		for (Scheduling s : schedulings) {
 			int response = httpConnector.runId(
@@ -576,8 +557,12 @@ public class SchedulingDataManager {
 			else
 				results.put(response, results.get(response) + 1);
 		}
+		
+		for (Integer i : results.keySet()) {
+			this.runReport.add("Response for " + results.get(i) + " schedulings was " + i);
+		}
 
-		return results;
+		this.responseDialogVisible = true;
 	}
 
 	// ==================== GETTERS & SETTERS ====================
@@ -693,11 +678,11 @@ public class SchedulingDataManager {
 		this.responseDialogVisible = responseDialogVisible;
 	}
 
-	public String getRunReport() {
+	public List<String> getRunReport() {
 		return runReport;
 	}
 
-	public void setRunReport(String runReport) {
+	public void setRunReport(List<String> runReport) {
 		this.runReport = runReport;
 	}
 
@@ -780,5 +765,6 @@ public class SchedulingDataManager {
 	public void setRunDataTable(DataTable runDataTable) {
 		this.runDataTable = runDataTable;
 	}
+
 
 }

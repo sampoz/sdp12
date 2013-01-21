@@ -58,8 +58,12 @@ public class SessionBean {
 
 	public void refreshInstances() {
 		this.instances.clear();
-		this.instancesByDate.clear();
 		this.instances = this.connector.getInstances();
+		
+	}
+	
+	public void indexInstances(){
+		this.instancesByDate.clear();
 		long time = System.currentTimeMillis(); 
 		System.out.println("Indexing instances for optimization...");
 		for (Instance i : this.instances) {
@@ -78,14 +82,6 @@ public class SessionBean {
 		System.out.println("Done. " + this.instances.size() + " instances indexed. Time spent was: " + time + " milliseconds. ");
 	}
 
-	public DatabaseConnector getConnector() {
-		return connector;
-	}
-
-	public void setConnector(DatabaseConnector connector) {
-		this.connector = connector;
-	}
-
 	public boolean authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
 
@@ -93,10 +89,16 @@ public class SessionBean {
 			this.user = User.BUSINESS;
 		else
 			this.user = User.ADMINISTRATOR;
-
+		this.init();
 		return true;
 	}
 	
+	private void init() {
+		refreshSchedulings();
+		refreshInstances();
+		indexInstances();
+	}
+
 	public void addTab(Scheduling s) throws ParseException {
 		SchedulingTab t = new SchedulingTab();
 		t.setScheduling(s);
@@ -226,5 +228,14 @@ public class SessionBean {
 	public void setInstancesByDate(HashMap<Date, List<Instance>> instancesByDate) {
 		this.instancesByDate = instancesByDate;
 	}
+	
+	public DatabaseConnector getConnector() {
+		return connector;
+	}
+
+	public void setConnector(DatabaseConnector connector) {
+		this.connector = connector;
+	}
+
 
 }

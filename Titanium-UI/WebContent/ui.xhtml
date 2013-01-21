@@ -166,83 +166,6 @@ a:link {
 					</a>
 				</h:panelGrid>
 
-				<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
-					message="Are you sure you want to run following schedulings?"
-					header="Confirm Run" width="330" height="300">
-					<ice:outputText value="#{schedulingDataManager.schedulingList}"
-						escape="false" />
-					<h:panelGrid columns="2">
-						<h:commandButton value="Yes" onclick="run_conf.hide()"
-							actionListener="#{schedulingDataManager.runSelectedSchedules}" />
-						<h:commandButton value="No" onclick="run_conf.hide()" />
-					</h:panelGrid>
-				</ace:confirmationDialog>
-
-				<ace:confirmationDialog id="resume_confirmation"
-					widgetVar="resume_conf"
-					message="Are you sure you want to resume following schedulings?"
-					header="Confirm Resume" width="330" height="300">
-					<ice:outputText value="#{schedulingDataManager.schedulingList}"
-						escape="false" />
-					<h:panelGrid columns="2">
-						<h:commandButton value="Yes" onclick="resume_conf.hide()"
-							actionListener="#{schedulingDataManager.resumeSelected}" />
-						<h:commandButton value="No" onclick="resume_conf.hide()" />
-					</h:panelGrid>
-				</ace:confirmationDialog>
-
-				<ace:confirmationDialog id="hold_confirmation" widgetVar="hold_conf"
-					message="Are you sure you want to put following schedulings on hold?"
-					header="Confirm Hold" width="330" height="300">
-					<ice:outputText value="#{schedulingDataManager.schedulingList}"
-						escape="false" />
-					<h:panelGrid columns="2">
-						<h:commandButton value="Yes" onclick="hold_conf.hide()"
-							actionListener="#{schedulingDataManager.holdSelected}" />
-						<h:commandButton value="No" onclick="hold_conf.hide()" />
-					</h:panelGrid>
-				</ace:confirmationDialog>
-
-				<ace:confirmationDialog id="remove_confirmation"
-					widgetVar="remove_conf"
-					message="Are you sure you want to remove following schedulings?"
-					header="Confirm Hold" width="330" height="300">
-					<ice:outputText value="#{schedulingDataManager.schedulingList}"
-						escape="false" />
-					<h:panelGrid columns="2">
-						<h:commandButton value="Yes" onclick="remove_conf.hide()"
-							actionListener="#{schedulingDataManager.removeSelected}" />
-						<h:commandButton value="No" onclick="remove_conf.hide()" />
-					</h:panelGrid>
-				</ace:confirmationDialog>
-
-				<ice:panelPopup
-					visible="#{schedulingDataManager.responseDialogVisible}"
-					rendered="#{schedulingDataManager.responseDialogVisible}"
-					modal="true" autoCentre="true">
-					<f:facet name="header">
-						<h:panelGroup>
-							<h:outputText value="Run Report" style="margin-left:5px" />
-						</h:panelGroup>
-					</f:facet>
-					<f:facet name="body">
-						<pre>
-                   		 <h:outputText
-								value="#{schedulingDataManager.runReport}"></h:outputText>
-                    </pre>
-						<br />
-						<h:panelGroup>
-							<h:commandButton value="Close"
-								actionListener="#{schedulingDataManager.setResponseDialogVisible(false)}"
-								style="margin-left: auto; margin-right: auto;" />
-						</h:panelGroup>
-					</f:facet>
-
-				</ice:panelPopup>
-
-				<ace:submitMonitor for="refresh" activeLabel="Refreshing"
-					autoCenter="true" blockUI="@source" />
-
 				<ace:accordion id="accordion" collapsible="true" autoHeight="false"
 					activeIndex="3" rendered="#{sessionBean.user.addRights}">
 					<ace:accordionPane id="add_scheduling" title="Add Scheduling">
@@ -311,18 +234,18 @@ a:link {
 						<ice:commandButton id="add_scheduling_button"
 							value="Add Scheduling"
 							actionListener="#{schedulingDataManager.addScheduling}" />
+						<pre>
 						<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
-							rendered="#{schedulingDataManager.showAddError}" styleClass="red" />
+								rendered="#{schedulingDataManager.showAddError}"
+								styleClass="red" />
+							</pre>
 					</ace:accordionPane>
-					<ace:submitMonitor for="add_scheduling_monitor"
-						activeLabel="Adding" autoCenter="true" blockUI="@source" />
+
 					<ace:accordionPane id="failed_runs" title="Failed Runs">
 
-						<h:panelGrid columns="3">
+						<h:panelGrid columns="2">
 							<h:outputLabel for="start_date_entry" value="From: " />
 							<h:outputLabel for="start_date_entry" value="To: " />
-							<ace:submitMonitor for="search_date" blockUI="@source"
-								activeLabel="Searching" />
 							<ace:dateTimeEntry id="start_date_entry"
 								value="#{schedulingDataManager.startDate}"
 								timeZone="#{applicationBean.timezone}"
@@ -733,8 +656,7 @@ a:link {
 									rendered="#{schedulingDataManager.showEditError}"
 									styleClass="red" />
 						</pre>
-							<ace:submitMonitor for="tab_confirm_edit"
-								activeLabel="Confirming" autoCenter="true" blockUI="@source" />
+
 						</ace:panel>
 						<br />
 						<ace:panel id="instances_panel" header="Instances"
@@ -874,7 +796,82 @@ a:link {
 
 		</ace:tabSet>
 
-	</h:form>
+		<!-- ========== SUBMIT MONITORS ========= -->
 
+		<ace:submitMonitor for="refresh" activeLabel="Refreshing"
+			autoCenter="true" blockUI="@source" />
+
+		<ace:submitMonitor for="add_scheduling_monitor" activeLabel="Adding"
+			autoCenter="true" blockUI="@source" />
+
+		<ace:submitMonitor for="search_date" blockUI="@source"
+			activeLabel="Searching" />
+
+		<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
+			autoCenter="true" blockUI="@source" />
+
+		<!--  ========== DIALOGS ========= -->
+
+		<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
+			message="Are you sure you want to run following schedulings?"
+			header="Confirm Run" width="330" height="300">
+			<ice:outputText value="#{schedulingDataManager.schedulingList}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton value="Yes" onclick="run_conf.hide()"
+					actionListener="#{schedulingDataManager.runSelectedSchedules}" />
+				<h:commandButton value="No" onclick="run_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:confirmationDialog id="resume_confirmation"
+			widgetVar="resume_conf"
+			message="Are you sure you want to resume following schedulings?"
+			header="Confirm Resume" width="330" height="300">
+			<ice:outputText value="#{schedulingDataManager.schedulingList}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton value="Yes" onclick="resume_conf.hide()"
+					actionListener="#{schedulingDataManager.resumeSelected}" />
+				<h:commandButton value="No" onclick="resume_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:confirmationDialog id="hold_confirmation" widgetVar="hold_conf"
+			message="Are you sure you want to put following schedulings on hold?"
+			header="Confirm Hold" width="330" height="300">
+			<ice:outputText value="#{schedulingDataManager.schedulingList}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton value="Yes" onclick="hold_conf.hide()"
+					actionListener="#{schedulingDataManager.holdSelected}" />
+				<h:commandButton value="No" onclick="hold_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:confirmationDialog id="remove_confirmation"
+			widgetVar="remove_conf"
+			message="Are you sure you want to remove following schedulings?"
+			header="Confirm Hold" width="330" height="300">
+			<ice:outputText value="#{schedulingDataManager.schedulingList}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton value="Yes" onclick="remove_conf.hide()"
+					actionListener="#{schedulingDataManager.removeSelected}" />
+				<h:commandButton value="No" onclick="remove_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:dialog visible="#{schedulingDataManager.responseDialogVisible}"
+			rendered="#{schedulingDataManager.responseDialogVisible}"
+			modal="true" resizable="false" header="Report">
+			<h:panelGrid columns="1">
+				<c:forEach items="#{schedulingDataManager.runReport}" var="report">
+					<h:outputText value="#{report}" />
+				</c:forEach>
+			</h:panelGrid>
+		</ace:dialog>
+
+	</h:form>
 </h:body>
 </html>
