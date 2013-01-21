@@ -1,0 +1,239 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+	<c:forEach id="cForEachId" items="#{sessionBean.tabs}" var="tab">
+		<ace:tabPane label="#{tab.name}" id="tab_#{tab.scheduling.id}">
+			<f:subview id="sub_#{tab.scheduling.id}">
+				<ace:menuButton id="close_tab_button" value="Close">
+					<ace:menuItem value="This Tab"
+						actionListener="#{sessionBean.removeCurrent(tab)}" />
+					<ace:menuItem value="All Tabs"
+						actionListener="#{sessionBean.removeAllTabs}" />
+					<ace:menuItem value="Other Tabs"
+						actionListener="#{sessionBean.removeOtherTabs(tab)}" />
+				</ace:menuButton>
+				<ace:panel id="details_panel" header="Details">
+					<h:panelGrid columns="2">
+						<ice:outputText value="Name: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.name}" />
+						<ice:outputText value="Description: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.description}" />
+						<ice:outputText value="CRON: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.cron}" />
+						<ice:outputText value="Java Agent Pollable: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.javaAgentPollable}" />
+						<ice:outputText value="Bank Holiday Only: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.bankHolidayOnly}" />
+						<ice:outputText value="Source: " styleClass="bold" />
+						<ice:outputText value="#{tab.sourceName}" />
+						<ice:outputText value="Target: " styleClass="bold" />
+						<ice:outputText value="#{tab.targetName}" />
+						<ice:outputText value="Mode: " styleClass="bold" />
+						<ice:outputText value="#{tab.modeValue}" />
+						<ice:outputText value="Composite: " styleClass="bold" />
+						<ice:outputText value="#{tab.compositeText}" />
+						<ice:outputText value="RequestURL: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.requestURL}" />
+						<ice:outputText value="Contacts: " styleClass="bold" />
+						<ice:outputText value="#{tab.scheduling.contacts}" />
+					</h:panelGrid>
+				</ace:panel>
+				<br />
+				<ace:panel id="edit_panel" header="Edit" toggleable="true"
+					rendered="#{sessionBean.user.editRights}">
+					<h:panelGrid id="edit_grid" columns="6">
+						<h:outputLabel for="tab_name_input" value="Name: " />
+						<h:inputText id="tab_name_input" value="#{tab.builder.name}" />
+						<h:outputLabel for="tab_desc_input" value="Description: " />
+						<h:inputText id="tab_desc_input"
+							value="#{tab.builder.description}" />
+						<h:outputLabel for="tab_cron_input" value="CRON: " />
+						<h:inputText id="tab_cron_input" value="#{tab.builder.cron}" />
+						<h:outputLabel for="tab_source_input" value="Source: " />
+						<h:selectOneMenu id="tab_source_input"
+							value="#{tab.builder.source}">
+							<f:selectItems value="#{schedulingDataManager.backends}" />
+							<f:converter converterId="entityConverter" />
+						</h:selectOneMenu>
+						<h:outputLabel for="tab_target_input" value="Target: " />
+						<h:selectOneMenu id="tab_target_input"
+							value="#{tab.builder.target}">
+							<f:selectItems value="#{schedulingDataManager.backends}" />
+							<f:converter converterId="entityConverter" />
+						</h:selectOneMenu>
+						<h:outputLabel for="tab_mode_input" value="Mode: " />
+						<h:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
+							<f:selectItems value="#{schedulingDataManager.modes}" />
+							<f:converter converterId="entityConverter" />
+						</h:selectOneMenu>
+						<h:outputLabel for="tab_requestURL_input" value="Request URL: " />
+						<h:inputText id="tab_requestURL_input"
+							value="#{tab.builder.requestURL}" />
+						<h:outputLabel for="tab_bank_input" value="Holiday: " />
+						<h:selectBooleanCheckbox id="tab_bank_input"
+							value="#{tab.builder.bankHolidayOnly}" />
+
+						<h:outputLabel for="tab_java_input" value="Pollable: " />
+						<h:selectBooleanCheckbox id="tab_java_input"
+							value="#{tab.builder.javaAgentPollable}"
+							disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
+						<h:outputLabel for="tab_contacts_input" value="Contacts: " />
+						<h:inputText id="tab_contacts_input"
+							value="#{tab.builder.contacts}" />
+						<h:outputLabel for="tab_edit_comment_input" value="Comment: " />
+						<h:inputText id="tab_edit_comment_input"
+							value="#{tab.editComment.text}" />
+						<h:outputLabel value="(Opt.)" />
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<h:outputLabel for="tab_composite_input" value="Composite: " />
+						<ice:selectOneMenu id="tab_composite_input"
+							value="#{tab.builder.composite}" partialSubmit="true">
+							<f:selectItems value="#{schedulingDataManager.composites}" />
+							<f:converter converterId="entityConverter" />
+						</ice:selectOneMenu>
+					</h:panelGrid>
+					<ice:commandButton id="tab_confirm_edit" value="Confirm"
+						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
+					<ice:commandButton id="tab_reset_edit" value="Reset"
+						actionListener="#{tab.reset}" />
+					<pre>
+							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
+							rendered="#{schedulingDataManager.showEditError}"
+							styleClass="red" />
+						</pre>
+
+				</ace:panel>
+				<br />
+				<ace:panel id="instances_panel" header="Instances" toggleable="true">
+					<br />
+					<ace:dataTable id="tab_instance_table" value="#{tab.instances}"
+						var="instance" paginator="false" rows="5"
+						emptyMessage="-- No Instances --">
+
+						<ace:column id="tab_run_state" headerText="Was run"
+							sortBy="#{instance.statusID}">
+							<h:panelGrid id="i_run_state_Id" columns="1">
+								<h:graphicImage id="failed" library="images"
+									name="erroricon.png" style="height: 30px; width: 30px; "
+									rendered="#{instance.statusID eq 1}" />
+								<h:graphicImage id="manual_handling" library="images"
+									name="skippedicon.png" style="height: 30px; width: 30px; "
+									rendered="#{instance.statusID eq 2}" />
+								<h:graphicImage id="running" library="images"
+									name="playicon.png" style="height: 30px; width: 30px; "
+									rendered="#{instance.statusID eq 3}" />
+								<h:graphicImage id="started" library="images"
+									name="skippedicon.png" style="height: 30px; width: 30px; "
+									rendered="#{instance.statusID eq 4}" />
+								<h:graphicImage id="completed" library="images"
+									name="correcticon.png" style="height: 30px; width: 30px; "
+									rendered="#{instance.statusID eq 5}" />
+								<h:graphicImage id="skipped" library="images"
+									name="skippedicon.png" style="height: 30px; width: 30px; "
+									rendered="#{instance.statusID eq 6}" />
+							</h:panelGrid>
+							<ace:expansionToggler />
+						</ace:column>
+						<ace:panelExpansion>
+							<ace:panel styleClass="instanceleft">
+								<h:panelGrid id="instanceGrid" columns="4">
+
+									<h:outputLabel value="Error Message:" />
+									<h:outputText id="tab_instance_message"
+										value="#{instance.message}" styleClass="instanceleft" />
+
+									<h:outputLabel value="Composite: " />
+									<h:outputText id="tab_instance_composite"
+										value="#{instance.name}" styleClass="instanceleft" />
+
+									<h:outputLabel value="Input files:" />
+									<h:outputText id="tab_input_files"
+										value="#{instance.inputFileName}" styleClass="instanceleft" />
+
+									<h:outputLabel value="Output files:" />
+									<h:outputText id="tab_output_files"
+										value="#{instance.outputFileName}" styleClass="instanceleft" />
+
+								</h:panelGrid>
+							</ace:panel>
+						</ace:panelExpansion>
+						<ace:column id="tab_instance_name" headerText="Name"
+							sortBy="#{instance.process}" filterBy="#{instance.process}"
+							filterMatchMode="contains">
+							<h:outputText id="tab_nameCell" value="#{instance.process}" />
+						</ace:column>
+
+						<ace:column id="i_statusID" headerText="Status"
+							sortBy="#{instance.statusValue}"
+							filterBy="#{instance.statusValue}" filterMatchMode="contains">
+							<ice:panelGroup style="width:100px;">
+							</ice:panelGroup>
+							<h:outputText id="i_statusCell" value="#{instance.statusValue}"
+								styleClass="#{instance.statusValue}" />
+						</ace:column>
+
+						<ace:column id="tab_startDate" headerText="StartDate"
+							sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
+							filterMatchMode="contains">
+							<h:outputText id="tab_startDateCell"
+								value="#{instance.startDate}" />
+						</ace:column>
+
+						<ace:column id="tab_endDate" headerText="EndDate"
+							sortBy="#{instance.endDate}" filterBy="#{instance.endDate}"
+							filterMatchMode="contains">
+							<h:outputText id="tab_endDateCell" value="#{instance.endDate}" />
+						</ace:column>
+
+						<ace:column id="tab_inputFileAmmount" headerText="InputFiles"
+							sortBy="#{instance.inputFileAmmount}"
+							filterBy="#{instance.inputFileAmmount}"
+							filterMatchMode="contains">
+							<h:outputText id="tab_inputFileAmmountCell"
+								value="#{instance.inputFileAmmount}" />
+						</ace:column>
+
+						<ace:column id="tab_outputFileAmmount" headerText="OutputFiles"
+							sortBy="#{instance.outputFileAmmount}"
+							filterBy="#{instance.outputFileAmmount}"
+							filterMatchMode="contains">
+							<h:outputText id="tab_outputFileAmmountCell"
+								value="#{instance.outputFileAmmount}" />
+						</ace:column>
+
+					</ace:dataTable>
+				</ace:panel>
+				<br />
+				<ace:panel id="comments_panel" header="Comments" toggleable="true">
+					<ace:dataTable id="tab_comment_table" value="#{tab.comments}"
+						var="comment" paginator="false" rows="5"
+						emptyMessage="-- No Comments --">
+						<ace:column id="tab_creation_date" headerText="Date">
+
+							<ice:outputText value="#{comment.creationDate}" />
+						</ace:column>
+						<ace:column id="tab_text" headerText="Text">
+							<h:outputText value="#{comment.text}" />
+						</ace:column>
+					</ace:dataTable>
+					<br />
+					<ace:textEntry id="tab_comment_input" label="Comment: "
+						labelPosition="left" value="#{tab.addComment.text}"
+						rendered="#{sessionBean.user.editRights}"
+						style="margin-right: 10px;" />
+					<ice:commandButton id="tab_sumbit_comment" value="Submit"
+						actionListener="#{schedulingDataManager.submitComment(tab)}"
+						rendered="#{sessionBean.user.editRights}" />
+				</ace:panel>
+			</f:subview>
+
+		</ace:tabPane>
+
+	</c:forEach>
+</ui:composition>

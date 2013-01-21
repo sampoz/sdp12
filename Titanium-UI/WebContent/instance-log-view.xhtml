@@ -1,0 +1,132 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+	<ace:tabPane id="instance_log" label="Instance Log"
+		rendered="#{sessionBean.user.authenticated}">
+
+		<h:outputText style="float: right;" value="Show skipped" />
+		<ice:selectBooleanCheckbox tittle="Show skipped" style="float: right;"
+			value="#{instanceDataManager.showSkipped}"
+			valueChangeListener="#{instanceDataManager.showSkippedMethod}"
+			partialSubmit="true" />
+		<br />
+
+		<ace:dataTable id="instanceTable"
+			value="#{instanceDataManager.filteredInstances}" var="instance"
+			paginator="true" paginatorPosition="both"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,25,50,100" rows="10"
+			stateMap="#{instanceDataManager.i_stateMap}" selectionMode="multiple"
+			resizableColumns="true" binding="#{instanceDataManager.i_dataTable}">
+			<ace:ajax event="select" execute="@this" />
+
+			<ace:column id="i_run_state" headerText="Was run"
+				sortBy="#{instance.statusID}">
+				<h:panelGrid id="i_run_state_Id" columns="1">
+					<h:graphicImage id="failed" library="images" name="erroricon.png"
+						style="height: 30px; width: 30px; "
+						rendered="#{instance.statusID eq 1}" />
+					<h:graphicImage id="manual_handling" library="images"
+						name="skippedicon.png" style="height: 30px; width: 30px;"
+						rendered="#{instance.statusID eq 2}" />
+					<h:graphicImage id="running" library="images" name="playicon.png"
+						style="height: 30px; width: 30px; "
+						rendered="#{instance.statusID eq 3}" />
+					<h:graphicImage id="started" library="images"
+						name="skippedicon.png" style="height: 30px; width: 30px; "
+						rendered="#{instance.statusID eq 4}" />
+					<h:graphicImage id="completed" library="images"
+						name="correcticon.png" style="height: 30px; width: 30px; "
+						rendered="#{instance.statusID eq 5}" />
+					<h:graphicImage id="skipped" library="images"
+						name="skippedicon.png" style="height: 30px; width: 30px; "
+						rendered="#{instance.statusID eq 6}" />
+				</h:panelGrid>
+				<!-- 						<ace:tooltip id="tooltip_skipped_image" for="skipped_image" -->
+				<!-- 							value="This instance was not run. Expand view for more information" -->
+				<!-- 							showDelay="100" hideDelay="200"> -->
+				<!-- 						</ace:tooltip> -->
+
+				<ace:expansionToggler />
+			</ace:column>
+			<ace:panelExpansion>
+				<ace:panel styleClass="instanceleft">
+					<h:panelGrid id="instanceGrid" columns="4">
+
+						<h:outputLabel value="Error Message:" />
+						<h:outputText id="i_message" value="#{instance.message}"
+							styleClass="instanceleft" />
+
+						<h:outputLabel value="Composite: " />
+						<h:outputText id="i_composite" value="#{instance.name}"
+							styleClass="instanceleft" />
+
+						<h:outputLabel value="Input files:" />
+						<h:outputText id="i_input_files" value="#{instance.inputFileName}"
+							styleClass="instanceleft" />
+
+						<h:outputLabel value="Output files:" />
+						<h:outputText id="i_output_files"
+							value="#{instance.outputFileName}" styleClass="instanceleft" />
+
+					</h:panelGrid>
+				</ace:panel>
+			</ace:panelExpansion>
+			<ace:column id="i_name" headerText="Name"
+				sortBy="#{instance.process}" filterBy="#{instance.process}"
+				filterMatchMode="contains">
+				<h:outputText id="i_nameCell" value="#{instance.process}" />
+			</ace:column>
+
+			<ace:column id="i_status" headerText="Status"
+				sortBy="#{instance.statusValue}" filterBy="#{instance.statusValue}"
+				filterMatchMode="contains">
+				<ice:panelGroup style="width:100px;">
+				</ice:panelGroup>
+				<h:outputText id="i_statusCell" value="#{instance.statusValue}"
+					styleClass="#{instance.statusValue}"
+					rendered="#{not (instance.statusValue eq 'ManualHandling')}" />
+				<h:outputLink rendered="#{instance.statusValue eq 'ManualHandling'}"
+					value="http://iambrony.jsmart.web.id/mlp/gif/pinkmailbox_hellobye.gif"
+					target="blank">
+					<h:outputText value="#{instance.statusValue}"
+						styleClass="#{instance.statusValue}" />
+				</h:outputLink>
+			</ace:column>
+
+			<ace:column id="i_startDate" headerText="StartDate"
+				sortBy="#{instance.startDate}" filterBy="#{instance.startDate}"
+				filterMatchMode="contains">
+				<h:outputText id="i_startDateCell" value="#{instance.startDate}" />
+			</ace:column>
+
+			<ace:column id="i_endDate" headerText="EndDate"
+				sortBy="#{instance.endDate}" filterBy="#{instance.endDate}"
+				filterMatchMode="contains">
+				<h:outputText id="i_endDateCell" value="#{instance.endDate}" />
+			</ace:column>
+
+			<ace:column id="i_inputFileAmmount" headerText="InputFiles"
+				sortBy="#{instance.inputFileAmmount}"
+				filterBy="#{instance.inputFileAmmount}" filterMatchMode="contains">
+				<h:outputText id="i_inputFileAmmountCell"
+					value="#{instance.inputFileAmmount}" />
+			</ace:column>
+
+			<ace:column id="i_outputFileAmmount" headerText="OutputFiles"
+				sortBy="#{instance.outputFileAmmount}"
+				filterBy="#{instance.outputFileAmmount}" filterMatchMode="contains">
+				<h:outputText id="i_outputFileAmmountCell"
+					value="#{instance.outputFileAmmount}" />
+			</ace:column>
+
+		</ace:dataTable>
+
+	</ace:tabPane>
+
+</ui:composition>
