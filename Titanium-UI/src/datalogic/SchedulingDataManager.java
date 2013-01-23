@@ -129,10 +129,7 @@ public class SchedulingDataManager implements Serializable{
 			 */
 			if (addComment.getText() != null
 					&& !"".equals(addComment.getText())) {
-				addComment.setSchedulingID(s.getId());
-				addComment.setCreationDate(ApplicationBean.DATE_FORMAT
-						.format(new Date()));
-				session.getConnector().addComment(addComment);
+				submitCommentFromAdd(s);
 			}
 
 			// If we've gotten this far, there were no errors and we can hide
@@ -186,7 +183,7 @@ public class SchedulingDataManager implements Serializable{
 			showEditError = false;
 			String comment = t.getEditComment().getText();
 			if (comment != null && !comment.isEmpty())
-				this.submitEditComment(t);
+				this.submitCommentFromEdit(t);
 
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
@@ -207,35 +204,42 @@ public class SchedulingDataManager implements Serializable{
 		}
 
 	}
-
-	private void submitEditComment(SchedulingTab t) {
-		Comment c = t.getEditComment();
-
-		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
-		c.setSchedulingID(t.getScheduling().getId());
-
-		// If the database connector returns true from the persisting of the
-		// comment we can safely add it to the table
-		if (this.session.getConnector().addComment(c)) {
-			t.setEditComment(new Comment());
-			t.setComments(this.session.getConnector().getLastComments(
-					t.getScheduling().getId()));
+	
+	private void submitCommentFromAdd(Scheduling s){
+		addComment.setSchedulingID(s.getId());
+		addComment.setCreationDate(ApplicationBean.DATE_FORMAT
+				.format(new Date()));
+		if(session.getConnector().addComment(addComment)){
+			this.addComment = new Comment();
 		}
 	}
 
-	public void submitComment(SchedulingTab t) {
-		Comment c = t.getAddComment();
+	private void submitCommentFromEdit(SchedulingTab t) {
+		if(this.submitComment(t.getEditComment(),t))
+			t.setEditComment(new Comment());
+	}
 
+	public void submitNewComment(SchedulingTab t) {
+		if(this.submitComment(t.getAddComment(), t))
+			t.setAddComment(new Comment());
+	}
+	
+	private boolean submitComment(Comment c, SchedulingTab t){
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(t.getScheduling().getId());
 
 		// If the database connector returns true from the persisting of the
 		// comment we can safely add it to the table
-		if (this.session.getConnector().addComment(c)) {
-			t.setAddComment(new Comment());
-			t.setComments(this.session.getConnector().getLastComments(
-					t.getScheduling().getId()));
+		if(this.session.getConnector().addComment(c)){
+			refreshComments(t);
+			return true;
 		}
+		return false;
+	}
+	
+	private void refreshComments(SchedulingTab t){
+		t.setComments(this.session.getConnector().getComments(
+				t.getScheduling().getId(), ApplicationBean.MAX_COMMENTS_SHOWN));
 	}
 
 	/**

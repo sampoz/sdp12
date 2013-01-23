@@ -22,6 +22,7 @@ import org.joda.time.Days;
 
 import users.User;
 
+import entities.Comment;
 import entities.Instance;
 import entities.Scheduling;
 
@@ -33,22 +34,29 @@ public class SessionBean {
 
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 	private List<Instance> instances = new ArrayList<Instance>();
-	private HashMap<Date,List<Instance>> instancesByDate = new HashMap<Date, List<Instance>>();
+	private HashMap<Date, List<Instance>> instancesByDate = new HashMap<Date, List<Instance>>();
+	private List<Comment> auditTrail = new ArrayList<Comment>();
 
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
 	private TabSet tabSet;
-	
-	//Magic numbers
-	private static final int STATIC_TABS = 4; 
-	private static final int HIDDEN_TABS = 0; 
+
+	// Magic numbers
+	private static final int STATIC_TABS = 4;
+	private static final int HIDDEN_TABS = 0;
 	public static final int DAYS_AFTER_INSTANCE = 40;
-	public static final int INFINITE_DAYS = -1;
 
 	private User user = User.UNAUTHORISED;
 
 	@PreDestroy
 	public void closeConnector() {
 		this.connector.close();
+	}
+
+	private void init() {
+		refreshSchedulings();
+		refreshInstances();
+		refreshAuditTrail();
+		indexInstances();
 	}
 
 	public void refreshSchedulings() {
@@ -59,27 +67,34 @@ public class SessionBean {
 	public void refreshInstances() {
 		this.instances.clear();
 		this.instances = this.connector.getInstances();
-		
 	}
-	
-	public void indexInstances(){
+
+	public void refreshAuditTrail() {
+		this.auditTrail.clear();
+		this.auditTrail = this.connector.getAuditTrail();
+	}
+
+	public void indexInstances() {
 		this.instancesByDate.clear();
-		long time = System.currentTimeMillis(); 
+		long time = System.currentTimeMillis();
 		System.out.println("Indexing instances for optimization...");
 		for (Instance i : this.instances) {
 			try {
-				Date launch = ApplicationBean.ORACLE_DATE_FORMAT.parse(i.getStartDate());
+				Date launch = ApplicationBean.ORACLE_DATE_FORMAT.parse(i
+						.getStartDate());
 				List<Instance> list = this.instancesByDate.get(launch);
-				if(list == null)
+				if (list == null)
 					this.instancesByDate.put(launch, new ArrayList<Instance>());
-				
+
 				this.instancesByDate.get(launch).add(i);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 		}
-		time =  System.currentTimeMillis() -time;
-		System.out.println("Done. " + this.instances.size() + " instances indexed. Time spent was: " + time + " milliseconds. ");
+		time = System.currentTimeMillis() - time;
+		System.out.println("Done. " + this.instances.size()
+				+ " instances indexed. Time spent was: " + time
+				+ " milliseconds. ");
 	}
 
 	public boolean authenticate(String username, String password) {
@@ -92,19 +107,14 @@ public class SessionBean {
 		this.init();
 		return true;
 	}
-	
-	private void init() {
-		refreshSchedulings();
-		refreshInstances();
-		indexInstances();
-	}
 
 	public void addTab(Scheduling s) throws ParseException {
 		SchedulingTab t = new SchedulingTab();
 		t.setScheduling(s);
 
 		if (!tabs.contains(t)) {
-			t.setComments(this.connector.getLastComments(s.getId()));
+			t.setComments(this.connector.getComments(s.getId(),
+					ApplicationBean.MAX_COMMENTS_SHOWN));
 			t.setInstances(this.getInstancesForScheduling(s,
 					DAYS_AFTER_INSTANCE));
 			tabs.add(t);
@@ -115,13 +125,14 @@ public class SessionBean {
 
 	private List<Instance> getInstancesForScheduling(Scheduling s, int daysAgo)
 			throws ParseException {
-		
+
 		List<Instance> temp = new ArrayList<Instance>();
 		for (Instance i : this.instances) {
 			Date now = new Date();
-			Date then = ApplicationBean.ORACLE_DATE_FORMAT.parse(i.getStartDate());
+			Date then = ApplicationBean.ORACLE_DATE_FORMAT.parse(i
+					.getStartDate());
 			if (s.matchesInstance(i)) {
-				if (daysAgo == INFINITE_DAYS
+				if (daysAgo == ApplicationBean.INFINITY
 						|| Days.daysBetween(new DateTime(then),
 								new DateTime(now)).getDays() <= daysAgo) {
 					temp.add(i);
@@ -171,7 +182,7 @@ public class SessionBean {
 					.handleNavigation(ctx, null, "logout");
 		}
 	}
-	
+
 	public void validate() {
 		if (!this.user.isAuthenticated()) {
 			FacesContext ctx = FacesContext.getCurrentInstance();
@@ -179,7 +190,7 @@ public class SessionBean {
 					.handleNavigation(ctx, null, "logout");
 		}
 	}
-	
+
 	// ==================== GETTERS & SETTERS ====================
 	public User getUser() {
 		return user;
@@ -228,7 +239,7 @@ public class SessionBean {
 	public void setInstancesByDate(HashMap<Date, List<Instance>> instancesByDate) {
 		this.instancesByDate = instancesByDate;
 	}
-	
+
 	public DatabaseConnector getConnector() {
 		return connector;
 	}
@@ -237,5 +248,12 @@ public class SessionBean {
 		this.connector = connector;
 	}
 
+	public List<Comment> getAuditTrail() {
+		return auditTrail;
+	}
+
+	public void setAuditTrail(List<Comment> auditTrail) {
+		this.auditTrail = auditTrail;
+	}
 
 }

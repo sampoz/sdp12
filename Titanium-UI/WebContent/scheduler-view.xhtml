@@ -7,7 +7,19 @@
 	xmlns:ace="http://www.icefaces.org/icefaces/components"
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 	<ace:tabPane id="scheduler" label="Scheduler"
-				rendered="#{sessionBean.user.authenticated}">
-				<ice:outputText value="#{applicationBean.html}" escape="false"/>
-			</ace:tabPane>
+		rendered="#{sessionBean.user.authenticated}">
+		<ice:outputText value="#{applicationBean.html}" escape="false" />
+		<ace:dataTable value="#{schedulerDataManager.auditTrail}" var="audit"
+			paginator="true" paginatorPosition="both"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,25,50,100" rows="10"
+			emptyMessage="-- No Audit Trail --">
+			<ace:column id="audit_creation_date" headerText="Date">
+				<ice:outputText value="#{audit.creationDate}" />
+			</ace:column>
+			<ace:column id="audit_text" headerText="Text">
+				<h:outputText value="#{audit.text}" />
+			</ace:column>
+		</ace:dataTable>
+	</ace:tabPane>
 </ui:composition>

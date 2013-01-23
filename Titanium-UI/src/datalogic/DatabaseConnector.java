@@ -16,20 +16,20 @@ import entities.Scheduling;
 import entities.Status;
 
 public class DatabaseConnector {
-	
+
 	private EntityManager manager;
-	
-	public boolean addScheduling(Scheduling s){
+
+	public boolean addScheduling(Scheduling s) {
 		// Initialize entity manager if it isn't already
 		lazyInit();
-		
+
 		this.manager.getTransaction().begin();
 		this.manager.persist(s);
 		this.manager.getTransaction().commit();
 		return true;
-	}	
-	
-	public List<Scheduling> getSchedulings(){
+	}
+
+	public List<Scheduling> getSchedulings() {
 		lazyInit();
 		this.manager.getTransaction().begin();
 		Query q = this.manager.createQuery("from Scheduling");
@@ -37,17 +37,18 @@ public class DatabaseConnector {
 		this.manager.getTransaction().commit();
 		return result;
 	}
-	
+
 	public List<Instance> getInstances() {
 		lazyInit();
 		this.manager.getTransaction().begin();
-		Query q = this.manager.createQuery("from Instance order by startDate desc");
+		Query q = this.manager
+				.createQuery("from Instance order by startDate desc");
 		List<Instance> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;
 	}
-	
-	public List<Mode> getAllModes(){
+
+	public List<Mode> getAllModes() {
 		lazyInit();
 		this.manager.getTransaction().begin();
 		Query q = this.manager.createQuery("from Mode");
@@ -55,8 +56,8 @@ public class DatabaseConnector {
 		this.manager.getTransaction().commit();
 		return result;
 	}
-	
-	public List<Composite> getAllComposites(){
+
+	public List<Composite> getAllComposites() {
 		lazyInit();
 		this.manager.getTransaction().begin();
 		Query q = this.manager.createQuery("from Composite");
@@ -64,26 +65,31 @@ public class DatabaseConnector {
 		this.manager.getTransaction().commit();
 		return result;
 	}
-	
-	public List<Comment> getLastComments(int id){
+
+	public List<Comment> getComments(int id, int maxResults) {
 		lazyInit();
 		this.manager.getTransaction().begin();
-		Query q = this.manager.createQuery("from Comment as com where com.schedulingID = " + id + " order by com.creationDate desc");
-		q.setFirstResult(0);
-		q.setMaxResults(5);
+		Query q = this.manager
+				.createQuery("from Comment as com where com.schedulingID = "
+						+ id + " order by com.creationDate desc");
+		if (maxResults != ApplicationBean.INFINITY) {
+			q.setFirstResult(0);
+			q.setMaxResults(maxResults);
+		}
 		List<Comment> result = q.getResultList();
 		this.manager.getTransaction().commit();
 		return result;
 	}
-	
-	private void lazyInit(){
-		if(this.manager == null){
-			 EntityManagerFactory factory = Persistence.createEntityManagerFactory("manager1");
-			 this.manager = factory.createEntityManager();
-		} 
+
+	private void lazyInit() {
+		if (this.manager == null) {
+			EntityManagerFactory factory = Persistence
+					.createEntityManagerFactory("manager1");
+			this.manager = factory.createEntityManager();
+		}
 		return;
 	}
-	
+
 	public EntityManager getManager() {
 		return manager;
 	}
@@ -91,14 +97,14 @@ public class DatabaseConnector {
 	public void setManager(EntityManager manager) {
 		this.manager = manager;
 	}
-	
-	public boolean updateScheduling(Scheduling s){
+
+	public boolean updateScheduling(Scheduling s) {
 		lazyInit();
-		try{
+		try {
 			this.manager.getTransaction().begin();
 			this.manager.merge(s);
 			this.manager.getTransaction().commit();
-		} catch (IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
 		return true;
@@ -115,7 +121,7 @@ public class DatabaseConnector {
 
 	public boolean addComment(Comment c) {
 		lazyInit();
-		
+
 		this.manager.getTransaction().begin();
 		this.manager.persist(c);
 		this.manager.getTransaction().commit();
@@ -130,9 +136,13 @@ public class DatabaseConnector {
 		this.manager.getTransaction().commit();
 		return result;
 	}
-	
-	public void close(){
+
+	public void close() {
 		this.manager.close();
 	}
-	
+
+	public List<Comment> getAuditTrail() {
+		return this.getComments(0, ApplicationBean.INFINITY);
+	}
+
 }

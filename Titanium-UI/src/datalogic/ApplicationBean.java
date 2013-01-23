@@ -38,6 +38,9 @@ public class ApplicationBean implements Serializable {
 	public static final int ENABLED = 1;
 	public static final int DISABLED = 2;
 	public static final int REMOVED = 3;
+	
+	public static final int INFINITY = -1;
+	public static final int MAX_COMMENTS_SHOWN = 5;
 
 	// PLACEHOLDER
 	public String html = "<object>"
