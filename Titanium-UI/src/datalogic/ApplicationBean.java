@@ -26,6 +26,11 @@ public class ApplicationBean implements Serializable {
 	public static final HashMap<Integer, Status> STATUSES = new HashMap<Integer, Status>();
 
 	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
+	
+	public static final String UI_REDIRECT = "redirect_to_ui";
+	public static final String LOGIN_REDIRECT = "redirect_to_login";
+	public static final String LOGIN = "login";
+	public static final String LOGOUT = "logout";
 
 	public TimeZone timezone;
 	// Hard coded styleClasses for different modes

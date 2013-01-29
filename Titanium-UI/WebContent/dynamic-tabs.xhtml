@@ -101,7 +101,7 @@
 					<ice:commandButton id="tab_confirm_edit" value="Confirm"
 						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
 					<ice:commandButton id="tab_reset_edit" value="Reset"
-						actionListener="#{tab.reset}" />
+						actionListener="#{schedulingDataManager.resetEdit(tab)}" />
 					<pre>
 							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
 							rendered="#{schedulingDataManager.showEditError}"

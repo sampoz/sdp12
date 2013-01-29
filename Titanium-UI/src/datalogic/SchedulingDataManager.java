@@ -204,6 +204,10 @@ public class SchedulingDataManager implements Serializable{
 		}
 
 	}
+
+	public void resetEdit(SchedulingTab t){
+		t.reset();
+	}
 	
 	private void submitCommentFromAdd(Scheduling s){
 		addComment.setSchedulingID(s.getId());

@@ -13,6 +13,11 @@
 </h:head>
 <h:body>
 	<h:form>
+		
+		<f:view>
+			<f:event listener="#{loginManager.validate}" type="preRenderView" />
+		</f:view>
+	
 		<ace:tabSet id="login_tab_set" clientSide="false">
 
 			<ace:tabPane id="login_tab" label="Login">

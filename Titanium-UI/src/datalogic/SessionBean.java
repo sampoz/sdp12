@@ -179,7 +179,7 @@ public class SessionBean {
 
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.getApplication().getNavigationHandler()
-					.handleNavigation(ctx, null, "logout");
+					.handleNavigation(ctx, null, ApplicationBean.LOGOUT);
 		}
 	}
 
@@ -187,7 +187,7 @@ public class SessionBean {
 		if (!this.user.isAuthenticated()) {
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.getApplication().getNavigationHandler()
-					.handleNavigation(ctx, null, "logout");
+					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
 		}
 	}
 
