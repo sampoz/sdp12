@@ -11,7 +11,7 @@
 <h:head>
 	<title>Titanic</title>
 	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
-	<link rel="stylesheet" type="text/css" href="resources/css/style.css"/>
+	<link rel="stylesheet" type="text/css" href="resources/css/style.css" />
 </h:head>
 <h:body>
 	<h:form>
@@ -33,7 +33,7 @@
 			<ui:include src="instance-log-view.xhtml" />
 
 			<!-- ======== SCHEDULER VIEW ======== -->
-			
+
 			<ui:include src="scheduler-view.xhtml" />
 
 			<!-- divider -->
@@ -41,9 +41,9 @@
 				rendered="#{sessionBean.user.authenticated}" />
 
 			<!-- ======== DYNAMIC TABS ======== -->
-			
+
 			<ui:include src="dynamic-tabs.xhtml" />
-			
+
 			<!-- divider -->
 			<ace:tabPane label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
@@ -71,6 +71,39 @@
 			autoCenter="true" blockUI="@source" />
 
 		<!--  ========== DIALOGS ========= -->
+
+		<ace:confirmationDialog id="start_scheduler_service"
+			widgetVar="start_scheduler_service_conf"
+			message="You are about to start all schedulings. Write a short comment describing your actions."
+			header="Confirm Start" width="330" height="300">
+			<ice:inputText value="#{schedulerServiceManager.comment.text}" escape="false">
+			</ice:inputText>
+			<h:panelGrid columns="2">
+				<h:commandButton value="Confirm"
+					onclick="start_scheduler_service_conf.hide()"
+					actionListener="#{schedulerServiceManager.startAllSchedules}" />
+				<h:commandButton value="Cancel"
+					onclick="start_scheduler_service_conf.hide()" 
+					/>
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:confirmationDialog id="stop_scheduler_service"
+			widgetVar="stop_scheduler_service_conf"
+			message="You are about to stop all schedulings. Write a short comment describing your actions."
+			header="Confirm Stop" width="330" height="300">
+			<ice:inputText value="#{schedulerServiceManager.comment2.text}"  escape="false">
+			</ice:inputText>
+			<h:panelGrid columns="2">
+				<h:commandButton value="Confirm"
+					onclick="stop_scheduler_service_conf.hide()"
+					actionListener="#{schedulerServiceManager.stopAllSchedules}" />
+				<h:commandButton value="Cancel"
+					onclick="stop_scheduler_service_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+
 
 		<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 			message="Are you sure you want to run following schedulings?"

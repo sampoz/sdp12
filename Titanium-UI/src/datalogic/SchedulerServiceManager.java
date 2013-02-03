@@ -17,7 +17,28 @@ public class SchedulerServiceManager {
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 	
-	private Comment addComment = new Comment();
+	private Comment comment = new Comment();
+	private Comment comment2 = new Comment();
+    
+	private Boolean validate = true;
+
+
+	public Boolean getValidate() {
+		return validate;
+	}
+
+	public void setValidate(Boolean validate) {
+		this.validate = validate;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
+	}
+	
 	
 	private static int SCHEDULINGSERVICECOMMENT;
 
@@ -29,25 +50,23 @@ public class SchedulerServiceManager {
 	public void init(){
 		this.auditTrail = this.session.getAuditTrail();
 	}
-	
+
 	public void stopAllSchedules(){
 		if (session.getConnector().stopSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
 			System.out.println("http succes"+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE.getUrl()));
+			if(this.submitComment(this.getComment2()))
+				this.setComment2(new Comment());
 		}
 	}
 	public void startAllSchedules(){
 		if (session.getConnector().startSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
-			System.out.println("http succes"+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE.getUrl()));
+			System.out.println("http succes"+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE.getUrl()));	
+			if(this.submitComment(this.getComment()))
+				this.setComment(new Comment());
 		}
 		
-		
 	}
-	
-	public void submitNewComment() {
-		if(this.submitComment(this.getAddComment()))
-			this.setAddComment(new Comment());
-	}
-	
+
 
 	private boolean submitComment(Comment c){
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
@@ -55,7 +74,7 @@ public class SchedulerServiceManager {
 
 		// If the database connector returns true from the persisting of the
 		// comment we can safely add it to the table
-		
+		System.out.print("Comment contains text " + c.getText());
 		if(this.session.getConnector().addComment(c)){
 			refreshComments();
 			return true;
@@ -67,7 +86,9 @@ public class SchedulerServiceManager {
 		this.auditTrail = this.session.getAuditTrail();
 
 	}
-	
+	public void validate(){
+		validate = true;
+	}
 	// ==================== GETTERS & SETTERS ====================
 	public List<Comment> getAuditTrail() {
 		return auditTrail;
@@ -77,13 +98,7 @@ public class SchedulerServiceManager {
 		this.auditTrail = auditTrail;
 	}
 
-	public Comment getAddComment() {
-		return addComment;
-	}
 
-	public void setAddComment(Comment addComment) {
-		this.addComment = addComment;
-	}
 	
 	public SessionBean getSession() {
 		return session;
@@ -100,4 +115,12 @@ public class SchedulerServiceManager {
 	public void setHttpConnector(HttpConnector httpConnector) {
 		this.httpConnector = httpConnector;
 	}
+	public Comment getComment2() {
+		return comment2;
+	}
+
+	public void setComment2(Comment comment2) {
+		this.comment2 = comment2;
+	}
+
 }

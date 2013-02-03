@@ -8,27 +8,17 @@
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 	<ace:tabPane id="scheduler" label="Scheduler"
 		rendered="#{sessionBean.user.authenticated}">
-		<ice:outputText value="#{applicationBean.html}" escape="false" />
-		
- 		<ace:textEntry id="tab_comment_input" label="Comment: " 
- 						labelPosition="left" value="#{schedulerServiceManager.addComment.text}" 
- 						rendered="#{sessionBean.user.editRights}" 
- 						style="margin-right: 10px;" /> 
- 		<ice:commandButton id="tab_sumbit_comment" value="Submit" 
- 						actionListener="#{schedulerServiceManager.submitNewComment()}" 
- 						rendered="#{sessionBean.user.editRights}" /> 
+		<ice:outputText value="#{applicationBean.html}" escape="false" /> 
 		<ace:menuBar>
 			
 			<ace:menuItem id="start_all_schedulings" value="Start all schedulings"
-				icon="ui-icon ui-icon-circle-triangle-e"
-				rendered="#{sessionBean.user.editRights}"
-				actionListener="#{schedulerServiceManager.stopAllSchedules}">
+				onclick="start_scheduler_service_conf.show()" icon="ui-icon ui-icon-circle-triangle-e"
+				rendered="#{sessionBean.user.editRights}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
-				icon="ui-icon ui-icon-circle-close"
-				rendered="#{sessionBean.user.editRights}"
-				actionListener="#{schedulerServiceManager.startAllSchedules}">
+				onclick="stop_scheduler_service_conf.show()" icon="ui-icon ui-icon-circle-close"
+				rendered="#{sessionBean.user.editRights}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 		</ace:menuBar>
