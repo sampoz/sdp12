@@ -9,7 +9,22 @@
 	<ace:tabPane id="scheduler" label="Scheduler"
 		rendered="#{sessionBean.user.authenticated}">
 		<ice:outputText value="#{applicationBean.html}" escape="false" />
-		<ace:dataTable value="#{schedulerDataManager.auditTrail}" var="audit"
+		<ace:menuBar>
+			<ace:menuItem id="start_all_schedulings" value="Resume Selected"
+				icon="ui-icon ui-icon-circle-triangle-e"
+				rendered="#{sessionBean.user.editRights}"
+				actionListener="#{schedulerServiceManager.stopAllSchedules}">
+				<ace:ajax event="activate" execute="@this" />
+			</ace:menuItem>
+			<ace:menuItem id="stop_all_schedulings" value="Hold Selected"
+				icon="ui-icon ui-icon-circle-close"
+				rendered="#{sessionBean.user.editRights}"
+				actionListener="#{schedulerServiceManager.startAllSchedules}">
+				<ace:ajax event="activate" execute="@this" />
+			</ace:menuItem>
+		</ace:menuBar>
+		
+		<ace:dataTable value="#{schedulerServiceManager.auditTrail}" var="audit"
 			paginator="true" paginatorPosition="both"
 			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="10,25,50,100" rows="10"

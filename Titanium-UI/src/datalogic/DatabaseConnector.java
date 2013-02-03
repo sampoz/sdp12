@@ -12,13 +12,16 @@ import entities.Comment;
 import entities.Composite;
 import entities.Instance;
 import entities.Mode;
+import entities.SchedulerService;
 import entities.Scheduling;
 import entities.Status;
 
 public class DatabaseConnector {
 
 	private EntityManager manager;
-
+	private static int STOPPED = 1;
+	private static int RUNNING = 0;
+	
 	public boolean addScheduling(Scheduling s) {
 		// Initialize entity manager if it isn't already
 		lazyInit();
@@ -145,4 +148,36 @@ public class DatabaseConnector {
 		return this.getComments(0, ApplicationBean.INFINITY);
 	}
 
+	public boolean startSchedulingService(SchedulerService s) {	
+		return changeSchedulingStandByValue(s, RUNNING);
+	}
+	
+	public boolean stopSchedulingService(SchedulerService s) {	
+		return changeSchedulingStandByValue(s, STOPPED);
+	}
+	private boolean changeSchedulingStandByValue(SchedulerService s, int standByValue){
+		lazyInit();
+		s.setStandby(standByValue);
+		try {
+			this.manager.getTransaction().begin();
+			this.manager.merge(s);
+			this.manager.getTransaction().commit();
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+		System.out.println("Stand by value set to"+ standByValue);
+		return true;
+	}
+	public SchedulerService getSchedulingService(){
+		lazyInit();
+		this.manager.getTransaction().begin();
+		Query q = this.manager.createQuery("from SchedulerService");
+		List<SchedulerService> schedulingServices = q.getResultList();
+		this.manager.getTransaction().commit();
+		if (schedulingServices.isEmpty()){
+			return null;
+		}
+		return schedulingServices.get(0);
+		
+	}
 }
