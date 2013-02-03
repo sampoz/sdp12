@@ -228,6 +228,8 @@ public class SchedulingDataManager implements Serializable{
 			t.setAddComment(new Comment());
 	}
 	
+
+	
 	private boolean submitComment(Comment c, SchedulingTab t){
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(t.getScheduling().getId());

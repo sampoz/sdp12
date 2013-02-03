@@ -1,5 +1,6 @@
 package datalogic;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,21 +17,9 @@ public class SchedulerServiceManager {
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 	
-	public SessionBean getSession() {
-		return session;
-	}
-
-	public void setSession(SessionBean session) {
-		this.session = session;
-	}
-
-	public HttpConnector getHttpConnector() {
-		return httpConnector;
-	}
-
-	public void setHttpConnector(HttpConnector httpConnector) {
-		this.httpConnector = httpConnector;
-	}
+	private Comment addComment = new Comment();
+	
+	private static int SCHEDULINGSERVICECOMMENT;
 
 	private List<Comment> auditTrail;
 	
@@ -54,6 +43,31 @@ public class SchedulerServiceManager {
 		
 	}
 	
+	public void submitNewComment() {
+		if(this.submitComment(this.getAddComment()))
+			this.setAddComment(new Comment());
+	}
+	
+
+	private boolean submitComment(Comment c){
+		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
+		c.setSchedulingID( SCHEDULINGSERVICECOMMENT);
+
+		// If the database connector returns true from the persisting of the
+		// comment we can safely add it to the table
+		
+		if(this.session.getConnector().addComment(c)){
+			refreshComments();
+			return true;
+		}
+		return false;
+	}
+	private void refreshComments(){
+		this.session.refreshAuditTrail();
+		this.auditTrail = this.session.getAuditTrail();
+
+	}
+	
 	// ==================== GETTERS & SETTERS ====================
 	public List<Comment> getAuditTrail() {
 		return auditTrail;
@@ -63,4 +77,27 @@ public class SchedulerServiceManager {
 		this.auditTrail = auditTrail;
 	}
 
+	public Comment getAddComment() {
+		return addComment;
+	}
+
+	public void setAddComment(Comment addComment) {
+		this.addComment = addComment;
+	}
+	
+	public SessionBean getSession() {
+		return session;
+	}
+
+	public void setSession(SessionBean session) {
+		this.session = session;
+	}
+
+	public HttpConnector getHttpConnector() {
+		return httpConnector;
+	}
+
+	public void setHttpConnector(HttpConnector httpConnector) {
+		this.httpConnector = httpConnector;
+	}
 }

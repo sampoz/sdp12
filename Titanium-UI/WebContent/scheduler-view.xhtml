@@ -9,14 +9,23 @@
 	<ace:tabPane id="scheduler" label="Scheduler"
 		rendered="#{sessionBean.user.authenticated}">
 		<ice:outputText value="#{applicationBean.html}" escape="false" />
+		
+ 		<ace:textEntry id="tab_comment_input" label="Comment: " 
+ 						labelPosition="left" value="#{schedulerServiceManager.addComment.text}" 
+ 						rendered="#{sessionBean.user.editRights}" 
+ 						style="margin-right: 10px;" /> 
+ 		<ice:commandButton id="tab_sumbit_comment" value="Submit" 
+ 						actionListener="#{schedulerServiceManager.submitNewComment()}" 
+ 						rendered="#{sessionBean.user.editRights}" /> 
 		<ace:menuBar>
-			<ace:menuItem id="start_all_schedulings" value="Resume Selected"
+			
+			<ace:menuItem id="start_all_schedulings" value="Start all schedulings"
 				icon="ui-icon ui-icon-circle-triangle-e"
 				rendered="#{sessionBean.user.editRights}"
 				actionListener="#{schedulerServiceManager.stopAllSchedules}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
-			<ace:menuItem id="stop_all_schedulings" value="Hold Selected"
+			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
 				icon="ui-icon ui-icon-circle-close"
 				rendered="#{sessionBean.user.editRights}"
 				actionListener="#{schedulerServiceManager.startAllSchedules}">
