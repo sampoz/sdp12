@@ -52,6 +52,10 @@ public class SchedulerServiceManager {
 	}
 
 	public void stopAllSchedules(){
+		if (this.getComment2().getText().equals("")){
+			System.out.println("Comment cant be empty");
+			return;
+		}
 		if (session.getConnector().stopSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
 			System.out.println("http succes"+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE.getUrl()));
 			if(this.submitComment(this.getComment2()))
@@ -59,6 +63,10 @@ public class SchedulerServiceManager {
 		}
 	}
 	public void startAllSchedules(){
+		if (this.getComment2().getText().equals("")){
+			System.out.println("Comment cant be empty");
+			return;
+		}
 		if (session.getConnector().startSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
 			System.out.println("http succes"+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE.getUrl()));	
 			if(this.submitComment(this.getComment()))
@@ -74,7 +82,7 @@ public class SchedulerServiceManager {
 
 		// If the database connector returns true from the persisting of the
 		// comment we can safely add it to the table
-		System.out.print("Comment contains text " + c.getText());
+		
 		if(this.session.getConnector().addComment(c)){
 			refreshComments();
 			return true;

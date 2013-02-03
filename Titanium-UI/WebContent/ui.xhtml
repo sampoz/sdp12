@@ -76,7 +76,7 @@
 			widgetVar="start_scheduler_service_conf"
 			message="You are about to start all schedulings. Write a short comment describing your actions."
 			header="Confirm Start" width="330" height="300">
-			<ice:inputText value="#{schedulerServiceManager.comment.text}" escape="false">
+			<ice:inputText value="#{schedulerServiceManager.comment.text}" validator="#{userBean.checkUsername}" escape="false">
 			</ice:inputText>
 			<h:panelGrid columns="2">
 				<h:commandButton value="Confirm"
