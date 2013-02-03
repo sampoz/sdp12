@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import entities.Backend;
 import entities.Composite;
 import entities.Mode;
+import entities.SchedulerService;
 import entities.Status;
 
 @ManagedBean(name = "applicationBean", eager = true)
@@ -31,7 +32,8 @@ public class ApplicationBean implements Serializable {
 	public static final String LOGIN_REDIRECT = "redirect_to_login";
 	public static final String LOGIN = "login";
 	public static final String LOGOUT = "logout";
-
+	public static SchedulerService SCHEDULERSERVICE;
+	
 	public TimeZone timezone;
 	// Hard coded styleClasses for different modes
 	{
@@ -93,7 +95,9 @@ public class ApplicationBean implements Serializable {
 		}
 
 		this.timezone = Calendar.getInstance().getTimeZone();
-
+		
+		SCHEDULERSERVICE = tempConnector.getSchedulingService();
+		
 		tempConnector.close();
 	}
 
