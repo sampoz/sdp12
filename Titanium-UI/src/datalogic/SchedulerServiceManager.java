@@ -20,7 +20,7 @@ public class SchedulerServiceManager {
 	private Comment comment = new Comment();
 	private Comment comment2 = new Comment();
     
-	private Boolean validate = true;
+	private Boolean validate = false;
 
 
 	public Boolean getValidate() {
@@ -63,7 +63,7 @@ public class SchedulerServiceManager {
 		}
 	}
 	public void startAllSchedules(){
-		if (this.getComment2().getText().equals("")){
+		if (this.getComment().getText().equals("")){
 			System.out.println("Comment cant be empty");
 			return;
 		}
@@ -94,9 +94,7 @@ public class SchedulerServiceManager {
 		this.auditTrail = this.session.getAuditTrail();
 
 	}
-	public void validate(){
-		validate = true;
-	}
+	
 	// ==================== GETTERS & SETTERS ====================
 	public List<Comment> getAuditTrail() {
 		return auditTrail;
