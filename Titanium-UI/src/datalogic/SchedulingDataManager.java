@@ -29,7 +29,7 @@ import entities.Scheduling;
 
 @ManagedBean(name = "schedulingDataManager")
 @ViewScoped
-public class SchedulingDataManager implements Serializable{
+public class SchedulingDataManager implements Serializable {
 
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
@@ -56,7 +56,7 @@ public class SchedulingDataManager implements Serializable{
 
 	private boolean responseDialogVisible;
 	private List<String> runReport = new ArrayList<String>();
-	
+
 	private String schedulingList;
 
 	private Date startDate;
@@ -205,45 +205,41 @@ public class SchedulingDataManager implements Serializable{
 
 	}
 
-	public void resetEdit(SchedulingTab t){
+	public void resetEdit(SchedulingTab t) {
 		t.reset();
 	}
-	
-	private void submitCommentFromAdd(Scheduling s){
+
+	private void submitCommentFromAdd(Scheduling s) {
 		addComment.setSchedulingID(s.getId());
 		addComment.setCreationDate(ApplicationBean.DATE_FORMAT
 				.format(new Date()));
-		if(session.getConnector().addComment(addComment)){
+		if (session.getConnector().addComment(addComment)) {
 			this.addComment = new Comment();
 		}
 	}
 
 	private void submitCommentFromEdit(SchedulingTab t) {
-		if(this.submitComment(t.getEditComment(),t))
+		if (this.submitComment(t.getEditComment(), t))
 			t.setEditComment(new Comment());
 	}
 
 	public void submitNewComment(SchedulingTab t) {
-		if(this.submitComment(t.getAddComment(), t))
+		if (this.submitComment(t.getAddComment(), t))
 			t.setAddComment(new Comment());
 	}
-	
 
-	
-	private boolean submitComment(Comment c, SchedulingTab t){
+	private boolean submitComment(Comment c, SchedulingTab t) {
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(t.getScheduling().getId());
 
-		// If the database connector returns true from the persisting of the
-		// comment we can safely add it to the table
-		if(this.session.getConnector().addComment(c)){
+		if (this.session.getConnector().addComment(c)) {
 			refreshComments(t);
 			return true;
 		}
 		return false;
 	}
-	
-	private void refreshComments(SchedulingTab t){
+
+	private void refreshComments(SchedulingTab t) {
 		t.setComments(this.session.getConnector().getComments(
 				t.getScheduling().getId(), ApplicationBean.MAX_COMMENTS_SHOWN));
 	}
@@ -384,7 +380,7 @@ public class SchedulingDataManager implements Serializable{
 		for (Scheduling s : this.schedulings) {
 
 			// If the status isn't active we can skip this scheduling
-			if (s.getStatusID() != 1)
+			if (s.getStatusID() != ApplicationBean.ENABLED)
 				continue;
 
 			try {
@@ -540,7 +536,7 @@ public class SchedulingDataManager implements Serializable{
 		for (Object r : runStateMap.getSelected()) {
 			schedulings.add(((Run) r).getScheduling());
 		}
-		
+
 		run(schedulings);
 	}
 
@@ -549,30 +545,42 @@ public class SchedulingDataManager implements Serializable{
 		for (Run r : this.matching) {
 			schedulings.add(r.getScheduling());
 		}
-		
+
 		run(schedulings);
 	}
 
 	private void run(List<Scheduling> schedulings) {
 		this.runReport.clear();
-		this.runReport.add(schedulings.size() + " schedulings were run.");
-		HashMap<Integer, Integer> results = new HashMap<Integer, Integer>();
+		int succesfulRuns = 0;
+		String failedName = null;
+		int error = 0;
 		for (Scheduling s : schedulings) {
 			int response = httpConnector.runId(
 					ApplicationBean.COMPOSITES.get(s.getServiceID())
 							.getDestinationURL(), s.getId());
 
-			if (results.get(response) == null)
-				results.put(response, 1);
-			else
-				results.put(response, results.get(response) + 1);
+			if (response == HttpConnector.RESPONSE_OK) {
+				succesfulRuns++;
+			} else {
+				failedName = s.getName().substring(0, 4);
+				error = response;
+				break;
+			}
 		}
 		
-		for (Integer i : results.keySet()) {
-			this.runReport.add("Response for " + results.get(i) + " schedulings was " + i);
+		if (failedName != null) {
+			this.runReport.add((succesfulRuns + 1) + " schedulings were run.");
+			this.runReport.add(succesfulRuns + " schedulings were succesful.");
+			this.runReport.add("Response for scheduling " + failedName + " was " + error + ".");
+		} else {
+			this.runReport.add(succesfulRuns + " schedulings were run.");
+			this.runReport.add(succesfulRuns + " schedulings were succesful.");
 		}
-
 		this.responseDialogVisible = true;
+	}
+	
+	public void closeRunReport(){
+		this.responseDialogVisible = false;
 	}
 
 	// ==================== GETTERS & SETTERS ====================
@@ -775,6 +783,5 @@ public class SchedulingDataManager implements Serializable{
 	public void setRunDataTable(DataTable runDataTable) {
 		this.runDataTable = runDataTable;
 	}
-
 
 }

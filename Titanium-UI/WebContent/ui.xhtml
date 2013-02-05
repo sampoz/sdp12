@@ -69,6 +69,9 @@
 
 		<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
 			autoCenter="true" blockUI="@source" />
+			
+		<ace:submitMonitor for="run_schedulings_button" activeLabel="Running"
+			autoCenter="true" blockUI="@all" />
 
 		<!--  ========== DIALOGS ========= -->
 
@@ -122,7 +125,7 @@
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
-				<h:commandButton value="Yes" onclick="run_conf.hide()"
+				<h:commandButton id="run_schedulings_button" value="Yes" onclick="run_conf.hide()"
 					actionListener="#{schedulingDataManager.runSelectedSchedules}" />
 				<h:commandButton value="No" onclick="run_conf.hide()" />
 			</h:panelGrid>
@@ -168,12 +171,13 @@
 
 		<ace:dialog visible="#{schedulingDataManager.responseDialogVisible}"
 			rendered="#{schedulingDataManager.responseDialogVisible}"
-			modal="true" resizable="false" header="Report">
+			modal="true" resizable="false" header="Report" closable="false">
 			<h:panelGrid columns="1">
 				<c:forEach items="#{schedulingDataManager.runReport}" var="report">
 					<h:outputText value="#{report}" />
 				</c:forEach>
 			</h:panelGrid>
+			<ice:commandButton value="Close" actionListener="#{schedulingDataManager.closeRunReport}"/>
 		</ace:dialog>
 
 	</h:form>
