@@ -72,22 +72,23 @@
 
 		<!--  ========== DIALOGS ========= -->
 
+		
 		<ace:confirmationDialog id="start_scheduler_service"
 			widgetVar="start_scheduler_service_conf"
 			message="You are about to start all schedulings. Write a short comment describing your actions."
 			header="Confirm Start" width="330" height="300">
 			<ace:textEntry id="description"
-				value="#{schedulerServiceManager.comment.text}">
-				<f:validateLength minimum="6" maximum="500" />
-				<ace:ajax render="@this inputError" />
+				value="#{schedulerServiceManager.comment.text}" validator="#{schedulerServiceManager.ValidateInput}">
+				<ace:ajax render="@this start_scheduler_service" event="blur"  />
 			</ace:textEntry>
 			<h:panelGrid width="100%">
 				<h:message style="color: red;" id="inputError" for="description" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton id="confirm" value="Confirm"
-					onclick="start_scheduler_service_conf.hide()"
-					actionListener="#{schedulerServiceManager.startAllSchedules}" />
+				<h:commandButton  value="Confirm" disabled = "#{schedulerServiceManager.confirmButtonDisabled}"
+					onclick="start_scheduler_service_conf.hide()" 
+					actionListener="#{schedulerServiceManager.startAllSchedules}" 
+					/>
 				<h:commandButton value="Cancel"
 					onclick="start_scheduler_service_conf.hide()" />
 			</h:panelGrid>
@@ -98,17 +99,17 @@
 			message="You are about to stop all schedulings. Write a short comment describing your actions."
 			header="Confirm Stop" width="330" height="300">
 			<ace:textEntry id="description2"
-				value="#{schedulerServiceManager.comment2.text}">
-				<f:validateLength minimum="6" maximum="500" />
-				<ace:ajax render="@this inputError2" />
+				value="#{schedulerServiceManager.comment2.text}" validator="#{schedulerServiceManager.ValidateInput}">
+				<ace:ajax render="@this stop_scheduler_service" event="blur"  />
 			</ace:textEntry>
 			<h:panelGrid width="100%">
 				<h:message style="color: red;" id="inputError2" for="description2" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton value="Confirm"
-					onclick="stop_scheduler_service_conf.hide()"
-					actionListener="#{schedulerServiceManager.stopAllSchedules}" />
+				<h:commandButton  value="Confirm" disabled = "#{schedulerServiceManager.confirmButtonDisabled}"
+					onclick="stop_scheduler_service_conf.hide()" 
+					actionListener="#{schedulerServiceManager.stopAllSchedules}" 
+					/>
 				<h:commandButton value="Cancel"
 					onclick="stop_scheduler_service_conf.hide()" />
 			</h:panelGrid>
