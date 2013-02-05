@@ -4,9 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.validator.ValidatorException;
 
 import entities.Comment;
 
@@ -20,15 +25,14 @@ public class SchedulerServiceManager {
 	private Comment comment = new Comment();
 	private Comment comment2 = new Comment();
     
-	private Boolean validate = false;
+	private Boolean confirmButtonDisabled = false;
 
-
-	public Boolean getValidate() {
-		return validate;
+	public Boolean getConfirmButtonDisabled() {
+		return confirmButtonDisabled;
 	}
 
-	public void setValidate(Boolean validate) {
-		this.validate = validate;
+	public void setConfirmButtonDisabled(Boolean confirmButtonDisabled) {
+		this.confirmButtonDisabled = confirmButtonDisabled;
 	}
 
 	public Comment getComment() {
@@ -45,34 +49,59 @@ public class SchedulerServiceManager {
 	private List<Comment> auditTrail;
 	
 	private HttpConnector httpConnector = new HttpConnector();
+
+	private boolean commentError =false;
 	
+	public boolean isCommentError() {
+		return commentError;
+	}
+
+	public void setCommentError(boolean commentError) {
+		this.commentError = commentError;
+	}
+
 	@PostConstruct
 	public void init(){
 		this.auditTrail = this.session.getAuditTrail();
 	}
 
 	public void stopAllSchedules(){
-		if (this.getComment2().getText().equals("")){
-			System.out.println("Comment cant be empty");
+		if (this.getComment2().getText().length()<6|| this.getComment2().getText().length()>500){
+			System.out.println("Comment cant be less than 6 or over 500");
+			this.commentError = true;
 			return;
 		}
 		if (session.getConnector().stopSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
+			this.commentError = false;
 			System.out.println("http succes"+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE.getUrl()));
 			if(this.submitComment(this.getComment2()))
 				this.setComment2(new Comment());
 		}
 	}
 	public void startAllSchedules(){
-		if (this.getComment().getText().equals("")){
-			System.out.println("Comment cant be empty");
+		if ( this.getComment().getText().length()<6 || this.getComment().getText().length()>500){
+			System.out.println("Comment cant be less than 6 or over 500");
+			this.commentError = true;
 			return;
 		}
 		if (session.getConnector().startSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
+			this.commentError = false;
 			System.out.println("http succes"+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE.getUrl()));	
 			if(this.submitComment(this.getComment()))
 				this.setComment(new Comment());
 		}
 		
+	}
+	public void ValidateInput (FacesContext context, UIComponent component, Object value) { 
+		if( value.toString().length() >= 6 || value.toString().length()> 500) {
+			this.confirmButtonDisabled = false;
+		}
+		else {
+			this.confirmButtonDisabled = true;
+			FacesMessage msg = new FacesMessage("Text must be at least 6 chars long but less than 500");
+			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+			throw new ValidatorException(msg);
+		}
 	}
 
 
@@ -128,5 +157,7 @@ public class SchedulerServiceManager {
 	public void setComment2(Comment comment2) {
 		this.comment2 = comment2;
 	}
+
+
 
 }
