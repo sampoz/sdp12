@@ -8,9 +8,7 @@
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 	<ace:tabPane id="scheduler" label="Scheduler"
 		rendered="#{sessionBean.user.authenticated}">
-		<ice:outputText value="#{applicationBean.html}" escape="false" />
-		<ice:outputText value="Comment field can't be empty"
-			rendered="#{schedulerServiceManager.commentError}" styleClass="red" />
+
 		<ace:menuBar>
 			<ace:menuItem id="start_all_schedulings"
 				value="Start all schedulings"
