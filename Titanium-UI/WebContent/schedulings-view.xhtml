@@ -154,9 +154,9 @@
 					</ace:dateTimeEntry>
 					<h:commandButton id="search_date" value="Search"
 						actionListener="#{schedulingDataManager.dateSubmit}" />
+					<h:outputText value="#{schedulingDataManager.dateError}"
+						rendered="#{schedulingDataManager.showDateError}" styleClass="red" />
 				</h:panelGrid>
-				<h:outputText value="#{schedulingDataManager.dateError}"
-					rendered="#{schedulingDataManager.showDateError}" styleClass="red" />
 
 				<ace:menuBar>
 					<ace:menuItem value="Select Filtered" icon="ui-icon ui-icon-check"
