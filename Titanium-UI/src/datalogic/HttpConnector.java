@@ -14,6 +14,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 public class HttpConnector {
 	private HttpClient client;
 	
+	public static final int RESPONSE_OK = 0;
+	public static final int RESPONSE_EMPTY_PARAMETER = 1;
+	public static final int RESPONSE_INTERNAL_ERROR = 2;
+	public static final int RESPONSE_UNKOWN_ERROR = 3;
+	
 	public HttpConnector(){
 		this.client = new DefaultHttpClient();
 	}
