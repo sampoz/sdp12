@@ -71,9 +71,6 @@
 					<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
 					<h:inputText id="nameInput"
 						value="#{schedulingDataManager.builder.name}" />
-					<h:outputLabel id="descLabel" for="descInput" value="Description: " />
-					<h:inputText id="descInput"
-						value="#{schedulingDataManager.builder.description}" />
 					<h:outputLabel id="cronLabel" for="cronInput" value="CRON: " />
 					<h:inputText id="cronInput"
 						value="#{schedulingDataManager.builder.cron}" />
@@ -125,6 +122,9 @@
 						<f:selectItems value="#{schedulingDataManager.composites}" />
 						<f:converter converterId="entityConverter" />
 					</ice:selectOneMenu>
+					<h:outputLabel id="descLabel" for="descInput" value="Description: " />
+					<h:inputText id="descInput"
+						value="#{schedulingDataManager.builder.description}" size="73"/>
 				</h:panelGrid>
 				<ice:commandButton id="add_scheduling_button" value="Add Scheduling"
 					actionListener="#{schedulingDataManager.addScheduling}" />
@@ -164,10 +164,10 @@
 					<ace:menuItem value="Deselect All"
 						icon="ui-icon ui-icon-closethick"
 						actionListener="#{schedulingDataManager.deselectAllRuns}" />
-					<ace:menuItem value="Run Selected" icon="ui-icon ui-icon-play"
-						actionListener="#{schedulingDataManager.runSelectedRuns}" />
-					<ace:menuItem value="Run All" icon="ui-icon ui-icon-seek-next"
-						actionListener="#{schedulingDataManager.runAllRuns}" />
+					<ace:menuItem value="Run Selected" icon="ui-icon ui-icon-play" onclick="re_run_conf.show()"
+						actionListener="#{schedulingDataManager.listSelectedRuns}" />
+					<ace:menuItem value="Run All" icon="ui-icon ui-icon-seek-next" onclick="re_run_all_conf.show()"
+						actionListener="#{schedulingDataManager.listAllRuns}" />
 				</ace:menuBar>
 				<ace:dataTable id="matching_runs"
 					value="#{schedulingDataManager.matching}" var="run"

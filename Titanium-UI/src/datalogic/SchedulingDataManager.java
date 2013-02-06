@@ -46,9 +46,6 @@ public class SchedulingDataManager implements Serializable {
 			.values();
 	private Collection<Backend> backends = ApplicationBean.BACKENDS.values();
 
-	private boolean showEditError;
-	private String editErrorMessage;
-
 	private boolean showAddError;
 	private String addErrorMessage;
 
@@ -96,6 +93,26 @@ public class SchedulingDataManager implements Serializable {
 		this.schedulingList = "";
 		for (Scheduling s : (List<Scheduling>) stateMap.getSelected()) {
 			this.schedulingList += s.getName().substring(0, 4) + "<br/>";
+		}
+	}
+	
+	public void listSelectedRuns() {
+		if (runStateMap.getSelected().isEmpty()) {
+			this.schedulingList = "None";
+			return;
+		}
+		
+		this.schedulingList = "";
+		for (Run r : (List<Run>) runStateMap.getSelected()) {
+			this.schedulingList += r.getScheduling().getName().substring(0, 4) + "<br/>";
+		}
+	}
+	
+	public void listAllRuns() {
+		
+		this.schedulingList = "";
+		for (Run r : this.matching) {
+			this.schedulingList += r.getScheduling().getName().substring(0, 4) + "<br/>";
 		}
 	}
 
@@ -180,7 +197,7 @@ public class SchedulingDataManager implements Serializable {
 
 			// If we've gotten this far there were no errors and we can hide all
 			// error messages
-			showEditError = false;
+			t.setShowEditError(false);
 			String comment = t.getEditComment().getText();
 			if (comment != null && !comment.isEmpty())
 				this.submitCommentFromEdit(t);
@@ -199,8 +216,8 @@ public class SchedulingDataManager implements Serializable {
 			 * Scheduling: we set the error message to be shown in Edit section
 			 * and set the visibility to true
 			 */
-			editErrorMessage = e.getMessage();
-			showEditError = true;
+			t.setEditErrorMessage(e.getMessage());
+			t.setShowEditError(true);
 		}
 
 	}
@@ -622,22 +639,6 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setStateMap(RowStateMap stateMap) {
 		this.stateMap = stateMap;
-	}
-
-	public boolean isShowEditError() {
-		return showEditError;
-	}
-
-	public void setEditError(boolean editError) {
-		// Cannot be set from the UI but the setter has to exist
-	}
-
-	public String getEditErrorMessage() {
-		return editErrorMessage;
-	}
-
-	public void setEditErrorMessage(String editErrorMessage) {
-		this.editErrorMessage = editErrorMessage;
 	}
 
 	public boolean isShowAddError() {

@@ -46,14 +46,29 @@
 				<br />
 				<ace:panel id="edit_panel" header="Edit" toggleable="true"
 					rendered="#{sessionBean.user.editRights}">
-					<h:panelGrid id="edit_grid" columns="6">
+					<h:panelGrid id="edit_grid" columns="4">
 						<h:outputLabel for="tab_name_input" value="Name: " />
 						<h:inputText id="tab_name_input" value="#{tab.builder.name}" />
-						<h:outputLabel for="tab_desc_input" value="Description: " />
-						<h:inputText id="tab_desc_input"
-							value="#{tab.builder.description}" />
 						<h:outputLabel for="tab_cron_input" value="CRON: " />
 						<h:inputText id="tab_cron_input" value="#{tab.builder.cron}" />
+						<h:outputLabel for="tab_mode_input" value="Mode: " />
+						<h:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
+							<f:selectItems value="#{schedulingDataManager.modes}" />
+							<f:converter converterId="entityConverter" />
+						</h:selectOneMenu>
+						<h:panelGrid columns="2">
+							<h:outputLabel for="tab_bank_input" value="Holiday: " />
+							<h:selectBooleanCheckbox id="tab_bank_input"
+								value="#{tab.builder.bankHolidayOnly}" />
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<h:outputLabel for="tab_java_input" value="Pollable: " />
+							<h:selectBooleanCheckbox id="tab_java_input"
+								value="#{tab.builder.javaAgentPollable}"
+								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
+						</h:panelGrid>
+					</h:panelGrid>
+					<h:panelGrid columns="4">
 						<h:outputLabel for="tab_source_input" value="Source: " />
 						<h:selectOneMenu id="tab_source_input"
 							value="#{tab.builder.source}">
@@ -66,46 +81,36 @@
 							<f:selectItems value="#{schedulingDataManager.backends}" />
 							<f:converter converterId="entityConverter" />
 						</h:selectOneMenu>
-						<h:outputLabel for="tab_mode_input" value="Mode: " />
-						<h:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
-							<f:selectItems value="#{schedulingDataManager.modes}" />
-							<f:converter converterId="entityConverter" />
-						</h:selectOneMenu>
-						<h:outputLabel for="tab_requestURL_input" value="Request URL: " />
-						<h:inputText id="tab_requestURL_input"
-							value="#{tab.builder.requestURL}" />
-						<h:outputLabel for="tab_bank_input" value="Holiday: " />
-						<h:selectBooleanCheckbox id="tab_bank_input"
-							value="#{tab.builder.bankHolidayOnly}" />
-
-						<h:outputLabel for="tab_java_input" value="Pollable: " />
-						<h:selectBooleanCheckbox id="tab_java_input"
-							value="#{tab.builder.javaAgentPollable}"
-							disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
-						<h:outputLabel for="tab_contacts_input" value="Contacts: " />
-						<h:inputText id="tab_contacts_input"
-							value="#{tab.builder.contacts}" />
-						<h:outputLabel for="tab_edit_comment_input" value="Comment: " />
-						<h:inputText id="tab_edit_comment_input"
-							value="#{tab.editComment.text}" />
-						<h:outputLabel value="(Opt.)" />
 					</h:panelGrid>
 					<h:panelGrid columns="2">
+
+						<h:outputLabel for="tab_requestURL_input" value="Request URL: " />
+						<h:inputText id="tab_requestURL_input"
+							value="#{tab.builder.requestURL}" size="73" />
 						<h:outputLabel for="tab_composite_input" value="Composite: " />
 						<ice:selectOneMenu id="tab_composite_input"
 							value="#{tab.builder.composite}" partialSubmit="true">
 							<f:selectItems value="#{schedulingDataManager.composites}" />
 							<f:converter converterId="entityConverter" />
 						</ice:selectOneMenu>
+						<h:outputLabel for="tab_desc_input" value="Description: " />
+						<h:inputText id="tab_desc_input"
+							value="#{tab.builder.description}" size="73" />
+						<h:outputLabel for="tab_contacts_input" value="Contacts: " />
+						<h:inputText id="tab_contacts_input"
+							value="#{tab.builder.contacts}" size="73" />
+						<h:outputLabel for="tab_edit_comment_input" value="Comment: " />
+						<h:inputText id="tab_edit_comment_input"
+							value="#{tab.editComment.text}" size="73" />
 					</h:panelGrid>
+
 					<ice:commandButton id="tab_confirm_edit" value="Confirm"
 						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
 					<ice:commandButton id="tab_reset_edit" value="Reset"
 						actionListener="#{schedulingDataManager.resetEdit(tab)}" />
 					<pre>
-							<ice:outputText value="#{schedulingDataManager.editErrorMessage}"
-							rendered="#{schedulingDataManager.showEditError}"
-							styleClass="red" />
+							<ice:outputText value="#{tab.editErrorMessage}"
+							rendered="#{tab.showEditError}" styleClass="red" />
 						</pre>
 
 				</ace:panel>
