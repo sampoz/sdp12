@@ -69,7 +69,7 @@
 
 		<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
 			autoCenter="true" blockUI="@source" />
-			
+
 		<ace:submitMonitor for="run_schedulings_button" activeLabel="Running"
 			autoCenter="true" blockUI="@all" />
 
@@ -113,7 +113,6 @@
 			<h:panelGrid columns="2">
 				<h:commandButton value="Confirm"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
-					onclick="stop_scheduler_service_conf.hide()"
 					actionListener="#{schedulerServiceManager.stopAllSchedules}" />
 				<h:commandButton value="Cancel"
 					onclick="stop_scheduler_service_conf.hide()" />
@@ -122,12 +121,15 @@
 
 		<ace:dialog visible="#{schedulerServiceManager.commentError}"
 			rendered="#{schedulerServiceManager.commentError}" modal="true"
-			resizable="false" header="Error">
+			resizable="false" header="Report" closable="false">
 			<h:panelGrid columns="1">
-				<h:outputText value="Comment field can't be empty." styleClass="red"  />
+				<h:outputText
+					value="Comment field can't be empty. Nothing was done. Please open dialog again and fill in comment"
+					styleClass="red" />
 			</h:panelGrid>
+			<ice:commandButton value="Close"
+				actionListener="#{schedulerServiceManager.closeComment}" />
 		</ace:dialog>
-
 
 		<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 			message="Are you sure you want to run following schedulings?"
@@ -135,7 +137,8 @@
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
-				<h:commandButton id="run_schedulings_button" value="Yes" onclick="run_conf.hide()"
+				<h:commandButton id="run_schedulings_button" value="Yes"
+					onclick="run_conf.hide()"
 					actionListener="#{schedulingDataManager.runSelectedSchedules}" />
 				<h:commandButton value="No" onclick="run_conf.hide()" />
 			</h:panelGrid>
@@ -187,7 +190,8 @@
 					<h:outputText value="#{report}" />
 				</c:forEach>
 			</h:panelGrid>
-			<ice:commandButton value="Close" actionListener="#{schedulingDataManager.closeRunReport}"/>
+			<ice:commandButton value="Close"
+				actionListener="#{schedulingDataManager.closeRunReport}" />
 		</ace:dialog>
 
 	</h:form>
