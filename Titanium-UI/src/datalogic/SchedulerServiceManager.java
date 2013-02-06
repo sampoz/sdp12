@@ -1,3 +1,4 @@
+
 package datalogic;
 
 import java.util.Date;
@@ -25,23 +26,10 @@ public class SchedulerServiceManager {
 	private Comment comment = new Comment();
 	private Comment comment2 = new Comment();
     
+
+
 	private Boolean confirmButtonDisabled = false;
 
-	public Boolean getConfirmButtonDisabled() {
-		return confirmButtonDisabled;
-	}
-
-	public void setConfirmButtonDisabled(Boolean confirmButtonDisabled) {
-		this.confirmButtonDisabled = confirmButtonDisabled;
-	}
-
-	public Comment getComment() {
-		return comment;
-	}
-
-	public void setComment(Comment comment) {
-		this.comment = comment;
-	}
 	
 	
 	private static int SCHEDULINGSERVICECOMMENT;
@@ -93,7 +81,7 @@ public class SchedulerServiceManager {
 		
 	}
 	public void ValidateInput (FacesContext context, UIComponent component, Object value) { 
-		if( value.toString().length() >= 6 || value.toString().length()> 500) {
+		if( value.toString().length() >= 6 || value.toString().length()> 500 ) {
 			this.confirmButtonDisabled = false;
 		}
 		else {
@@ -122,6 +110,9 @@ public class SchedulerServiceManager {
 		this.session.refreshAuditTrail();
 		this.auditTrail = this.session.getAuditTrail();
 
+	}
+	public void closeComment(){
+		this.commentError = false;
 	}
 	
 	// ==================== GETTERS & SETTERS ====================
@@ -158,6 +149,21 @@ public class SchedulerServiceManager {
 		this.comment2 = comment2;
 	}
 
+	public Boolean getConfirmButtonDisabled() {
+		return confirmButtonDisabled;
+	}
+
+	public void setConfirmButtonDisabled(Boolean confirmButtonDisabled) {
+		this.confirmButtonDisabled = confirmButtonDisabled;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
+	}
 
 
 }

@@ -119,12 +119,23 @@
 			<h:panelGrid columns="2">
 				<h:commandButton value="Confirm"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
-					onclick="stop_scheduler_service_conf.hide()"
 					actionListener="#{schedulerServiceManager.stopAllSchedules}" />
 				<h:commandButton value="Cancel"
 					onclick="stop_scheduler_service_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
+
+		<ace:dialog visible="#{schedulerServiceManager.commentError}"
+			rendered="#{schedulerServiceManager.commentError}" modal="true"
+			resizable="false" header="Report" closable="false">
+			<h:panelGrid columns="1">
+				<h:outputText
+					value="Comment field can't be empty. Nothing was done. Please open dialog again and fill in comment"
+					styleClass="red" />
+			</h:panelGrid>
+			<ice:commandButton value="Close"
+				actionListener="#{schedulerServiceManager.closeComment}" />
+		</ace:dialog>
 
 		<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 			message="Are you sure you want to run following schedulings?"

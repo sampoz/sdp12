@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13527435947100" configfile="/Titanium-UI/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="index.xhtml" x="122" y="178" id="pf13543845958540" referenceLink="//@navigationRule.3/@navigationCase.0/@toViewId|" path="/index.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="second.xhtml" x="122" y="562" id="pf13543845958542" referenceLink="//@navigationRule.3/@navigationCase.1/@toViewId|" path="/second.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="third.xhtml" x="122" y="946" id="pf135566151702811" referenceLink="//@navigationRule.3/@navigationCase.2/@toViewId|" path="/third.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="fourth.xhtml" x="122" y="1714" id="pf135566151702815" referenceLink="//@navigationRule.3/@navigationCase.3/@toViewId|" path="/fourth.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="1330" id="pf13584349792340" referenceLink="//@navigationRule.2/@fromViewId|" outlinks="pf13584349792351" path="*"/>
-  <nodes xsi:type="pageflow:PFPage" name="logout" x="338" y="1330" id="pf13584349792352" referenceLink="//@navigationRule.2/@navigationCase.0/@toViewId|" inlinks="pf13584349792351" path="/logout.jsp"/>
-  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" id="pf135843513015113" referenceLink="//@navigationRule.2/@fromViewId|" outlinks="pf135843513015114" path="/login.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="ui.xhtml" id="pf135843513015115" referenceLink="//@navigationRule.2/@navigationCase.0/@toViewId|" inlinks="pf135843513015114" path="/ui.xhtml"/>
-  <links id="pf13584349792351" target="pf13584349792352" source="pf13584349792340" outcome="logout" redirect="true"/>
-  <links id="pf135843513015114" target="pf135843513015115" source="pf135843513015113" outcome="true" redirect="true" fromaction="#{loginManager.authenticate}"/>
+  <nodes xsi:type="pageflow:PFPage" name="ui.xhtml" id="pf13594875475093" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13594889151629 pf135948891516210" inlinks="pf13594888538046 pf13594888538047" path="/ui.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" x="251" id="pf13594875475094" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" outlinks="pf13594888538046 pf13594888538047 pf13594888538048" inlinks="pf13594888538048 pf135948891516210" path="/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="logout" id="pf135948891516211" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13594889151629" path="/logout.jsp"/>
+  <links id="pf13594888538046" target="pf13594875475093" source="pf13594875475094" outcome="redirect_to_ui" redirect="true"/>
+  <links id="pf13594888538047" target="pf13594875475093" source="pf13594875475094" outcome="true" redirect="true" fromaction="#{loginManager.authenticate}"/>
+  <links id="pf13594888538048" target="pf13594875475094" source="pf13594875475094" outcome="false" fromaction="#{loginManager.authenticate}"/>
+  <links id="pf13594889151629" target="pf135948891516211" source="pf13594875475093" outcome="logout" redirect="true"/>
+  <links id="pf135948891516210" target="pf13594875475094" source="pf13594875475093" outcome="redirect_to_login" redirect="true"/>
 </pageflow:Pageflow>
