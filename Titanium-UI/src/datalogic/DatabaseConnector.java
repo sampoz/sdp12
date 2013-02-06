@@ -19,8 +19,8 @@ import entities.Status;
 public class DatabaseConnector {
 
 	private EntityManager manager;
-	private static int STOPPED = 1;
-	private static int RUNNING = 0;
+	public static int STOPPED = 1;
+	public static int RUNNING = 0;
 	
 	public boolean addScheduling(Scheduling s) {
 		// Initialize entity manager if it isn't already

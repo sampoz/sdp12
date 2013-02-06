@@ -26,12 +26,8 @@ public class SchedulerServiceManager {
 	private Comment comment = new Comment();
 	private Comment comment2 = new Comment();
     
-
-
 	private Boolean confirmButtonDisabled = false;
 
-	
-	
 	private static int SCHEDULINGSERVICECOMMENT;
 
 	private List<Comment> auditTrail;
@@ -39,7 +35,10 @@ public class SchedulerServiceManager {
 	private HttpConnector httpConnector = new HttpConnector();
 
 	private boolean commentError =false;
-	
+
+	private boolean schedulerStopped = false;
+
+
 	public boolean isCommentError() {
 		return commentError;
 	}
@@ -61,6 +60,7 @@ public class SchedulerServiceManager {
 		}
 		if (session.getConnector().stopSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
 			this.commentError = false;
+			this.schedulerStopped = true;
 			System.out.println("http succes"+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE.getUrl()));
 			if(this.submitComment(this.getComment2()))
 				this.setComment2(new Comment());
@@ -74,6 +74,7 @@ public class SchedulerServiceManager {
 		}
 		if (session.getConnector().startSchedulingService(ApplicationBean.SCHEDULERSERVICE)){
 			this.commentError = false;
+			this.schedulerStopped = false;
 			System.out.println("http succes"+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE.getUrl()));	
 			if(this.submitComment(this.getComment()))
 				this.setComment(new Comment());
@@ -165,5 +166,14 @@ public class SchedulerServiceManager {
 		this.comment = comment;
 	}
 
+
+	public boolean isSchedulerStopped() {
+		return schedulerStopped;
+	}
+
+	public void setSchedulerStopped(boolean schedulerStopped) {
+		this.schedulerStopped = schedulerStopped;
+	}
+	
 
 }

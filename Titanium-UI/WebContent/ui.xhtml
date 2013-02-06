@@ -86,11 +86,11 @@
 			widgetVar="start_scheduler_service_conf"
 			message="You are about to start all schedulings. Write a short comment describing your actions."
 			header="Confirm Start" width="330" height="300">
-			<ace:textEntry id="description"
+			<ace:textAreaEntry id="description"
 				value="#{schedulerServiceManager.comment.text}"
 				validator="#{schedulerServiceManager.ValidateInput}">
 				<ace:ajax render="@this start_scheduler_service" event="blur" />
-			</ace:textEntry>
+			</ace:textAreaEntry>
 			<h:panelGrid width="100%">
 				<h:message style="color: red;" id="inputError" for="description" />
 			</h:panelGrid>
@@ -108,16 +108,17 @@
 			widgetVar="stop_scheduler_service_conf"
 			message="You are about to stop all schedulings. Write a short comment describing your actions."
 			header="Confirm Stop" width="330" height="300">
-			<ace:textEntry id="description2"
+			<ace:textAreaEntry id="description2"
 				value="#{schedulerServiceManager.comment2.text}"
 				validator="#{schedulerServiceManager.ValidateInput}">
 				<ace:ajax render="@this stop_scheduler_service" event="blur" />
-			</ace:textEntry>
+			</ace:textAreaEntry>
 			<h:panelGrid width="100%">
 				<h:message style="color: red;" id="inputError2" for="description2" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
 				<h:commandButton value="Confirm"
+					onclick="stop_scheduler_service_conf.hide()"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
 					actionListener="#{schedulerServiceManager.stopAllSchedules}" />
 				<h:commandButton value="Cancel"
