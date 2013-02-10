@@ -19,8 +19,6 @@ import entities.Status;
 public class DatabaseConnector {
 
 	private EntityManager manager;
-	public static int STOPPED = 1;
-	public static int RUNNING = 0;
 	
 	public boolean addScheduling(Scheduling s) {
 		// Initialize entity manager if it isn't already
@@ -149,12 +147,13 @@ public class DatabaseConnector {
 	}
 
 	public boolean startSchedulingService(SchedulerService s) {	
-		return changeSchedulingStandByValue(s, RUNNING);
+		return changeSchedulingStandByValue(s, SchedulerService.RUNNING);
 	}
 	
 	public boolean stopSchedulingService(SchedulerService s) {	
-		return changeSchedulingStandByValue(s, STOPPED);
+		return changeSchedulingStandByValue(s, SchedulerService.STOPPED);
 	}
+	
 	private boolean changeSchedulingStandByValue(SchedulerService s, int standByValue){
 		lazyInit();
 		s.setStandby(standByValue);
@@ -165,9 +164,10 @@ public class DatabaseConnector {
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
-		System.out.println("Stand by value set to"+ standByValue);
+		System.out.println("Stand by value set to "+ standByValue);
 		return true;
 	}
+	
 	public SchedulerService getSchedulingService(){
 		lazyInit();
 		this.manager.getTransaction().begin();

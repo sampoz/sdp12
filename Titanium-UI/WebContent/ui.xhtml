@@ -73,6 +73,12 @@
 		<ace:submitMonitor for="run_schedulings_button" activeLabel="Running"
 			autoCenter="true" blockUI="@all" />
 
+		<ace:submitMonitor for="start_scheduler_button" activeLabel="Starting"
+			autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="stop_scheduler_button" activeLabel="Stopping"
+			autoCenter="true" blockUI="@all" />
+
 		<ace:submitMonitor for="re_run_schedulings_button"
 			activeLabel="Running" autoCenter="true" blockUI="@all" />
 
@@ -95,7 +101,7 @@
 				<h:message style="color: red;" id="inputError" for="description" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton value="Confirm"
+				<h:commandButton id="start_scheduler_button" value="Confirm"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
 					onclick="start_scheduler_service_conf.hide()"
 					actionListener="#{schedulerServiceManager.startAllSchedules}" />
@@ -117,7 +123,7 @@
 				<h:message style="color: red;" id="inputError2" for="description2" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<h:commandButton value="Confirm"
+				<h:commandButton id="stop_scheduler_button" value="Confirm"
 					onclick="stop_scheduler_service_conf.hide()"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
 					actionListener="#{schedulerServiceManager.stopAllSchedules}" />

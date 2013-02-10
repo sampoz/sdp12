@@ -21,6 +21,9 @@ public class SchedulerService {
 	
 	@Column(name = "STANDBY")
 	private int standby;
+	
+	public static int STOPPED = 1;
+	public static int RUNNING = 0;
 
 	public int getId() {
 		return id;
