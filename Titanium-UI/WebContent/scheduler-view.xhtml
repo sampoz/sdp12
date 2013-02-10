@@ -8,24 +8,30 @@
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 	<ace:tabPane id="scheduler" label="Scheduler"
 		rendered="#{sessionBean.user.authenticated}">
-		<ice:outputText value="#{applicationBean.html}" escape="false" />
+		<ace:panel id="panel">
+			<h:panelGrid rendered="#{schedulerServiceManager.schedulerStopped}">
+				<h:outputText
+					value="All schedulings are currently stopped." style = "font-weight:bold; color: red;"/>
+				</h:panelGrid>
+		</ace:panel>
 		<ace:menuBar>
-			<ace:menuItem id="start_all_schedulings" value="Resume Selected"
+			<ace:menuItem id="start_all_schedulings"
+				value="Start all schedulings"
+				onclick="start_scheduler_service_conf.show()"
 				icon="ui-icon ui-icon-circle-triangle-e"
-				rendered="#{sessionBean.user.editRights}"
-				actionListener="#{schedulerServiceManager.stopAllSchedules}">
+				rendered="#{sessionBean.user.editRights}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
-			<ace:menuItem id="stop_all_schedulings" value="Hold Selected"
+			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
+				onclick="stop_scheduler_service_conf.show()"
 				icon="ui-icon ui-icon-circle-close"
-				rendered="#{sessionBean.user.editRights}"
-				actionListener="#{schedulerServiceManager.startAllSchedules}">
+				rendered="#{sessionBean.user.editRights}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 		</ace:menuBar>
-		
-		<ace:dataTable value="#{schedulerServiceManager.auditTrail}" var="audit"
-			paginator="true" paginatorPosition="both"
+
+		<ace:dataTable value="#{schedulerServiceManager.auditTrail}"
+			var="audit" paginator="true" paginatorPosition="both"
 			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="10,25,50,100" rows="10"
 			emptyMessage="-- No Audit Trail --">

@@ -12,6 +12,7 @@
       <class>entities.Instance</class>
       <class>entities.Comment</class>
       <class>entities.Backend</class>
+      <class>entities.SchedulerService</class>
       <properties>
       <property name="hibernate.connection.provider_class" value="org.hibernate.connection.DriverManagerConnectionProvider" />
          <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

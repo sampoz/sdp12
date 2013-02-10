@@ -11,7 +11,7 @@
 <h:head>
 	<title>Titanic</title>
 	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
-	<link rel="stylesheet" type="text/css" href="resources/css/style.css"/>
+	<link rel="stylesheet" type="text/css" href="resources/css/style.css" />
 </h:head>
 <h:body>
 	<h:form>
@@ -33,7 +33,7 @@
 			<ui:include src="instance-log-view.xhtml" />
 
 			<!-- ======== SCHEDULER VIEW ======== -->
-			
+
 			<ui:include src="scheduler-view.xhtml" />
 
 			<!-- divider -->
@@ -41,9 +41,9 @@
 				rendered="#{sessionBean.user.authenticated}" />
 
 			<!-- ======== DYNAMIC TABS ======== -->
-			
+
 			<ui:include src="dynamic-tabs.xhtml" />
-			
+
 			<!-- divider -->
 			<ace:tabPane label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
@@ -70,7 +70,73 @@
 		<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
 			autoCenter="true" blockUI="@source" />
 
+		<ace:submitMonitor for="run_schedulings_button" activeLabel="Running"
+			autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="re_run_schedulings_button"
+			activeLabel="Running" autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="re_run_all_button" activeLabel="Running"
+			autoCenter="true" blockUI="@all" />
+
 		<!--  ========== DIALOGS ========= -->
+
+
+		<ace:confirmationDialog id="start_scheduler_service"
+			widgetVar="start_scheduler_service_conf"
+			message="You are about to start all schedulings. Write a short comment describing your actions."
+			header="Confirm Start" width="330" height="300">
+			<ace:textAreaEntry id="description"
+				value="#{schedulerServiceManager.comment.text}"
+				validator="#{schedulerServiceManager.ValidateInput}">
+				<ace:ajax render="@this start_scheduler_service" event="blur" />
+			</ace:textAreaEntry>
+			<h:panelGrid width="100%">
+				<h:message style="color: red;" id="inputError" for="description" />
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:commandButton value="Confirm"
+					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
+					onclick="start_scheduler_service_conf.hide()"
+					actionListener="#{schedulerServiceManager.startAllSchedules}" />
+				<h:commandButton value="Cancel"
+					onclick="start_scheduler_service_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:confirmationDialog id="stop_scheduler_service"
+			widgetVar="stop_scheduler_service_conf"
+			message="You are about to stop all schedulings. Write a short comment describing your actions."
+			header="Confirm Stop" width="330" height="300">
+			<ace:textAreaEntry id="description2"
+				value="#{schedulerServiceManager.comment2.text}"
+				validator="#{schedulerServiceManager.ValidateInput}">
+				<ace:ajax render="@this stop_scheduler_service" event="blur" />
+			</ace:textAreaEntry>
+			<h:panelGrid width="100%">
+				<h:message style="color: red;" id="inputError2" for="description2" />
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:commandButton value="Confirm"
+					onclick="stop_scheduler_service_conf.hide()"
+					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
+					actionListener="#{schedulerServiceManager.stopAllSchedules}" />
+				<h:commandButton value="Cancel"
+					onclick="stop_scheduler_service_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:dialog visible="#{schedulerServiceManager.commentError}"
+			rendered="#{schedulerServiceManager.commentError}" modal="true"
+			resizable="false" header="Report" closable="false">
+			<h:panelGrid columns="1">
+				<h:outputText
+					value="Comment field can't be empty. Nothing was done. Please open dialog again and fill in comment"
+					styleClass="red" />
+			</h:panelGrid>
+			<ice:commandButton value="Close"
+				actionListener="#{schedulerServiceManager.closeComment}" />
+		</ace:dialog>
 
 		<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 			message="Are you sure you want to run following schedulings?"
@@ -78,7 +144,8 @@
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
-				<h:commandButton value="Yes" onclick="run_conf.hide()"
+				<h:commandButton id="run_schedulings_button" value="Yes"
+					onclick="run_conf.hide()"
 					actionListener="#{schedulingDataManager.runSelectedSchedules}" />
 				<h:commandButton value="No" onclick="run_conf.hide()" />
 			</h:panelGrid>
@@ -124,14 +191,43 @@
 
 		<ace:dialog visible="#{schedulingDataManager.responseDialogVisible}"
 			rendered="#{schedulingDataManager.responseDialogVisible}"
-			modal="true" resizable="false" header="Report">
+			modal="true" resizable="false" header="Report" closable="false">
 			<h:panelGrid columns="1">
 				<c:forEach items="#{schedulingDataManager.runReport}" var="report">
 					<h:outputText value="#{report}" />
 				</c:forEach>
 			</h:panelGrid>
+			<ice:commandButton value="Close"
+				actionListener="#{schedulingDataManager.closeRunReport}" />
 		</ace:dialog>
 
+		<ace:confirmationDialog id="re_run_confirmation"
+			widgetVar="re_run_conf"
+			message="Are you sure you want to run following schedulings?"
+			header="Confirm Run" width="330" height="300">
+			<ice:outputText value="#{schedulingDataManager.schedulingList}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton id="re_run_schedulings_button" value="Yes"
+					onclick="re_run_conf.hide()"
+					actionListener="#{schedulingDataManager.runSelectedRuns}" />
+				<h:commandButton value="No" onclick="re_run_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
+
+		<ace:confirmationDialog id="re_run_all_confirmation"
+			widgetVar="re_run_all_conf"
+			message="Are you sure you want to run following schedulings?"
+			header="Confirm Run" width="330" height="300">
+			<ice:outputText value="#{schedulingDataManager.schedulingList}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton id="re_run_all_button" value="Yes"
+					onclick="re_run_all_conf.hide()"
+					actionListener="#{schedulingDataManager.runAllRuns}" />
+				<h:commandButton value="No" onclick="re_run_all_conf.hide()" />
+			</h:panelGrid>
+		</ace:confirmationDialog>
 	</h:form>
 </h:body>
 </html>

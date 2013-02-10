@@ -26,7 +26,8 @@ public class SchedulingTab {
 	
 	private SchedulingBuilder builder;
 	
-	
+	private boolean showEditError;
+	private String editErrorMessage;
 
 	public SchedulingTab(){}
 	
@@ -128,6 +129,22 @@ public class SchedulingTab {
 
 	public void setEditComment(Comment editComment) {
 		this.editComment = editComment;
+	}
+	
+	public boolean isShowEditError() {
+		return showEditError;
+	}
+
+	public void setShowEditError(boolean showEditError) {
+		this.showEditError = showEditError;
+	}
+
+	public String getEditErrorMessage() {
+		return editErrorMessage;
+	}
+
+	public void setEditErrorMessage(String editErrorMessage) {
+		this.editErrorMessage = editErrorMessage;
 	}
 
 	@Override
