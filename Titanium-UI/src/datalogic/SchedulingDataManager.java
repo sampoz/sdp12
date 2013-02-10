@@ -95,24 +95,30 @@ public class SchedulingDataManager implements Serializable {
 			this.schedulingList += s.getName().substring(0, 4) + "<br/>";
 		}
 	}
-	
+
 	public void listSelectedRuns() {
 		if (runStateMap.getSelected().isEmpty()) {
 			this.schedulingList = "None";
 			return;
 		}
-		
+
 		this.schedulingList = "";
 		for (Run r : (List<Run>) runStateMap.getSelected()) {
-			this.schedulingList += r.getScheduling().getName().substring(0, 4) + "<br/>";
+			this.schedulingList += r.getScheduling().getName().substring(0, 4)
+					+ "<br/>";
 		}
 	}
-	
+
 	public void listAllRuns() {
-		
+		if (this.matching.isEmpty()) {
+			this.schedulingList = "None";
+			return;
+		}
+
 		this.schedulingList = "";
 		for (Run r : this.matching) {
-			this.schedulingList += r.getScheduling().getName().substring(0, 4) + "<br/>";
+			this.schedulingList += r.getScheduling().getName().substring(0, 4)
+					+ "<br/>";
 		}
 	}
 
@@ -584,19 +590,23 @@ public class SchedulingDataManager implements Serializable {
 				break;
 			}
 		}
-		
+
 		if (failedName != null) {
 			this.runReport.add((succesfulRuns + 1) + " schedulings were run.");
 			this.runReport.add(succesfulRuns + " schedulings were succesful.");
-			this.runReport.add("Response for scheduling " + failedName + " was " + error + ".");
-		} else {
+			this.runReport.add("Response for scheduling " + failedName
+					+ " was " + error + ".");
+		} else if (succesfulRuns > 0) {
 			this.runReport.add(succesfulRuns + " schedulings were run.");
-			this.runReport.add(succesfulRuns + " schedulings were succesful.");
-		}
+			
+				this.runReport.add(succesfulRuns
+						+ " schedulings were succesful.");
+		} else
+			this.runReport.add("No schedulings were run.");
 		this.responseDialogVisible = true;
 	}
-	
-	public void closeRunReport(){
+
+	public void closeRunReport() {
 		this.responseDialogVisible = false;
 	}
 

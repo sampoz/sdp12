@@ -64,56 +64,54 @@
 			</a>
 		</h:panelGrid>
 
-		<ace:accordion id="accordion" collapsible="true" autoHeight="false"
+		<ace:accordion collapsible="true" autoHeight="false"
 			activeIndex="3" rendered="#{sessionBean.user.addRights}">
 			<ace:accordionPane id="add_scheduling" title="Add Scheduling">
-				<h:panelGrid columns="6">
+				<h:panelGrid columns="4">
 					<h:outputLabel id="nameLabel" for="nameInput" value="Name: " />
 					<h:inputText id="nameInput"
 						value="#{schedulingDataManager.builder.name}" />
 					<h:outputLabel id="cronLabel" for="cronInput" value="CRON: " />
 					<h:inputText id="cronInput"
 						value="#{schedulingDataManager.builder.cron}" />
-					<h:outputLabel id="sourceLabel" for="sourceInput" value="Source: " />
-					<h:selectOneMenu id="sourceInput"
-						value="#{schedulingDataManager.builder.source}">
-						<f:selectItems value="#{schedulingDataManager.backends}" />
-						<f:converter converterId="entityConverter" />
-					</h:selectOneMenu>
-					<h:outputLabel id="targetLabel" for="targetInput" value="Target: " />
-					<h:selectOneMenu id="targetInput"
-						value="#{schedulingDataManager.builder.target}">
-						<f:selectItems value="#{schedulingDataManager.backends}" />
-						<f:converter converterId="entityConverter" />
-					</h:selectOneMenu>
+
+
 					<h:outputLabel id="modeLabel" for="modeInput" value="Mode: " />
 					<h:selectOneMenu id="modeInput"
 						value="#{schedulingDataManager.builder.mode}">
 						<f:selectItems value="#{schedulingDataManager.modes}" />
 						<f:converter converterId="entityConverter" />
 					</h:selectOneMenu>
-					<h:outputLabel for="requestURL_input" value="Request URL: " />
-					<h:inputText id="requestURL_input"
-						value="#{schedulingDataManager.builder.requestURL}" />
-					<h:outputLabel id="bankLabel" for="bankInput" value="Holiday: " />
-					<h:selectBooleanCheckbox id="bankInput"
-						value="#{schedulingDataManager.builder.bankHolidayOnly}" />
-
-					<h:outputLabel id="javaLabel" for="javaInput" value="Pollable: " />
-					<h:selectBooleanCheckbox id="javaInput"
-						value="#{schedulingDataManager.builder.javaAgentPollable}"
-						disabled="#{schedulingDataManager.builder.composite.javaAgentPollable eq 0}" />
-					<h:outputLabel for="contacts_input" value="Contacts: " />
-					<h:inputText id="contacts_input"
-						value="#{schedulingDataManager.builder.contacts}" />
-					<h:outputLabel id="add_comment_label" for="add_comment_input"
-						value="Comment: " />
-					<h:inputText id="add_comment_input"
-						value="#{schedulingDataManager.addComment.text}" />
-					<h:outputLabel id="opt_comment_label" for="add_comment_input"
-						value="(Opt.)" />
+					<h:panelGrid columns="2">
+						<h:outputLabel id="bankLabel" for="bankInput" value="Holiday: " />
+						<h:selectBooleanCheckbox id="bankInput"
+							value="#{schedulingDataManager.builder.bankHolidayOnly}" />
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<h:outputLabel id="javaLabel" for="javaInput" value="Pollable: " />
+						<h:selectBooleanCheckbox id="javaInput"
+							value="#{schedulingDataManager.builder.javaAgentPollable}"
+							disabled="#{schedulingDataManager.builder.composite.javaAgentPollable eq 0}" />
+					</h:panelGrid>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					
 				</h:panelGrid>
 				<h:panelGrid columns="2">
+					<h:outputLabel id="sourceLabel" for="sourceInput" value="Source: " />
+					<h:selectOneMenu id="sourceInput"
+						value="#{schedulingDataManager.builder.source}">
+						<f:selectItems value="#{schedulingDataManager.backends}" />
+						<f:converter converterId="entityConverter" />
+					</h:selectOneMenu>
+
+					<h:outputLabel id="targetLabel" for="targetInput" value="Target: " />
+					<h:selectOneMenu id="targetInput"
+						value="#{schedulingDataManager.builder.target}">
+						<f:selectItems value="#{schedulingDataManager.backends}" />
+						<f:converter converterId="entityConverter" />
+					</h:selectOneMenu>
 					<h:outputLabel id="compositeLabel" for="compositeInput"
 						value="Composite: " />
 					<ice:selectOneMenu id="compositeInput"
@@ -122,9 +120,19 @@
 						<f:selectItems value="#{schedulingDataManager.composites}" />
 						<f:converter converterId="entityConverter" />
 					</ice:selectOneMenu>
+					<h:outputLabel for="requestURL_input" value="Request URL: " />
+					<h:inputText id="requestURL_input"
+						value="#{schedulingDataManager.builder.requestURL}" size="73"/>
 					<h:outputLabel id="descLabel" for="descInput" value="Description: " />
 					<h:inputText id="descInput"
-						value="#{schedulingDataManager.builder.description}" size="73"/>
+						value="#{schedulingDataManager.builder.description}" size="73" />
+					<h:outputLabel for="contacts_input" value="Contacts: " />
+					<h:inputText id="contacts_input"
+						value="#{schedulingDataManager.builder.contacts}" size="73" />
+					<h:outputLabel id="add_comment_label" for="add_comment_input"
+						value="Comment: " />
+					<h:inputText id="add_comment_input"
+						value="#{schedulingDataManager.addComment.text}" size="73" />
 				</h:panelGrid>
 				<ice:commandButton id="add_scheduling_button" value="Add Scheduling"
 					actionListener="#{schedulingDataManager.addScheduling}" />
@@ -134,7 +142,7 @@
 							</pre>
 			</ace:accordionPane>
 
-			<ace:accordionPane id="failed_runs" title="Failed Runs">
+			<ace:accordionPane id="failed_runs" title="Failed Runs" rendered="#{sessionBean.user.runRights}">
 
 				<h:panelGrid columns="2">
 					<h:outputLabel for="start_date_entry" value="From: " />
@@ -164,9 +172,11 @@
 					<ace:menuItem value="Deselect All"
 						icon="ui-icon ui-icon-closethick"
 						actionListener="#{schedulingDataManager.deselectAllRuns}" />
-					<ace:menuItem value="Run Selected" icon="ui-icon ui-icon-play" onclick="re_run_conf.show()"
+					<ace:menuItem value="Run Selected" icon="ui-icon ui-icon-play"
+						onclick="re_run_conf.show()"
 						actionListener="#{schedulingDataManager.listSelectedRuns}" />
-					<ace:menuItem value="Run All" icon="ui-icon ui-icon-seek-next" onclick="re_run_all_conf.show()"
+					<ace:menuItem value="Run All" icon="ui-icon ui-icon-seek-next"
+						onclick="re_run_all_conf.show()"
 						actionListener="#{schedulingDataManager.listAllRuns}" />
 				</ace:menuBar>
 				<ace:dataTable id="matching_runs"
@@ -272,7 +282,8 @@
 			<ace:column id="cron_variables" headerText="Vars">
 				<h:panelGrid id="icon_grid" columns="2">
 					<h:graphicImage id="java_image" library="images"
-						name="invisible_revert_icon.png" style="height: 30px; width: 30px; "
+						name="invisible_revert_icon.png"
+						style="height: 30px; width: 30px; "
 						rendered="#{schedule.javaAgentPollable gt 0}" />
 					<h:graphicImage id="bank_image" library="images"
 						name="bankicon.png" style="height: 30px; width: 30px; "

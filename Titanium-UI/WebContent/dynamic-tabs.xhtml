@@ -68,7 +68,8 @@
 								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
 						</h:panelGrid>
 					</h:panelGrid>
-					<h:panelGrid columns="4">
+					
+					<h:panelGrid columns="2">
 						<h:outputLabel for="tab_source_input" value="Source: " />
 						<h:selectOneMenu id="tab_source_input"
 							value="#{tab.builder.source}">
@@ -81,18 +82,15 @@
 							<f:selectItems value="#{schedulingDataManager.backends}" />
 							<f:converter converterId="entityConverter" />
 						</h:selectOneMenu>
-					</h:panelGrid>
-					<h:panelGrid columns="2">
-
-						<h:outputLabel for="tab_requestURL_input" value="Request URL: " />
-						<h:inputText id="tab_requestURL_input"
-							value="#{tab.builder.requestURL}" size="73" />
 						<h:outputLabel for="tab_composite_input" value="Composite: " />
 						<ice:selectOneMenu id="tab_composite_input"
 							value="#{tab.builder.composite}" partialSubmit="true">
 							<f:selectItems value="#{schedulingDataManager.composites}" />
 							<f:converter converterId="entityConverter" />
 						</ice:selectOneMenu>
+						<h:outputLabel for="tab_requestURL_input" value="Request URL: " />
+						<h:inputText id="tab_requestURL_input"
+							value="#{tab.builder.requestURL}" size="73" />
 						<h:outputLabel for="tab_desc_input" value="Description: " />
 						<h:inputText id="tab_desc_input"
 							value="#{tab.builder.description}" size="73" />
