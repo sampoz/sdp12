@@ -47,6 +47,9 @@ public class Scheduling implements Serializable {
 
 	@Column(name = "CRON")
 	private String cron;
+	
+	@Transient
+	private String time;
 
 	@Column(name = "REQUESTURL")
 	private String requestURL;
@@ -118,6 +121,14 @@ public class Scheduling implements Serializable {
 		this.cron = cron;
 	}
 
+	public String getTime() {
+		return TimeConverter.convertCronToTime(cron);
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+	
 	public String getRequestURL() {
 		return requestURL;
 	}

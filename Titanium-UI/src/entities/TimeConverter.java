@@ -6,14 +6,9 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 
 public class TimeConverter {
 
-	private CronTriggerImpl triggerImpl;
-
-	public TimeConverter() {
-		triggerImpl = new CronTriggerImpl();
-	}
-	
-	public String convertCronToTime(String Cron) {
+	public static String convertCronToTime(String Cron) {
 		try {
+			CronTriggerImpl triggerImpl = new CronTriggerImpl();
 			triggerImpl.setCronExpression(Cron);
 			return triggerImpl.getExpressionSummary();
 		} catch (ParseException e) {
