@@ -52,36 +52,65 @@
 						<h:outputLabel for="tab_cron_input" value="CRON: " />
 						<h:inputText id="tab_cron_input" value="#{tab.builder.cron}" />
 						<h:outputLabel for="tab_mode_input" value="Mode: " />
-						<h:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
+						<ice:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
 							<f:selectItems value="#{schedulingDataManager.modes}" />
 							<f:converter converterId="entityConverter" />
-						</h:selectOneMenu>
+						</ice:selectOneMenu>
 						<h:panelGrid columns="2">
 							<h:outputLabel for="tab_bank_input" value="Holiday: " />
 							<h:selectBooleanCheckbox id="tab_bank_input"
 								value="#{tab.builder.bankHolidayOnly}" />
 						</h:panelGrid>
-						<h:panelGrid columns="2">
+						<h:panelGrid columns="3">
 							<h:outputLabel for="tab_java_input" value="Pollable: " />
 							<h:selectBooleanCheckbox id="tab_java_input"
 								value="#{tab.builder.javaAgentPollable}"
 								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
 						</h:panelGrid>
 					</h:panelGrid>
-					
+
 					<h:panelGrid columns="2">
 						<h:outputLabel for="tab_source_input" value="Source: " />
-						<h:selectOneMenu id="tab_source_input"
-							value="#{tab.builder.source}">
+						<ice:selectOneMenu id="tab_source_input"
+							value="#{tab.builder.source}" partialSubmit="true">
 							<f:selectItems value="#{schedulingDataManager.backends}" />
 							<f:converter converterId="entityConverter" />
-						</h:selectOneMenu>
+						</ice:selectOneMenu>
+
+						<h:panelGrid />
+
+						<ace:panel>
+							<h:panelGrid columns="2">
+								<ice:outputText value="Description: "
+									style="font-weight: bolder" />
+								<ice:outputText value="#{tab.builder.source.description}" />
+								<ice:outputText value="Contacts: " style="font-weight: bolder" />
+								<ice:outputText value="#{tab.builder.source.contacts}" />
+							</h:panelGrid>
+						</ace:panel>
+
 						<h:outputLabel for="tab_target_input" value="Target: " />
-						<h:selectOneMenu id="tab_target_input"
-							value="#{tab.builder.target}">
+						<ice:selectOneMenu id="tab_target_input"
+							value="#{tab.builder.target}" partialSubmit="true">
 							<f:selectItems value="#{schedulingDataManager.backends}" />
 							<f:converter converterId="entityConverter" />
-						</h:selectOneMenu>
+						</ice:selectOneMenu>
+
+						<h:panelGrid />
+
+						<ace:panel>
+							<h:panelGrid columns="2">
+								<ice:outputText value="Description: "
+									style="font-weight: bolder" />
+								<ice:outputText value="#{tab.builder.target.description}" />
+								<ice:outputText value="Contacts: " style="font-weight: bolder" />
+								<ice:outputText value="#{tab.builder.target.contacts}" />
+							</h:panelGrid>
+						</ace:panel>
+
+
+					</h:panelGrid>
+					<h:panelGrid columns="2">
 						<h:outputLabel for="tab_composite_input" value="Composite: " />
 						<ice:selectOneMenu id="tab_composite_input"
 							value="#{tab.builder.composite}" partialSubmit="true">
@@ -99,7 +128,7 @@
 							value="#{tab.builder.contacts}" size="73" />
 						<h:outputLabel for="tab_edit_comment_input" value="Comment: " />
 						<h:inputText id="tab_edit_comment_input"
-							value="#{tab.editComment.text}" size="73" />
+							value="#{tab.builder.comment.text}" size="73" />
 					</h:panelGrid>
 
 					<ice:commandButton id="tab_confirm_edit" value="Confirm"

@@ -3,6 +3,7 @@ package datalogic;
 
 
 import entities.Backend;
+import entities.Comment;
 import entities.Composite;
 import entities.Mode;
 import entities.Scheduling;
@@ -26,10 +27,13 @@ public class SchedulingBuilder {
 	private String contacts = "";
 	private int id;
 	
+	private Comment comment = new Comment();
+	
 	private static final String LINE_BREAK = "\n";
 
 	public SchedulingBuilder() {
 		initComposite();
+		initBackends();
 	}
 
 	private void initComposite() {
@@ -40,6 +44,17 @@ public class SchedulingBuilder {
 			i++;
 		}
 		this.composite = c;
+	}
+	
+	private void initBackends(){
+		Backend b = null;
+		int i = 0;
+		while(b == null){
+			b = ApplicationBean.BACKENDS.get(i);
+			i++;
+		}
+		this.target = b;
+		this.source = b;
 	}
 
 	public SchedulingBuilder(Scheduling s) {
@@ -91,6 +106,15 @@ public class SchedulingBuilder {
 			error = true;
 			message += "Description cannot be empty!" + LINE_BREAK;
 		}
+		if(this.requestURL == null || this.requestURL.isEmpty()){
+			error = true;
+			message += "Request URL cannot be empty!" + LINE_BREAK;
+		}
+		if(this.comment.getText() == null || this.comment.getText().isEmpty()){
+			error = true;
+			message += "Please provide a comment." + LINE_BREAK;
+		}
+		
 		if (error)
 			throw new IllegalOperationException(message);
 
@@ -244,6 +268,14 @@ public class SchedulingBuilder {
 
 	public void setContacts(String contacts) {
 		this.contacts = contacts;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 
 }

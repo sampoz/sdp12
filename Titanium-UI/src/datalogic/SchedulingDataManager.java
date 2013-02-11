@@ -20,6 +20,8 @@ import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
 import org.quartz.CronExpression;
 
+import datalogic.SchedulingTab;
+
 import entities.Backend;
 import entities.Comment;
 import entities.Composite;
@@ -35,7 +37,6 @@ public class SchedulingDataManager implements Serializable {
 	private SessionBean session;
 
 	private SchedulingBuilder builder;
-	private Comment addComment = new Comment();
 
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 	private RowStateMap stateMap = new RowStateMap();
@@ -139,10 +140,8 @@ public class SchedulingDataManager implements Serializable {
 
 			// If the database connector returns true from the persisting of
 			// Scheduling we can safely add it to the table
-			if (this.session.getConnector().addScheduling(s)) {
+			if(this.session.getConnector().addScheduling(s))
 				this.schedulings.add(s);
-				this.builder = new SchedulingBuilder();
-			}
 
 			/*
 			 * If there is some text in addComment, we'll add it straight away.
@@ -150,10 +149,10 @@ public class SchedulingDataManager implements Serializable {
 			 * its important to add the Comment after the Scheduling has been
 			 * persisted and an ID has been assigned to it.
 			 */
-			if (addComment.getText() != null
-					&& !"".equals(addComment.getText())) {
-				submitCommentFromAdd(s);
-			}
+		
+			this.submitCommentFromAdd(s);
+			
+			this.builder = new SchedulingBuilder();
 
 			// If we've gotten this far, there were no errors and we can hide
 			// all error messages
@@ -197,17 +196,15 @@ public class SchedulingDataManager implements Serializable {
 			 */
 			this.schedulings.remove(t.getScheduling());
 			this.schedulings.add(n);
-			t.setScheduling(n);
 
 			this.session.getConnector().updateScheduling(n);
 
 			// If we've gotten this far there were no errors and we can hide all
 			// error messages
 			t.setShowEditError(false);
-			String comment = t.getEditComment().getText();
-			if (comment != null && !comment.isEmpty())
-				this.submitCommentFromEdit(t);
-
+			this.submitCommentFromEdit(t);
+			
+			t.setScheduling(n);
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
 					+ httpConnector.editId(
@@ -233,17 +230,17 @@ public class SchedulingDataManager implements Serializable {
 	}
 
 	private void submitCommentFromAdd(Scheduling s) {
-		addComment.setSchedulingID(s.getId());
-		addComment.setCreationDate(ApplicationBean.DATE_FORMAT
+		this.builder.getComment().setSchedulingID(s.getId());
+		this.builder.getComment().setCreationDate(ApplicationBean.DATE_FORMAT
 				.format(new Date()));
-		if (session.getConnector().addComment(addComment)) {
-			this.addComment = new Comment();
+		if (session.getConnector().addComment(this.builder.getComment())) {
+			this.builder.setComment(new Comment());
 		}
 	}
 
 	private void submitCommentFromEdit(SchedulingTab t) {
-		if (this.submitComment(t.getEditComment(), t))
-			t.setEditComment(new Comment());
+		if (this.submitComment(t.getBuilder().getComment(), t))
+			t.getBuilder().setComment((new Comment()));
 	}
 
 	public void submitNewComment(SchedulingTab t) {
@@ -598,9 +595,8 @@ public class SchedulingDataManager implements Serializable {
 					+ " was " + error + ".");
 		} else if (succesfulRuns > 0) {
 			this.runReport.add(succesfulRuns + " schedulings were run.");
-			
-				this.runReport.add(succesfulRuns
-						+ " schedulings were succesful.");
+
+			this.runReport.add(succesfulRuns + " schedulings were succesful.");
 		} else
 			this.runReport.add("No schedulings were run.");
 		this.responseDialogVisible = true;
@@ -625,14 +621,6 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setBuilder(SchedulingBuilder builder) {
 		this.builder = builder;
-	}
-
-	public Comment getAddComment() {
-		return addComment;
-	}
-
-	public void setAddComment(Comment addComment) {
-		this.addComment = addComment;
 	}
 
 	public List<Scheduling> getSchedulings() {

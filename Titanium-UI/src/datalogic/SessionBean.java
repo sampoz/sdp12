@@ -39,6 +39,7 @@ public class SessionBean {
 
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
 	private TabSet tabSet;
+	private int selectedIndex = 0;
 
 	// Magic numbers
 	private static final int STATIC_TABS = 4;
@@ -119,7 +120,8 @@ public class SessionBean {
 					DAYS_AFTER_INSTANCE));
 			tabs.add(t);
 		}
-
+		
+		this.selectedIndex = tabs.indexOf(t) + STATIC_TABS;
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
@@ -170,10 +172,12 @@ public class SessionBean {
 		}
 		tabs.clear();
 		tabs.add(t);
+		this.selectedIndex = tabs.indexOf(t) + STATIC_TABS;
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
 	public void tabChange(ValueChangeEvent e) throws IOException {
+		this.selectedIndex = (Integer) e.getNewValue();
 		if ((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1
 				- HIDDEN_TABS) {
 
@@ -254,6 +258,14 @@ public class SessionBean {
 
 	public void setAuditTrail(List<Comment> auditTrail) {
 		this.auditTrail = auditTrail;
+	}
+
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
+
+	public void setSelectedIndex(int selectedIndex) {
+		this.selectedIndex = selectedIndex;
 	}
 
 }

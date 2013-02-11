@@ -1,5 +1,6 @@
 package datalogic;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import entities.SchedulerService;
 
 @ManagedBean(name = "schedulerServiceManager")
 @ViewScoped
-public class SchedulerServiceManager {
+public class SchedulerServiceManager implements Serializable{
 
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
