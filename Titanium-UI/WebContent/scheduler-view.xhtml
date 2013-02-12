@@ -9,8 +9,14 @@
 	<ace:tabPane id="scheduler" label="Scheduler"
 		rendered="#{sessionBean.user.authenticated}">
 		<ace:panel rendered="#{schedulerServiceManager.schedulerStopped}">
-				<h:outputText value="All schedulings are currently stopped."
-					style="font-weight:bold; color:red;" rendered="#{schedulerServiceManager.schedulerStopped}"/>
+			<h:outputText value="All schedulings are currently stopped."
+				style="font-weight:bold; color:red;"
+				rendered="#{schedulerServiceManager.schedulerStopped}" />
+		</ace:panel>
+		<ace:panel rendered="#{!schedulerServiceManager.schedulerStopped}">
+			<h:outputText value="All schedulings are currently running."
+				style="font-weight:bold;"
+				rendered="#{!schedulerServiceManager.schedulerStopped}" />
 		</ace:panel>
 		<ace:menuBar>
 			<ace:menuItem id="start_all_schedulings"
