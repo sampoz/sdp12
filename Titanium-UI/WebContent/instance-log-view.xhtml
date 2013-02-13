@@ -9,12 +9,37 @@
 	<ace:tabPane id="instance_log" label="Instance Log"
 		rendered="#{sessionBean.user.authenticated}">
 
-		<h:outputText style="float: right;" value="Show skipped" />
-		<ice:selectBooleanCheckbox tittle="Show skipped" style="float: right;"
-			value="#{instanceDataManager.showSkipped}"
-			valueChangeListener="#{instanceDataManager.showSkippedMethod}"
-			partialSubmit="true" />
-		<br />
+		<h:panelGrid columns="2">
+			<h:outputLabel for="i_start_date_entry" value="From: " />
+			<h:outputLabel for="i_start_date_entry" value="To: " />
+			<ace:dateTimeEntry id="i_start_date_entry"
+				value="#{instanceDataManager.startDate}"
+				timeZone="#{applicationBean.timezone}" pattern="dd-MM-yyyy HH:mm:ss"
+				navigator="true" timeOnly="false" renderAsPopup="true"
+				maxdate="#{instanceDataManager.maxStartDate}">
+			</ace:dateTimeEntry>
+			<ace:dateTimeEntry id="i_end_date_entry"
+				value="#{instanceDataManager.endDate}"
+				timeZone="#{applicationBean.timezone}" pattern="dd-MM-yyyy HH:mm:ss"
+				navigator="true" timeOnly="false" renderAsPopup="true"
+				maxdate="#{instanceDataManager.maxEndDate}">
+			</ace:dateTimeEntry>
+			<h:panelGrid columns="2">
+				<h:commandButton id="i_search_date" value="Search"
+					actionListener="#{instanceDataManager.filterInstancesByDate}" />
+				<h:commandButton id="i_clear_date" value="Show All"
+					actionListener="#{instanceDataManager.filterInstances}" />
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:outputText style="float: right;" value="Show skipped" />
+				<ice:selectBooleanCheckbox tittle="Show skipped"
+					style="float: right;" value="#{instanceDataManager.showSkipped}"
+					valueChangeListener="#{instanceDataManager.showSkippedMethod}"
+					partialSubmit="true" />
+			</h:panelGrid>
+			<h:outputText value="#{instanceDataManager.dateError}"
+				rendered="#{instanceDataManager.showDateError}" styleClass="red" />
+		</h:panelGrid>
 
 		<ace:dataTable id="instanceTable"
 			value="#{instanceDataManager.filteredInstances}" var="instance"

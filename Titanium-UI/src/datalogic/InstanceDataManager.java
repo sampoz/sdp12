@@ -2,9 +2,12 @@ package datalogic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.CustomScoped;
@@ -23,7 +26,7 @@ import entities.Composite;
 import entities.Instance;
 import entities.Mode;
 
-@ManagedBean(name="instanceDataManager")
+@ManagedBean(name = "instanceDataManager")
 @ViewScoped
 public class InstanceDataManager implements Serializable {
 
@@ -40,8 +43,25 @@ public class InstanceDataManager implements Serializable {
 
 	private boolean showSkipped;
 
+	private Date startDate;
+	private Date endDate;
+
+	private Date maxStartDate ;
+	private Date maxEndDate = new Date();
+
+	private boolean showDateError;
+	private String dateError;
+
 	@PostConstruct
 	public void init() {
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(maxEndDate);
+		c.add(Calendar.DATE, -1);
+		this.maxStartDate = c.getTime();
+		this.startDate = this.maxStartDate;
+		this.endDate = this.maxEndDate;
+		
 		this.instances = this.session.getInstances();
 		filterInstances();
 	}
@@ -89,6 +109,20 @@ public class InstanceDataManager implements Serializable {
 		}
 	}
 
+	public void filterInstancesByDate() {
+		this.filteredInstances = new ArrayList<Instance>();
+		Map<Date, List<Instance>> map = this.session.getInstancesByDate();
+		for (Date d : map.keySet()) {
+			if (d.after(this.startDate) && d.before(this.endDate)) {
+				for (Instance i : map.get(d)) {
+					if (showSkipped || i.getStatusID() != 6) {
+						this.filteredInstances.add(i);
+					}
+				}
+			}
+		}
+	}
+
 	public void setInstances(List<Instance> instances) {
 		this.instances = instances;
 	}
@@ -120,5 +154,53 @@ public class InstanceDataManager implements Serializable {
 
 	public void setShowSkipped(boolean showSkipped) {
 		this.showSkipped = showSkipped;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public Date getMaxStartDate() {
+		return maxStartDate;
+	}
+
+	public void setMaxStartDate(Date maxStartDate) {
+		this.maxStartDate = maxStartDate;
+	}
+
+	public Date getMaxEndDate() {
+		return maxEndDate;
+	}
+
+	public void setMaxEndDate(Date maxEndDate) {
+		this.maxEndDate = maxEndDate;
+	}
+
+	public boolean isShowDateError() {
+		return showDateError;
+	}
+
+	public void setShowDateError(boolean showDateError) {
+		this.showDateError = showDateError;
+	}
+
+	public String getDateError() {
+		return dateError;
+	}
+
+	public void setDateError(String dateError) {
+		this.dateError = dateError;
 	}
 }
