@@ -8,63 +8,7 @@
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
 	<ace:tabPane id="schedulings" label="Schedulings"
 		rendered="#{sessionBean.user.authenticated}">
-
-		<h:panelGrid columns="2">
-			<ace:menuBar>
-				<ace:menuItem id="select_filtered" value="Select Filtered"
-					actionListener="#{schedulingDataManager.selectFiltered}"
-					icon="ui-icon ui-icon-check"
-					rendered="#{sessionBean.user.runRights}">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-				<ace:menuItem id="deselect_all" value="Deselect All"
-					actionListener="#{schedulingDataManager.deselectAll}"
-					icon="ui-icon ui-icon-closethick"
-					rendered="#{sessionBean.user.runRights}">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-				<ace:menuItem id="run_selected" value="Run Selected"
-					onclick="run_conf.show()" icon="ui-icon ui-icon-play"
-					rendered="#{sessionBean.user.runRights}"
-					actionListener="#{schedulingDataManager.listSelected}">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-
-				<ace:menuItem id="resume_selected" value="Resume Selected"
-					onclick="resume_conf.show()"
-					icon="ui-icon ui-icon-circle-triangle-e"
-					rendered="#{sessionBean.user.editRights}"
-					actionListener="#{schedulingDataManager.listSelected}">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-				<ace:menuItem id="hold_selected" value="Hold Selected"
-					onclick="hold_conf.show()" icon="ui-icon ui-icon-circle-close"
-					rendered="#{sessionBean.user.editRights}"
-					actionListener="#{schedulingDataManager.listSelected}">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-				<ace:menuItem id="remove_selected" value="Remove Selected"
-					onclick="remove_conf.show()" icon="ui-icon ui-icon-alert"
-					rendered="#{sessionBean.user.editRights}"
-					actionListener="#{schedulingDataManager.listSelected}">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-
-				<ace:menuItem id="refresh" value="Refresh"
-					actionListener="#{schedulingDataManager.refresh}"
-					icon="ui-icon ui-icon-refresh">
-					<ace:ajax event="activate" execute="@this" />
-				</ace:menuItem>
-
-
-			</ace:menuBar>
-			<a href="https://google.com"> <img
-				src="resources/images/question.png"
-				style="width: 24px; height: 24px;" />
-			</a>
-		</h:panelGrid>
-
-		<ace:accordion collapsible="true" autoHeight="false" activeIndex="3"
+		<ace:accordion collapsible="true" autoHeight="false" activeIndex="1"
 			rendered="#{sessionBean.user.addRights}">
 			<ace:accordionPane id="add_scheduling" title="Add Scheduling">
 				<h:panelGrid columns="4">
@@ -107,17 +51,16 @@
 
 					<h:panelGrid />
 
-						<ace:panel>
-							<h:panelGrid columns="2">
-								<ice:outputText value="Description: "
-									style="font-weight: bolder" />
-								<ice:outputText
-									value="#{schedulingDataManager.builder.source.description}" />
-								<ice:outputText value="Contacts: " style="font-weight: bolder" />
-								<ice:outputText
-									value="#{schedulingDataManager.builder.source.contacts}" />
-							</h:panelGrid>
-						</ace:panel>
+					<ace:panel>
+						<h:panelGrid columns="2">
+							<ice:outputText value="Description: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.source.description}" />
+							<ice:outputText value="Contacts: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.source.contacts}" />
+						</h:panelGrid>
+					</ace:panel>
 
 					<h:outputLabel id="targetLabel" for="targetInput" value="Target: " />
 					<ice:selectOneMenu id="targetInput"
@@ -129,17 +72,16 @@
 
 					<h:panelGrid />
 
-						<ace:panel>
-							<h:panelGrid columns="2">
-								<ice:outputText value="Description: "
-									style="font-weight: bolder" />
-								<ice:outputText
-									value="#{schedulingDataManager.builder.target.description}" />
-								<ice:outputText value="Contacts: " style="font-weight: bolder" />
-								<ice:outputText
-									value="#{schedulingDataManager.builder.target.contacts}" />
-							</h:panelGrid>
-						</ace:panel>
+					<ace:panel>
+						<h:panelGrid columns="2">
+							<ice:outputText value="Description: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.target.description}" />
+							<ice:outputText value="Contacts: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.target.contacts}" />
+						</h:panelGrid>
+					</ace:panel>
 
 				</h:panelGrid>
 
@@ -173,7 +115,9 @@
 						rendered="#{schedulingDataManager.showAddError}" styleClass="red" />
 							</pre>
 			</ace:accordionPane>
+		</ace:accordion>
 
+		<ace:accordion collapsible="true" activeIndex="1" autoHeight="false">
 			<ace:accordionPane id="failed_runs" title="Failed Runs"
 				rendered="#{sessionBean.user.runRights}">
 
@@ -272,86 +216,141 @@
 					</ace:column>
 				</ace:dataTable>
 			</ace:accordionPane>
-
 		</ace:accordion>
-		<ace:dataTable id="scheduleTable"
-			value="#{schedulingDataManager.schedulings}" var="schedule"
-			paginator="true" paginatorPosition="both"
-			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			rowsPerPageTemplate="10,25,50,100" rows="10"
-			stateMap="#{schedulingDataManager.stateMap}" selectionMode="multiple"
-			resizableColumns="true" binding="#{schedulingDataManager.dataTable}"
-			emptyMessage="-- No Schedulings Available --">
-			<ace:ajax event="select" execute="@this" />
 
-			<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
-				filterBy="#{schedule.name}" filterMatchMode="contains">
+		<ace:accordion collapsible="true" activeIndex="0" autoHeight="false">
+			<ace:accordionPane title="Schedulings">
+
+				<ace:menuBar>
+					<ace:menuItem id="select_filtered" value="Select Filtered"
+						actionListener="#{schedulingDataManager.selectFiltered}"
+						icon="ui-icon ui-icon-check"
+						rendered="#{sessionBean.user.runRights}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="deselect_all" value="Deselect All"
+						actionListener="#{schedulingDataManager.deselectAll}"
+						icon="ui-icon ui-icon-closethick"
+						rendered="#{sessionBean.user.runRights}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="run_selected" value="Run Selected"
+						onclick="run_conf.show()" icon="ui-icon ui-icon-play"
+						rendered="#{sessionBean.user.runRights}"
+						actionListener="#{schedulingDataManager.listSelected}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+
+					<ace:menuItem id="resume_selected" value="Resume Selected"
+						onclick="resume_conf.show()"
+						icon="ui-icon ui-icon-circle-triangle-e"
+						rendered="#{sessionBean.user.editRights}"
+						actionListener="#{schedulingDataManager.listSelected}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="hold_selected" value="Hold Selected"
+						onclick="hold_conf.show()" icon="ui-icon ui-icon-circle-close"
+						rendered="#{sessionBean.user.editRights}"
+						actionListener="#{schedulingDataManager.listSelected}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="remove_selected" value="Remove Selected"
+						onclick="remove_conf.show()" icon="ui-icon ui-icon-alert"
+						rendered="#{sessionBean.user.editRights}"
+						actionListener="#{schedulingDataManager.listSelected}">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+
+					<ace:menuItem id="refresh" value="Refresh"
+						actionListener="#{schedulingDataManager.refresh}"
+						icon="ui-icon ui-icon-refresh">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
 
 
-				<h:panelGrid>
-					<h:outputText id="nameCell" value="#{schedule.name}"
-						styleClass="tooltipTargetStyle" />
-				</h:panelGrid>
-				<ace:tooltip id="tooltip_name_column" for="nameCell"
-					value="#{schedule.name}" showDelay="500" hideDelay="200">
-				</ace:tooltip>
-			</ace:column>
+				</ace:menuBar>
+
+				<ace:dataTable id="scheduleTable"
+					value="#{schedulingDataManager.schedulings}" var="schedule"
+					paginator="true" paginatorPosition="both"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,25,50,100" rows="10"
+					stateMap="#{schedulingDataManager.stateMap}"
+					selectionMode="multiple" resizableColumns="true"
+					binding="#{schedulingDataManager.dataTable}"
+					emptyMessage="-- No Schedulings Available --">
+					<ace:ajax event="select" execute="@this" />
+
+					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
+						filterBy="#{schedule.name}" filterMatchMode="contains">
 
 
-			<ace:column id="mode" headerText="Mode"
-				sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}"
-				filterMatchMode="exact">
-				<ice:panelGroup style="width:100px;">
-				</ice:panelGroup>
-				<h:outputText id="modeCell" value="#{schedule.modeLabel}"
-					styleClass="#{schedule.styleClass}" />
+						<h:panelGrid>
+							<h:outputText id="nameCell" value="#{schedule.name}"
+								styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+						<ace:tooltip id="tooltip_name_column" for="nameCell"
+							value="#{schedule.name}" showDelay="500" hideDelay="200">
+						</ace:tooltip>
+					</ace:column>
 
-			</ace:column>
 
-			<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
-				filterBy="#{schedule.cron}" filterMatchMode="contains">
-				<h:outputText id="timeCell" value="#{schedule.cron}" />
-			</ace:column>
-			<ace:column id="cron_variables" headerText="Vars">
-				<h:panelGrid id="icon_grid" columns="2">
-					<h:graphicImage id="java_image" library="images"
-						name="invisible_revert_icon.png"
-						style="height: 30px; width: 30px; "
-						rendered="#{schedule.javaAgentPollable gt 0}" />
-					<h:graphicImage id="bank_image" library="images"
-						name="bankicon.png" style="height: 30px; width: 30px; "
-						rendered="#{schedule.bankHolidayOnly gt 0}" />
-				</h:panelGrid>
-			</ace:column>
+					<ace:column id="mode" headerText="Mode"
+						sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}"
+						filterMatchMode="exact">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}"
+							styleClass="#{schedule.styleClass}" />
 
-			<ace:column id="source" sortBy="#{schedule.sourceName}"
-				filterBy="#{schedule.sourceName}" filterMatchMode="contains">
-				<ice:panelGroup style="width:100px;">
-				</ice:panelGroup>
-				<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
-			</ace:column>
+					</ace:column>
 
-			<ace:column id="target" headerText="Target"
-				sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
-				filterMatchMode="contains">
-				<ice:panelGroup style="width:100px;">
-				</ice:panelGroup>
-				<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
+					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
+						filterBy="#{schedule.cron}" filterMatchMode="contains">
+						<h:outputText id="timeCell" value="#{schedule.cron}" />
+					</ace:column>
+					<ace:column id="cron_variables" headerText="Vars">
+						<h:panelGrid id="icon_grid" columns="2">
+							<h:graphicImage id="java_image" library="images"
+								name="invisible_revert_icon.png"
+								style="height: 30px; width: 30px; "
+								rendered="#{schedule.javaAgentPollable gt 0}" />
+							<h:graphicImage id="bank_image" library="images"
+								name="bankicon.png" style="height: 30px; width: 30px; "
+								rendered="#{schedule.bankHolidayOnly gt 0}" />
+						</h:panelGrid>
+					</ace:column>
 
-			</ace:column>
-			<ace:column id="description" headerText="Description"
-				sortBy="#{schedule.description}" filterBy="#{schedule.description}"
-				filterMatchMode="contains">
-				<ice:panelGroup style="width:100px;">
-				</ice:panelGroup>
-				<h:outputText id="descCell" value="#{schedule.description}" />
-			</ace:column>
+					<ace:column id="source" sortBy="#{schedule.sourceName}"
+						filterBy="#{schedule.sourceName}" filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
+					</ace:column>
 
-			<ace:column id="details" headerText="Details">
-				<ice:commandButton id="details_button" value="Open in new tab"
-					image="resources/images/openinnewtabicon.jpg"
-					actionListener="#{sessionBean.addTab(schedule)}" />
-			</ace:column>
-		</ace:dataTable>
+					<ace:column id="target" headerText="Target"
+						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
+						filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
+
+					</ace:column>
+					<ace:column id="description" headerText="Description"
+						sortBy="#{schedule.description}"
+						filterBy="#{schedule.description}" filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="descCell" value="#{schedule.description}" />
+					</ace:column>
+
+					<ace:column id="details" headerText="Details">
+						<ice:commandButton id="details_button" value="Open in new tab"
+							image="resources/images/openinnewtabicon.jpg"
+							actionListener="#{sessionBean.addTab(schedule)}" />
+					</ace:column>
+				</ace:dataTable>
+			</ace:accordionPane>
+		</ace:accordion>
 	</ace:tabPane>
 </ui:composition>

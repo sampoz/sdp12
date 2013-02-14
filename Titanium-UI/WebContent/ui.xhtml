@@ -33,7 +33,7 @@
 			<ui:include src="instance-log-view.xhtml" />
 
 			<!-- ======== SCHEDULER VIEW ======== -->
-
+			
 			<ui:include src="scheduler-view.xhtml" />
 
 			<!-- divider -->
@@ -47,7 +47,11 @@
 			<!-- divider -->
 			<ace:tabPane label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
-
+			
+			<!-- ======== HELP ======== -->
+			
+			<ui:include src="help.xhtml" />
+			
 			<!-- ======== LOG OUT ======== -->
 
 			<ace:tabPane id="log_out" label="Log out"
