@@ -22,7 +22,8 @@
 
 		<ace:tabSet id="sampleTabSet" clientSide="false"
 			binding="#{sessionBean.tabSet}"
-			tabChangeListener="#{sessionBean.tabChange}" selectedIndex="#{sessionBean.selectedIndex}">
+			tabChangeListener="#{sessionBean.tabChange}"
+			selectedIndex="#{sessionBean.selectedIndex}">
 
 			<!-- ======== SCHEDULINGS VIEW ======== -->
 
@@ -33,7 +34,7 @@
 			<ui:include src="instance-log-view.xhtml" />
 
 			<!-- ======== SCHEDULER VIEW ======== -->
-			
+
 			<ui:include src="scheduler-view.xhtml" />
 
 			<!-- divider -->
@@ -47,11 +48,11 @@
 			<!-- divider -->
 			<ace:tabPane label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
-			
+
 			<!-- ======== HELP ======== -->
-			
+
 			<ui:include src="help.xhtml" />
-			
+
 			<!-- ======== LOG OUT ======== -->
 
 			<ace:tabPane id="log_out" label="Log out"
@@ -238,6 +239,18 @@
 				<h:commandButton value="No" onclick="re_run_all_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
+
+		<ace:dialog visible="#{schedulingDataManager.addSchedulingInf}"
+			rendered="#{schedulingDataManager.addSchedulingInf}"
+			id="add_confirmation" widgetVar="add_conf"
+			header="Adding scheduling" width="330" height="150" closable="false">
+			<ice:outputText value="#{schedulingDataManager.addSchedulingMessage}"
+				escape="false" />
+			<h:panelGrid columns="2">
+				<h:commandButton value="Ok"
+					actionListener="#{schedulingDataManager.closeAddSchedulingInf}" />
+			</h:panelGrid>
+		</ace:dialog>
 	</h:form>
 </h:body>
 </html>

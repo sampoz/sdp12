@@ -109,11 +109,11 @@
 						value="#{schedulingDataManager.builder.comment.text}" size="73" />
 				</h:panelGrid>
 				<ice:commandButton id="add_scheduling_button" value="Add Scheduling"
-					actionListener="#{schedulingDataManager.addScheduling}" />
-				<pre>
+					 actionListener="#{schedulingDataManager.addScheduling}" />
+					<pre>
 						<ice:outputText value="#{schedulingDataManager.addErrorMessage}"
 						rendered="#{schedulingDataManager.showAddError}" styleClass="red" />
-							</pre>
+					</pre>
 			</ace:accordionPane>
 		</ace:accordion>
 

@@ -70,6 +70,17 @@ public class SchedulingDataManager implements Serializable {
 	private RowStateMap runStateMap = new RowStateMap();
 	private DataTable runDataTable;
 
+	private boolean addSchedulingInf=false;
+
+	private Object addSchedulingMessage;
+	
+	//http response messages
+	public static String SUCCESS_MSG = "Scheduling was added succesfully.";
+	public static String EMPTYPARAMETER_ERROR_MSG = "The Scheduling Service received empty parameter.";
+	public static String INTERNAL_ERROR_MSG =  "Error 500 - Internal Server Error";
+	public static String UNKNOWN_ERROR_MSG =  "ClientProtocolException or an IOException";
+
+
 	@PostConstruct
 	private void init() {
 
@@ -159,10 +170,33 @@ public class SchedulingDataManager implements Serializable {
 			showAddError = false;
 
 			// Http request, consult Hanzki for any details
+			int http_response = httpConnector.addId(
+					ApplicationBean.COMPOSITES.get(s.getServiceID())
+							.getDestinationURL(), s.getId());
+			
 			System.out.println("HttpConnector returned: "
-					+ httpConnector.addId(
-							ApplicationBean.COMPOSITES.get(s.getServiceID())
-									.getDestinationURL(), s.getId()));
+					+ http_response);
+		
+			switch (http_response)
+			{
+				case HttpConnector.RESPONSE_OK:
+					setAddSchedulingMessage(SUCCESS_MSG);
+					break;
+				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
+					setAddSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+					break;
+				case HttpConnector.RESPONSE_INTERNAL_ERROR:
+					setAddSchedulingMessage(INTERNAL_ERROR_MSG);
+					break;
+				case HttpConnector.RESPONSE_UNKOWN_ERROR:
+					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+					break;
+				default:
+					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+					break;
+			}
+			setAddSchedulingInf(true);
+			
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -606,6 +640,9 @@ public class SchedulingDataManager implements Serializable {
 		this.responseDialogVisible = false;
 	}
 
+	public void closeAddSchedulingInf(){
+		this.addSchedulingInf = false;
+	}
 	// ==================== GETTERS & SETTERS ====================
 	public SessionBean getSession() {
 		return session;
@@ -781,6 +818,22 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setRunDataTable(DataTable runDataTable) {
 		this.runDataTable = runDataTable;
+	}
+
+	public boolean getAddSchedulingInf() {
+		return addSchedulingInf;
+	}
+
+	public void setAddSchedulingInf(boolean addSchedulingInf) {
+		this.addSchedulingInf = addSchedulingInf;
+	}
+
+	public Object getAddSchedulingMessage() {
+		return addSchedulingMessage;
+	}
+
+	public void setAddSchedulingMessage(Object addSchedulingMessage) {
+		this.addSchedulingMessage = addSchedulingMessage;
 	}
 
 }
