@@ -27,7 +27,9 @@
 						style="font-weight: bolder" />
 					<ace:textEntry id="cronInput"
 						value="#{schedulingDataManager.builder.cron}" size="73"
-						required="true" requiredMessage="Cron field is required." />
+						required="true" requiredMessage="Cron field is required.">
+						<f:validator validatorId="cronValidator" />
+					</ace:textEntry>
 					<h:message for="cronInput" errorClass="ui-state-error-text" />
 
 					<h:outputLabel id="modeLabel" for="modeInput" value="Mode: "
@@ -174,7 +176,8 @@
 						renderAsPopup="true" maxdate="#{schedulingDataManager.maxEndDate}">
 					</ace:dateTimeEntry>
 					<h:commandButton id="search_date" value="Search"
-						actionListener="#{schedulingDataManager.dateSubmit}" immediate="true"/>
+						actionListener="#{schedulingDataManager.dateSubmit}"
+						immediate="true" />
 					<h:outputText value="#{schedulingDataManager.dateError}"
 						rendered="#{schedulingDataManager.showDateError}" styleClass="red" />
 				</h:panelGrid>
@@ -383,7 +386,7 @@
 					<ace:column id="details" headerText="Details">
 						<ice:commandButton id="details_button" value="Open in new tab"
 							image="resources/images/openinnewtabicon.jpg"
-							actionListener="#{sessionBean.addTab(schedule)}" immediate="true"/>
+							actionListener="#{sessionBean.addTab(schedule)}" immediate="true" />
 					</ace:column>
 				</ace:dataTable>
 			</ace:accordionPane>

@@ -67,7 +67,9 @@
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_cron_input" value="#{tab.builder.cron}"
 							size="73" required="true"
-							requiredMessage="Cron field is required." />
+							requiredMessage="Cron field is required.">
+							<f:validator validatorId="cronValidator" />
+						</ace:textEntry>
 						<h:message for="tab_cron_input" errorClass="ui-state-error-text" />
 
 						<h:outputLabel for="tab_mode_input" value="Mode: "

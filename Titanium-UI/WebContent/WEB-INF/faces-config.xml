@@ -10,6 +10,11 @@
 	  		messages.custom_messages
 	  </message-bundle>
      </application>
+     
+     <validator>
+    <validator-id>cronValidator</validator-id>
+    <validator-class>datalogic.CronValidator</validator-class>
+</validator>
 
 	<navigation-rule>
 		<from-view-id>/ui.xhtml</from-view-id>
