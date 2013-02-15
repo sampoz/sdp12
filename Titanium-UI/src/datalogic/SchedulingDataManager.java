@@ -75,6 +75,10 @@ public class SchedulingDataManager implements Serializable {
 	
 	private String addSchedulingMessage;
 	private String EditSchedulingMessage;
+
+	private boolean editSchedulingSucces = false;
+
+	private boolean addSchedulingSucces = false;
 	
 	//http response messages
 	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
@@ -184,15 +188,19 @@ public class SchedulingDataManager implements Serializable {
 			{
 				case HttpConnector.RESPONSE_OK:
 					setAddSchedulingMessage(ADD_SUCCESS_MSG);
+					setAddSchedulingSucces(true);
 					break;
 				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
 					setAddSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+					setAddSchedulingSucces(false);
 					break;
 				case HttpConnector.RESPONSE_INTERNAL_ERROR:
 					setAddSchedulingMessage(INTERNAL_ERROR_MSG);
+					setAddSchedulingSucces(false);
 					break;
 				case HttpConnector.RESPONSE_UNKOWN_ERROR:
 					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+					setAddSchedulingSucces(false);
 					break;
 				default:
 					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
@@ -255,18 +263,23 @@ public class SchedulingDataManager implements Serializable {
 			{
 				case HttpConnector.RESPONSE_OK:
 					setEditSchedulingMessage(EDIT_SUCCESS_MSG);
+					setEditSchedulingSucces(true);
 					break;
 				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
 					setEditSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+					setEditSchedulingSucces(false);
 					break;
 				case HttpConnector.RESPONSE_INTERNAL_ERROR:
 					setEditSchedulingMessage(INTERNAL_ERROR_MSG);
+					setEditSchedulingSucces(false);
 					break;
 				case HttpConnector.RESPONSE_UNKOWN_ERROR:
 					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
+					setEditSchedulingSucces(false);
 					break;
 				default:
 					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
+					setEditSchedulingSucces(false);
 					break;
 			}
 			setEditSchedulingInf(true);
@@ -879,6 +892,22 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setEditSchedulingMessage(String editSchedulingMessage) {
 		EditSchedulingMessage = editSchedulingMessage;
+	}
+
+	public boolean getEditSchedulingSucces() {
+		return editSchedulingSucces;
+	}
+
+	public void setEditSchedulingSucces(boolean editSchedulingSucces) {
+		this.editSchedulingSucces = editSchedulingSucces;
+	}
+
+	public boolean getAddSchedulingSucces() {
+		return addSchedulingSucces;
+	}
+
+	public void setAddSchedulingSucces(boolean addSchedulingSucces) {
+		this.addSchedulingSucces = addSchedulingSucces;
 	}
 
 }

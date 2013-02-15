@@ -78,9 +78,9 @@ public class SchedulingBuilder {
 	public boolean validate() throws IllegalOperationException {
 		String message = "";
 		boolean error = false;
-		if (this.name == null || this.name.isEmpty()) {
+		if (this.name == null || this.name.isEmpty() || this.name.length() < 4) {
 			error = true;
-			message += "Name cannot be empty!" + LINE_BREAK;
+			message += "Name must be at least four characters long." + LINE_BREAK;
 		}
 		if (this.mode == null) {
 			error = true;

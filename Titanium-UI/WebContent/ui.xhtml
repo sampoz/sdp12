@@ -245,7 +245,11 @@
 			id="add_confirmation" widgetVar="add_conf" header="Adding scheduling"
 			width="330" height="150" closable="false">
 			<ice:outputText value="#{schedulingDataManager.addSchedulingMessage}"
-				escape="false" />
+				escape="false"
+				rendered="#{schedulingDataManager.addSchedulingSucces}" />
+			<ice:outputText value="#{schedulingDataManager.addSchedulingMessage}"
+				escape="false" styleClass="red"
+				rendered="#{!schedulingDataManager.addSchedulingSucces}" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Ok"
 					actionListener="#{schedulingDataManager.closeAddSchedulingInf}" />
@@ -254,10 +258,16 @@
 
 		<ace:dialog visible="#{schedulingDataManager.editSchedulingInf}"
 			rendered="#{schedulingDataManager.editSchedulingInf}"
-			id="edit_confirmation" widgetVar="edit_conf" header="Editing scheduling"
-			width="330" height="150" closable="false">
-			<ice:outputText value="#{schedulingDataManager.editSchedulingMessage}"
-				escape="false" />
+			id="edit_confirmation" widgetVar="edit_conf"
+			header="Editing scheduling" width="330" height="150" closable="false">
+			<ice:outputText
+				value="#{schedulingDataManager.editSchedulingMessage}"
+				escape="false"
+				rendered="#{schedulingDataManager.editSchedulingSucces}" />
+			<ice:outputText
+				value="#{schedulingDataManager.editSchedulingMessage}"
+				escape="false" styleClass="red"
+				rendered="#{!schedulingDataManager.editSchedulingSucces}" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Ok"
 					actionListener="#{schedulingDataManager.closeEditSchedulingInf}" />
