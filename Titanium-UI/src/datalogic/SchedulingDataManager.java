@@ -71,6 +71,24 @@ public class SchedulingDataManager implements Serializable {
 
 	private static final int SCHEDULING_NAME_LEN = 30;
 
+	private boolean addSchedulingInf = false;
+	private boolean EditSchedulingInf = false;
+	
+	private String addSchedulingMessage;
+	private String EditSchedulingMessage;
+
+	private boolean editSchedulingSucces = false;
+
+	private boolean addSchedulingSucces = false;
+	
+	//http response messages
+	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
+	public static String ADD_SUCCESS_MSG = "Scheduling was added succesfully.";
+	public static String EMPTYPARAMETER_ERROR_MSG = "The Scheduling Service received empty parameter.";
+	public static String INTERNAL_ERROR_MSG =  "Error 500 - Internal Server Error";
+	public static String UNKNOWN_ERROR_MSG =  "ClientProtocolException or an IOException";
+
+
 	@PostConstruct
 	private void init() {
 
@@ -165,10 +183,37 @@ public class SchedulingDataManager implements Serializable {
 			showAddError = false;
 
 			// Http request, consult Hanzki for any details
+			int http_response = httpConnector.addId(
+					ApplicationBean.COMPOSITES.get(s.getServiceID())
+							.getDestinationURL(), s.getId());
+			
 			System.out.println("HttpConnector returned: "
-					+ httpConnector.addId(
-							ApplicationBean.COMPOSITES.get(s.getServiceID())
-									.getDestinationURL(), s.getId()));
+					+ http_response);
+		
+			switch (http_response)
+			{
+				case HttpConnector.RESPONSE_OK:
+					setAddSchedulingMessage(ADD_SUCCESS_MSG);
+					setAddSchedulingSucces(true);
+					break;
+				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
+					setAddSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+					setAddSchedulingSucces(false);
+					break;
+				case HttpConnector.RESPONSE_INTERNAL_ERROR:
+					setAddSchedulingMessage(INTERNAL_ERROR_MSG);
+					setAddSchedulingSucces(false);
+					break;
+				case HttpConnector.RESPONSE_UNKOWN_ERROR:
+					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+					setAddSchedulingSucces(false);
+					break;
+				default:
+					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+					break;
+			}
+			setAddSchedulingInf(true);
+			
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -212,12 +257,39 @@ public class SchedulingDataManager implements Serializable {
 
 			t.setScheduling(n);
 			// Http request, consult Hanzki for any details
+			
+			int http_response = httpConnector.editId(
+					ApplicationBean.COMPOSITES.get(
+							t.getScheduling().getServiceID())
+							.getDestinationURL(), t.getScheduling()
+							.getId());
 			System.out.println("HttpConnector returned: "
-					+ httpConnector.editId(
-							ApplicationBean.COMPOSITES.get(
-									t.getScheduling().getServiceID())
-									.getDestinationURL(), t.getScheduling()
-									.getId()));
+					+ http_response);
+			switch (http_response)
+			{
+				case HttpConnector.RESPONSE_OK:
+					setEditSchedulingMessage(EDIT_SUCCESS_MSG);
+					setEditSchedulingSucces(true);
+					break;
+				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
+					setEditSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+					setEditSchedulingSucces(false);
+					break;
+				case HttpConnector.RESPONSE_INTERNAL_ERROR:
+					setEditSchedulingMessage(INTERNAL_ERROR_MSG);
+					setEditSchedulingSucces(false);
+					break;
+				case HttpConnector.RESPONSE_UNKOWN_ERROR:
+					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
+					setEditSchedulingSucces(false);
+					break;
+				default:
+					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
+					setEditSchedulingSucces(false);
+					break;
+			}
+			setEditSchedulingInf(true);
+			
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -595,6 +667,13 @@ public class SchedulingDataManager implements Serializable {
 		this.responseDialogVisible = false;
 	}
 
+	public void closeAddSchedulingInf(){
+		this.addSchedulingInf = false;
+	}
+	public void closeEditSchedulingInf(){
+		this.EditSchedulingInf = false;
+	}
+	
 	// ==================== GETTERS & SETTERS ====================
 	public SessionBean getSession() {
 		return session;
@@ -762,6 +841,54 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setRunStateMap(RowStateMap runStateMap) {
 		this.runStateMap = runStateMap;
+	}
+
+	public boolean getAddSchedulingInf() {
+		return addSchedulingInf;
+	}
+
+	public void setAddSchedulingInf(boolean addSchedulingInf) {
+		this.addSchedulingInf = addSchedulingInf;
+	}
+
+	public Object getAddSchedulingMessage() {
+		return addSchedulingMessage;
+	}
+
+	public void setAddSchedulingMessage(String addSchedulingMessage) {
+		this.addSchedulingMessage = addSchedulingMessage;
+	}
+
+	public boolean getEditSchedulingInf() {
+		return EditSchedulingInf;
+	}
+
+	public void setEditSchedulingInf(boolean editSchedulingInf) {
+		EditSchedulingInf = editSchedulingInf;
+	}
+
+	public String getEditSchedulingMessage() {
+		return EditSchedulingMessage;
+	}
+
+	public void setEditSchedulingMessage(String editSchedulingMessage) {
+		EditSchedulingMessage = editSchedulingMessage;
+	}
+
+	public boolean getEditSchedulingSucces() {
+		return editSchedulingSucces;
+	}
+
+	public void setEditSchedulingSucces(boolean editSchedulingSucces) {
+		this.editSchedulingSucces = editSchedulingSucces;
+	}
+
+	public boolean getAddSchedulingSucces() {
+		return addSchedulingSucces;
+	}
+
+	public void setAddSchedulingSucces(boolean addSchedulingSucces) {
+		this.addSchedulingSucces = addSchedulingSucces;
 	}
 
 }

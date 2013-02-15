@@ -21,12 +21,14 @@
 		<ace:menuBar>
 			<ace:menuItem id="start_all_schedulings"
 				value="Start all schedulings"
+				disabled ="#{!schedulerServiceManager.schedulerStopped}"
 				onclick="start_scheduler_service_conf.show()"
 				icon="ui-icon ui-icon-circle-triangle-e"
 				rendered="#{sessionBean.user.editRights}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
+				disabled ="#{schedulerServiceManager.schedulerStopped}"
 				onclick="stop_scheduler_service_conf.show()"
 				icon="ui-icon ui-icon-circle-close"
 				rendered="#{sessionBean.user.editRights}">
