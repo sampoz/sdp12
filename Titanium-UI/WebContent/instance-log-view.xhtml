@@ -45,38 +45,13 @@
 			value="#{instanceDataManager.filteredInstances}" var="instance"
 			paginator="true" paginatorPosition="both"
 			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			rowsPerPageTemplate="10,25,50,100" rows="10"
+			rowsPerPageTemplate="10,25,50,100" rows="25"
 			stateMap="#{instanceDataManager.i_stateMap}" selectionMode="multiple"
 			resizableColumns="true" binding="#{instanceDataManager.i_dataTable}">
 			<ace:ajax event="select" execute="@this" />
 
-			<ace:column id="i_run_state" headerText="Was run"
+			<ace:column id="i_run_state" 
 				sortBy="#{instance.statusID}">
-				<h:panelGrid id="i_run_state_Id" columns="1">
-					<h:graphicImage id="failed" library="images" name="erroricon.png"
-						style="height: 30px; width: 30px; "
-						rendered="#{instance.statusID eq 1}" />
-					<h:graphicImage id="manual_handling" library="images"
-						name="skippedicon.png" style="height: 30px; width: 30px;"
-						rendered="#{instance.statusID eq 2}" />
-					<h:graphicImage id="running" library="images" name="playicon.png"
-						style="height: 30px; width: 30px; "
-						rendered="#{instance.statusID eq 3}" />
-					<h:graphicImage id="started" library="images"
-						name="skippedicon.png" style="height: 30px; width: 30px; "
-						rendered="#{instance.statusID eq 4}" />
-					<h:graphicImage id="completed" library="images"
-						name="correcticon.png" style="height: 30px; width: 30px; "
-						rendered="#{instance.statusID eq 5}" />
-					<h:graphicImage id="skipped" library="images"
-						name="skippedicon.png" style="height: 30px; width: 30px; "
-						rendered="#{instance.statusID eq 6}" />
-				</h:panelGrid>
-				<!-- 						<ace:tooltip id="tooltip_skipped_image" for="skipped_image" -->
-				<!-- 							value="This instance was not run. Expand view for more information" -->
-				<!-- 							showDelay="100" hideDelay="200"> -->
-				<!-- 						</ace:tooltip> -->
-
 				<ace:expansionToggler />
 			</ace:column>
 			<ace:panelExpansion>

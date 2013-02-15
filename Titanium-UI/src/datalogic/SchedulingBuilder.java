@@ -22,7 +22,7 @@ public class SchedulingBuilder {
 	private Backend source;
 	private Backend target;
 	private String requestURL = "";
-	private String cron = "*";
+	private String cron = "";
 	private String description = "";
 	private String contacts = "";
 	private int id;
@@ -82,6 +82,12 @@ public class SchedulingBuilder {
 			error = true;
 			message += "Name cannot be empty!" + LINE_BREAK;
 		}
+		
+		if (this.name != null && !this.name.isEmpty() && this.name.length() < 4) {
+			error = true;
+			message += "Name has to be at least 4 characters!" + LINE_BREAK;
+		}
+		
 		if (this.mode == null) {
 			error = true;
 			message += "Mode was not selected!" + LINE_BREAK;

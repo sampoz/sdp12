@@ -4,6 +4,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
 	version="2.1">
+	
+	<application>
+	  <message-bundle>
+	  		messages.custom_messages
+	  </message-bundle>
+     </application>
 
 	<navigation-rule>
 		<from-view-id>/ui.xhtml</from-view-id>

@@ -68,7 +68,8 @@ public class SchedulingDataManager implements Serializable {
 
 	private List<Run> matching = new ArrayList<Run>();
 	private RowStateMap runStateMap = new RowStateMap();
-	private DataTable runDataTable;
+
+	private static final int SCHEDULING_NAME_LEN = 30;
 
 	@PostConstruct
 	private void init() {
@@ -93,7 +94,7 @@ public class SchedulingDataManager implements Serializable {
 
 		this.schedulingList = "";
 		for (Scheduling s : (List<Scheduling>) stateMap.getSelected()) {
-			this.schedulingList += s.getName().substring(0, 4) + "<br/>";
+			this.schedulingList += getTrimmedName(s.getName());
 		}
 	}
 
@@ -105,8 +106,7 @@ public class SchedulingDataManager implements Serializable {
 
 		this.schedulingList = "";
 		for (Run r : (List<Run>) runStateMap.getSelected()) {
-			this.schedulingList += r.getScheduling().getName().substring(0, 4)
-					+ "<br/>";
+			this.schedulingList += getTrimmedName(r.getScheduling().getName());
 		}
 	}
 
@@ -118,9 +118,15 @@ public class SchedulingDataManager implements Serializable {
 
 		this.schedulingList = "";
 		for (Run r : this.matching) {
-			this.schedulingList += r.getScheduling().getName().substring(0, 4)
-					+ "<br/>";
+			this.schedulingList += getTrimmedName(r.getScheduling().getName());
 		}
+	}
+
+	private String getTrimmedName(String fullName) {
+		if (fullName.length() <= SCHEDULING_NAME_LEN)
+			return fullName + "<br/>";
+		else
+			return fullName.substring(0, SCHEDULING_NAME_LEN) + "<br/>";
 	}
 
 	/**
@@ -140,7 +146,7 @@ public class SchedulingDataManager implements Serializable {
 
 			// If the database connector returns true from the persisting of
 			// Scheduling we can safely add it to the table
-			if(this.session.getConnector().addScheduling(s))
+			if (this.session.getConnector().addScheduling(s))
 				this.schedulings.add(s);
 
 			/*
@@ -149,9 +155,9 @@ public class SchedulingDataManager implements Serializable {
 			 * its important to add the Comment after the Scheduling has been
 			 * persisted and an ID has been assigned to it.
 			 */
-		
+
 			this.submitCommentFromAdd(s);
-			
+
 			this.builder = new SchedulingBuilder();
 
 			// If we've gotten this far, there were no errors and we can hide
@@ -203,7 +209,7 @@ public class SchedulingDataManager implements Serializable {
 			// error messages
 			t.setShowEditError(false);
 			this.submitCommentFromEdit(t);
-			
+
 			t.setScheduling(n);
 			// Http request, consult Hanzki for any details
 			System.out.println("HttpConnector returned: "
@@ -231,8 +237,8 @@ public class SchedulingDataManager implements Serializable {
 
 	private void submitCommentFromAdd(Scheduling s) {
 		this.builder.getComment().setSchedulingID(s.getId());
-		this.builder.getComment().setCreationDate(ApplicationBean.DATE_FORMAT
-				.format(new Date()));
+		this.builder.getComment().setCreationDate(
+				ApplicationBean.DATE_FORMAT.format(new Date()));
 		if (session.getConnector().addComment(this.builder.getComment())) {
 			this.builder.setComment(new Comment());
 		}
@@ -526,23 +532,6 @@ public class SchedulingDataManager implements Serializable {
 			return null;
 	}
 
-	public void selectFilteredRuns() {
-		List<Run> filteredRows = runDataTable.getFilteredData();
-
-		/*
-		 * If the filtered data is empty or null, we do not currently have a
-		 * filter and do not wish to select anything.
-		 */
-		if (filteredRows == null || filteredRows.isEmpty()) {
-			return;
-		}
-
-		// Iterate through the filtered data and set all rows to be selected
-		for (Run r : filteredRows) {
-			runStateMap.get(r).setSelected(true);
-		}
-	}
-
 	public void deselectAllRuns() {
 		Collection<RowState> allRows = runStateMap.values();
 
@@ -582,7 +571,7 @@ public class SchedulingDataManager implements Serializable {
 			if (response == HttpConnector.RESPONSE_OK) {
 				succesfulRuns++;
 			} else {
-				failedName = s.getName().substring(0, 4);
+				failedName = getTrimmedName(s.getName());
 				error = response;
 				break;
 			}
@@ -773,14 +762,6 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setRunStateMap(RowStateMap runStateMap) {
 		this.runStateMap = runStateMap;
-	}
-
-	public DataTable getRunDataTable() {
-		return runDataTable;
-	}
-
-	public void setRunDataTable(DataTable runDataTable) {
-		this.runDataTable = runDataTable;
 	}
 
 }

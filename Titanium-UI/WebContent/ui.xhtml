@@ -22,7 +22,8 @@
 
 		<ace:tabSet id="sampleTabSet" clientSide="false"
 			binding="#{sessionBean.tabSet}"
-			tabChangeListener="#{sessionBean.tabChange}" selectedIndex="#{sessionBean.selectedIndex}">
+			tabChangeListener="#{sessionBean.tabChange}"
+			selectedIndex="#{sessionBean.selectedIndex}">
 
 			<!-- ======== SCHEDULINGS VIEW ======== -->
 
@@ -33,7 +34,7 @@
 			<ui:include src="instance-log-view.xhtml" />
 
 			<!-- ======== SCHEDULER VIEW ======== -->
-			
+
 			<ui:include src="scheduler-view.xhtml" />
 
 			<!-- divider -->
@@ -47,11 +48,11 @@
 			<!-- divider -->
 			<ace:tabPane label="" disabled="true"
 				rendered="#{sessionBean.user.authenticated}" />
-			
+
 			<!-- ======== HELP ======== -->
-			
+
 			<ui:include src="help.xhtml" />
-			
+
 			<!-- ======== LOG OUT ======== -->
 
 			<ace:tabPane id="log_out" label="Log out"
@@ -95,7 +96,7 @@
 		<ace:confirmationDialog id="start_scheduler_service"
 			widgetVar="start_scheduler_service_conf"
 			message="You are about to start all schedulings. Write a short comment describing your actions."
-			header="Confirm Start" width="330" height="300">
+			header="Confirm Start" width="330" height="300" modal="true">
 			<ace:textAreaEntry id="description"
 				value="#{schedulerServiceManager.comment.text}"
 				validator="#{schedulerServiceManager.ValidateInput}">
@@ -117,7 +118,7 @@
 		<ace:confirmationDialog id="stop_scheduler_service"
 			widgetVar="stop_scheduler_service_conf"
 			message="You are about to stop all schedulings. Write a short comment describing your actions."
-			header="Confirm Stop" width="330" height="300">
+			header="Confirm Stop" width="330" height="300" modal="true">
 			<ace:textAreaEntry id="description2"
 				value="#{schedulerServiceManager.comment2.text}"
 				validator="#{schedulerServiceManager.ValidateInput}">
@@ -150,7 +151,7 @@
 
 		<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 			message="Are you sure you want to run following schedulings?"
-			header="Confirm Run" width="330" height="300">
+			header="Confirm Run" width="330" height="300" modal="true">
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
@@ -164,7 +165,7 @@
 		<ace:confirmationDialog id="resume_confirmation"
 			widgetVar="resume_conf"
 			message="Are you sure you want to resume following schedulings?"
-			header="Confirm Resume" width="330" height="300">
+			header="Confirm Resume" width="330" height="300" modal="true">
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
@@ -176,7 +177,7 @@
 
 		<ace:confirmationDialog id="hold_confirmation" widgetVar="hold_conf"
 			message="Are you sure you want to put following schedulings on hold?"
-			header="Confirm Hold" width="330" height="300">
+			header="Confirm Hold" width="330" height="300" modal="true">
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
@@ -189,7 +190,7 @@
 		<ace:confirmationDialog id="remove_confirmation"
 			widgetVar="remove_conf"
 			message="Are you sure you want to remove following schedulings?"
-			header="Confirm Hold" width="330" height="300">
+			header="Confirm Hold" width="330" height="300" modal="true">
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
@@ -214,7 +215,7 @@
 		<ace:confirmationDialog id="re_run_confirmation"
 			widgetVar="re_run_conf"
 			message="Are you sure you want to run following schedulings?"
-			header="Confirm Run" width="330" height="300">
+			header="Confirm Run" width="330" height="300" modal="true">
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">
@@ -228,7 +229,7 @@
 		<ace:confirmationDialog id="re_run_all_confirmation"
 			widgetVar="re_run_all_conf"
 			message="Are you sure you want to run following schedulings?"
-			header="Confirm Run" width="330" height="300">
+			header="Confirm Run" width="330" height="300" modal="true">
 			<ice:outputText value="#{schedulingDataManager.schedulingList}"
 				escape="false" />
 			<h:panelGrid columns="2">

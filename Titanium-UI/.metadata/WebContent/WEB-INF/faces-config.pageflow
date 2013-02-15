@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13527435947100" configfile="/Titanium-UI/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="ui.xhtml" id="pf13594875475093" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13594889151629 pf135948891516210" inlinks="pf13594888538046 pf13594888538047" path="/ui.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" x="251" id="pf13594875475094" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" outlinks="pf13594888538046 pf13594888538047 pf13594888538048" inlinks="pf13594888538048 pf135948891516210" path="/login.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="logout" id="pf135948891516211" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13594889151629" path="/logout.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="ui.xhtml" id="pf13594875475093" referenceLink="//@navigationRule.3/@navigationCase.0/@toViewId|" outlinks="pf13594889151629 pf135948891516210" inlinks="pf13594888538046 pf13594888538047" path="/ui.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" x="251" id="pf13594875475094" referenceLink="//@navigationRule.4/@navigationCase.0/@toViewId|" outlinks="pf13594888538046 pf13594888538047 pf13594888538048" inlinks="pf13594888538048 pf135948891516210" path="/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="logout" id="pf135948891516211" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13594889151629" path="/logout.jsp"/>
   <links id="pf13594888538046" target="pf13594875475093" source="pf13594875475094" outcome="redirect_to_ui" redirect="true"/>
   <links id="pf13594888538047" target="pf13594875475093" source="pf13594875475094" outcome="true" redirect="true" fromaction="#{loginManager.authenticate}"/>
   <links id="pf13594888538048" target="pf13594875475094" source="pf13594875475094" outcome="false" fromaction="#{loginManager.authenticate}"/>

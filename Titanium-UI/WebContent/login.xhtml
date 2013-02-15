@@ -33,7 +33,7 @@
 						action="#{loginManager.authenticate}" />
 
 					<ace:submitMonitor for="login_button" activeLabel="Logging in"
-						autoCenter="true" blockUI="@source" />
+						autoCenter="true" blockUI="@source" sessionExpiredLabel="Session Expired"/>
 				</h:panelGrid>
 			</ace:tabPane>
 		</ace:tabSet>
