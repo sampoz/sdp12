@@ -11,11 +11,13 @@
 			<f:subview id="sub_#{tab.scheduling.id}">
 				<ace:menuButton id="close_tab_button" value="Close">
 					<ace:menuItem value="This Tab"
-						actionListener="#{sessionBean.removeCurrent(tab)}" />
+						actionListener="#{sessionBean.removeCurrent(tab)}"
+						immediate="true" />
 					<ace:menuItem value="All Tabs"
-						actionListener="#{sessionBean.removeAllTabs}" />
+						actionListener="#{sessionBean.removeAllTabs}" immediate="true" />
 					<ace:menuItem value="Other Tabs"
-						actionListener="#{sessionBean.removeOtherTabs(tab)}" />
+						actionListener="#{sessionBean.removeOtherTabs(tab)}"
+						immediate="true" />
 				</ace:menuButton>
 				<ace:panel id="details_panel" header="Details">
 					<h:panelGrid columns="2">
@@ -26,11 +28,15 @@
 						<ice:outputText value="CRON: " styleClass="bold" />
 						<ice:outputText value="#{tab.scheduling.cron}" />
 						<ice:outputText value="File Pollable: " styleClass="bold" />
-						<ice:outputText rendered="#{tab.scheduling.javaAgentPollable eq 1}" value="Yes" />
-						<ice:outputText rendered="#{tab.scheduling.javaAgentPollable eq 0}" value="No" />
+						<ice:outputText
+							rendered="#{tab.scheduling.javaAgentPollable eq 1}" value="Yes" />
+						<ice:outputText
+							rendered="#{tab.scheduling.javaAgentPollable eq 0}" value="No" />
 						<ice:outputText value="Bank Days Only: " styleClass="bold" />
-						<ice:outputText rendered="#{tab.scheduling.bankHolidayOnly eq 1}" value="Yes" />
-						<ice:outputText rendered="#{tab.scheduling.bankHolidayOnly eq 0}" value="No" />
+						<ice:outputText rendered="#{tab.scheduling.bankHolidayOnly eq 1}"
+							value="Yes" />
+						<ice:outputText rendered="#{tab.scheduling.bankHolidayOnly eq 0}"
+							value="No" />
 						<ice:outputText value="Source: " styleClass="bold" />
 						<ice:outputText value="#{tab.sourceName}" />
 						<ice:outputText value="Target: " styleClass="bold" />
@@ -48,20 +54,31 @@
 				<br />
 				<ace:panel id="edit_panel" header="Edit" toggleable="true"
 					rendered="#{sessionBean.user.editRights}">
-					<h:panelGrid id="edit_grid" columns="2">
+					<h:panelGrid id="edit_grid" columns="3">
+
 						<h:outputLabel for="tab_name_input" value="Name: "
 							style="font-weight: bolder" />
-						<ace:textEntry id="tab_name_input" value="#{tab.builder.name}" size="73"/>
+						<ace:textEntry id="tab_name_input" value="#{tab.builder.name}"
+							size="73" required="true"
+							requiredMessage="Name field is required." />
+						<h:message for="tab_name_input" errorClass="ui-state-error-text" />
+
 						<h:outputLabel for="tab_cron_input" value="Cron: "
 							style="font-weight: bolder" />
-						<ace:textEntry id="tab_cron_input" value="#{tab.builder.cron}" size="73"/>
+						<ace:textEntry id="tab_cron_input" value="#{tab.builder.cron}"
+							size="73" required="true"
+							requiredMessage="Cron field is required." />
+						<h:message for="tab_cron_input" errorClass="ui-state-error-text" />
+
 						<h:outputLabel for="tab_mode_input" value="Mode: "
 							style="font-weight: bolder" />
 						<ice:selectOneMenu id="tab_mode_input" value="#{tab.builder.mode}">
 							<f:selectItems value="#{schedulingDataManager.modes}" />
 							<f:converter converterId="entityConverter" />
 						</ice:selectOneMenu>
-					
+
+						<h:outputText />
+
 						<h:outputLabel for="tab_source_input" value="Source: "
 							style="font-weight: bolder" />
 						<ice:selectOneMenu id="tab_source_input"
@@ -70,7 +87,8 @@
 							<f:converter converterId="entityConverter" />
 						</ice:selectOneMenu>
 
-						<h:panelGrid />
+						<h:outputText />
+						<h:outputText />
 
 						<ace:panel>
 							<h:panelGrid columns="2">
@@ -81,7 +99,9 @@
 								<ice:outputText value="#{tab.builder.source.contacts}" />
 							</h:panelGrid>
 						</ace:panel>
-	
+
+						<h:outputText />
+
 						<h:outputLabel for="tab_target_input" value="Target: "
 							style="font-weight: bolder" />
 						<ice:selectOneMenu id="tab_target_input"
@@ -90,7 +110,8 @@
 							<f:converter converterId="entityConverter" />
 						</ice:selectOneMenu>
 
-						<h:panelGrid />
+						<h:outputText />
+						<h:outputText />
 
 						<ace:panel>
 							<h:panelGrid columns="2">
@@ -102,8 +123,8 @@
 							</h:panelGrid>
 						</ace:panel>
 
+						<h:outputText />
 
-					
 						<h:outputLabel for="tab_composite_input" value="Composite: "
 							style="font-weight: bolder" />
 						<ice:selectOneMenu id="tab_composite_input"
@@ -111,7 +132,10 @@
 							<f:selectItems value="#{schedulingDataManager.composites}" />
 							<f:converter converterId="entityConverter" />
 						</ice:selectOneMenu>
-						<h:panelGrid />
+
+						<h:outputText />
+						<h:outputText />
+
 						<h:panelGrid columns="4">
 							<h:outputLabel for="tab_bank_input" value="Bank Days Only: " />
 							<h:selectBooleanCheckbox id="tab_bank_input"
@@ -122,32 +146,47 @@
 								value="#{tab.builder.javaAgentPollable}"
 								disabled="#{tab.builder.composite.javaAgentPollable eq 0}" />
 						</h:panelGrid>
+
+						<h:outputText />
+
 						<h:outputLabel for="tab_requestURL_input" value="Request URL: "
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_requestURL_input"
-							value="#{tab.builder.requestURL}" size="73" />
+							value="#{tab.builder.requestURL}" size="73" required="true"
+							requiredMessage="Request URL field is required." />
+						<h:message for="tab_requestURL_input"
+							errorClass="ui-state-error-text" />
+
 						<h:outputLabel for="tab_desc_input" value="Description: "
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_desc_input"
-							value="#{tab.builder.description}" size="73" />
+							value="#{tab.builder.description}" size="73" required="true"
+							requiredMessage="Description field is required." />
+						<h:message for="tab_desc_input" errorClass="ui-state-error-text" />
+
 						<h:outputLabel for="tab_contacts_input" value="Contacts: "
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_contacts_input"
-							value="#{tab.builder.contacts}" size="73" />
+							value="#{tab.builder.contacts}" size="73" required="true"
+							requiredMessage="Contacts field is required." />
+						<h:message for="tab_contacts_input"
+							errorClass="ui-state-error-text" />
+
 						<h:outputLabel for="tab_edit_comment_input" value="Comment: "
 							style="font-weight: bolder" />
 						<ace:textAreaEntry id="tab_edit_comment_input"
-							value="#{tab.builder.comment.text}" rows="3" />
+							value="#{tab.builder.comment.text}" rows="3" required="true"
+							requiredMessage="Comment field is required." />
+						<h:message for="tab_edit_comment_input"
+							errorClass="ui-state-error-text" />
+
 					</h:panelGrid>
 
 					<ice:commandButton id="tab_confirm_edit" value="Confirm"
 						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
 					<ice:commandButton id="tab_reset_edit" value="Reset"
+						immediate="true"
 						actionListener="#{schedulingDataManager.resetEdit(tab)}" />
-					<pre>
-							<ice:outputText value="#{tab.editErrorMessage}"
-							rendered="#{tab.showEditError}" styleClass="red" />
-						</pre>
 
 				</ace:panel>
 				<br />
@@ -263,14 +302,6 @@
 							<h:outputText value="#{comment.text}" />
 						</ace:column>
 					</ace:dataTable>
-					<br />
-					<ace:textEntry id="tab_comment_input" label="Comment: "
-						labelPosition="left" value="#{tab.addComment.text}"
-						rendered="#{sessionBean.user.editRights}"
-						style="margin-right: 10px;" />
-					<ice:commandButton id="tab_sumbit_comment" value="Submit"
-						actionListener="#{schedulingDataManager.submitNewComment(tab)}"
-						rendered="#{sessionBean.user.editRights}" />
 				</ace:panel>
 			</f:subview>
 
