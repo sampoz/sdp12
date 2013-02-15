@@ -178,7 +178,7 @@
 							style="font-weight: bolder" />
 						<ace:textAreaEntry id="tab_edit_comment_input"
 							value="#{tab.builder.comment.text}" rows="3" required="true"
-							requiredMessage="Comment field is required." />
+							requiredMessage="Comment field is required."/>
 						<h:message for="tab_edit_comment_input"
 							errorClass="ui-state-error-text" />
 
@@ -292,10 +292,10 @@
 					</ace:dataTable>
 				</ace:panel>
 				<br />
-				<ace:panel id="comments_panel" header="Comments" toggleable="true">
+				<ace:panel header="Change Log" toggleable="true">
 					<ace:dataTable id="tab_comment_table" value="#{tab.comments}"
 						var="comment" paginator="false" rows="5"
-						emptyMessage="-- No Comments --">
+						emptyMessage="-- No Changes --">
 						<ace:column id="tab_creation_date" headerText="Date">
 
 							<ice:outputText value="#{comment.creationDate}" />

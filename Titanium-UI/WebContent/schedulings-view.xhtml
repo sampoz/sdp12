@@ -148,9 +148,13 @@
 					<h:message for="commentInput" errorClass="ui-state-error-text" />
 
 				</h:panelGrid>
-				<ice:commandButton id="add_scheduling_button" value="Add Scheduling"
+				<ice:commandButton id="add_scheduling_button" value="Confirm"
 					actionListener="#{schedulingDataManager.addScheduling}">
 					<f:ajax execute="add_grid" render="add_grid" />
+				</ice:commandButton>
+				<ice:commandButton id="clear_scheduling_button" value="Clear"
+					action="#{schedulingDataManager.clearScheduling}" immediate="true" >
+					<f:ajax execute="add_grid" render="add_grid" />	
 				</ice:commandButton>
 			</ace:accordionPane>
 		</ace:accordion>
@@ -360,8 +364,9 @@
 						</h:panelGrid>
 					</ace:column>
 
-					<ace:column id="source" sortBy="#{schedule.sourceName}"
-						filterBy="#{schedule.sourceName}" filterMatchMode="contains">
+					<ace:column id="source" headerText="Source"
+						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
+						filterMatchMode="contains">
 						<ice:panelGroup style="width:100px;">
 						</ice:panelGroup>
 						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />

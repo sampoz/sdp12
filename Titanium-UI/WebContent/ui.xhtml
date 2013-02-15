@@ -252,7 +252,7 @@
 				rendered="#{!schedulingDataManager.addSchedulingSucces}" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Ok"
-					actionListener="#{schedulingDataManager.closeAddSchedulingInf}" />
+					actionListener="#{schedulingDataManager.closeAddSchedulingInf}" immediate="true"/>
 			</h:panelGrid>
 		</ace:dialog>
 
@@ -270,7 +270,7 @@
 				rendered="#{!schedulingDataManager.editSchedulingSucces}" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Ok"
-					actionListener="#{schedulingDataManager.closeEditSchedulingInf}" />
+					actionListener="#{schedulingDataManager.closeEditSchedulingInf}" immediate="true"/>
 			</h:panelGrid>
 		</ace:dialog>
 	</h:form>

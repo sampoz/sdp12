@@ -103,6 +103,11 @@ public class SchedulingDataManager implements Serializable {
 
 		this.schedulings = this.session.getSchedulings();
 	}
+	
+	public void clearScheduling(){
+		this.builder = new SchedulingBuilder();
+		System.out.println(this.builder.getContacts());
+	}
 
 	public void listSelected() {
 		if (stateMap.getSelected().isEmpty()) {
