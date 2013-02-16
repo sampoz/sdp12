@@ -150,11 +150,9 @@
 				</h:panelGrid>
 				<ice:commandButton id="add_scheduling_button" value="Confirm"
 					actionListener="#{schedulingDataManager.addScheduling}">
-					<f:ajax execute="add_grid" render="add_grid" />
 				</ice:commandButton>
 				<ice:commandButton id="clear_scheduling_button" value="Clear"
-					action="#{schedulingDataManager.clearScheduling}" immediate="true" >
-					<f:ajax execute="add_grid" render="add_grid" />	
+					action="#{schedulingDataManager.clearScheduling}" partialSubmit="true" type="reset">
 				</ice:commandButton>
 			</ace:accordionPane>
 		</ace:accordion>

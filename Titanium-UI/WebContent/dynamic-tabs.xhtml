@@ -187,8 +187,8 @@
 					<ice:commandButton id="tab_confirm_edit" value="Confirm"
 						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
 					<ice:commandButton id="tab_reset_edit" value="Reset"
-						immediate="true"
-						actionListener="#{schedulingDataManager.resetEdit(tab)}" />
+						actionListener="#{schedulingDataManager.resetEdit(tab)}" partialSubmit="true" type="reset">
+					</ice:commandButton>
 
 				</ace:panel>
 				<br />
