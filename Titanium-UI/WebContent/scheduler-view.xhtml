@@ -6,14 +6,12 @@
 	xmlns:icecore="http://www.icefaces.org/icefaces/core"
 	xmlns:ace="http://www.icefaces.org/icefaces/components"
 	xmlns:ice="http://www.icesoft.com/icefaces/component">
-	<ace:tabPane id="scheduler" label="Scheduler"
+	<ace:tabPane id="scheduler" label="Scheduler Service"
 		rendered="#{sessionBean.user.authenticated}">
-		<ace:panel rendered="#{schedulerServiceManager.schedulerStopped}">
+		<ace:panel header="Status">
 			<h:outputText value="All schedulings are currently stopped."
 				style="font-weight:bold; color:red;"
 				rendered="#{schedulerServiceManager.schedulerStopped}" />
-		</ace:panel>
-		<ace:panel rendered="#{!schedulerServiceManager.schedulerStopped}">
 			<h:outputText value="All schedulings are currently running."
 				style="font-weight:bold;"
 				rendered="#{!schedulerServiceManager.schedulerStopped}" />
@@ -21,17 +19,15 @@
 		<ace:menuBar>
 			<ace:menuItem id="start_all_schedulings"
 				value="Start all schedulings"
-				disabled ="#{!schedulerServiceManager.schedulerStopped}"
 				onclick="start_scheduler_service_conf.show()"
 				icon="ui-icon ui-icon-circle-triangle-e"
-				rendered="#{sessionBean.user.editRights}">
+				rendered="#{sessionBean.user.editRights and schedulerServiceManager.schedulerStopped}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
-				disabled ="#{schedulerServiceManager.schedulerStopped}"
 				onclick="stop_scheduler_service_conf.show()"
 				icon="ui-icon ui-icon-circle-close"
-				rendered="#{sessionBean.user.editRights}">
+				rendered="#{sessionBean.user.editRights and !schedulerServiceManager.schedulerStopped}">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 		</ace:menuBar>
@@ -44,7 +40,7 @@
 			<ace:column id="audit_creation_date" headerText="Date">
 				<ice:outputText value="#{audit.creationDate}" />
 			</ace:column>
-			<ace:column id="audit_text" headerText="Text">
+			<ace:column id="audit_text" headerText="Comment">
 				<h:outputText value="#{audit.text}" />
 			</ace:column>
 		</ace:dataTable>

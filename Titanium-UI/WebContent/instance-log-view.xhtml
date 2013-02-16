@@ -47,30 +47,29 @@
 			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="10,25,50,100" rows="25"
 			stateMap="#{instanceDataManager.i_stateMap}" selectionMode="multiple"
-			resizableColumns="true" binding="#{instanceDataManager.i_dataTable}">
+			resizableColumns="true" binding="#{instanceDataManager.i_dataTable}" emptyMessage="-- No Instances Available --">
 			<ace:ajax event="select" execute="@this" />
 
-			<ace:column id="i_run_state" 
-				sortBy="#{instance.statusID}">
+			<ace:column headerText="Details">
 				<ace:expansionToggler />
 			</ace:column>
 			<ace:panelExpansion>
 				<ace:panel styleClass="instanceleft">
 					<h:panelGrid id="instanceGrid" columns="4">
 
-						<h:outputLabel value="Error Message:" />
+						<h:outputLabel value="Error Message:" style="font-weight: bold"/>
 						<h:outputText id="i_message" value="#{instance.message}"
 							styleClass="instanceleft" />
 
-						<h:outputLabel value="Composite: " />
+						<h:outputLabel value="Composite: " style="font-weight: bold"/>
 						<h:outputText id="i_composite" value="#{instance.name}"
 							styleClass="instanceleft" />
 
-						<h:outputLabel value="Input files:" />
+						<h:outputLabel value="Input files:" style="font-weight: bold"/>
 						<h:outputText id="i_input_files" value="#{instance.inputFileName}"
 							styleClass="instanceleft" />
 
-						<h:outputLabel value="Output files:" />
+						<h:outputLabel value="Output files:" style="font-weight: bold"/>
 						<h:outputText id="i_output_files"
 							value="#{instance.outputFileName}" styleClass="instanceleft" />
 

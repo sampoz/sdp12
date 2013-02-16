@@ -184,7 +184,7 @@
 
 					</h:panelGrid>
 
-					<ice:commandButton id="tab_confirm_edit" value="Confirm"
+					<ice:commandButton id="tab_confirm_edit" value="Update"
 						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
 					<ice:commandButton id="tab_reset_edit" value="Reset"
 						actionListener="#{schedulingDataManager.resetEdit(tab)}" partialSubmit="true" type="reset">
@@ -294,13 +294,13 @@
 				<br />
 				<ace:panel header="Change Log" toggleable="true">
 					<ace:dataTable id="tab_comment_table" value="#{tab.comments}"
-						var="comment" paginator="false" rows="5"
+						var="comment" paginator="false" rows="10"
 						emptyMessage="-- No Changes --">
 						<ace:column id="tab_creation_date" headerText="Date">
 
 							<ice:outputText value="#{comment.creationDate}" />
 						</ace:column>
-						<ace:column id="tab_text" headerText="Text">
+						<ace:column id="tab_text" headerText="Comment">
 							<h:outputText value="#{comment.text}" />
 						</ace:column>
 					</ace:dataTable>
