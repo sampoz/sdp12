@@ -19,7 +19,7 @@
 					<ace:textEntry id="nameInput"
 						value="#{schedulingDataManager.builder.name}" size="73"
 						required="true" requiredMessage="Name field is required.">
-						<f:validateLength minimum="4" />
+						<f:validateLength minimum="4" maximum="200" />
 					</ace:textEntry>
 					<h:message for="nameInput" errorClass="ui-state-error-text" />
 
@@ -27,7 +27,8 @@
 						style="font-weight: bolder" />
 					<ace:textEntry id="cronInput"
 						value="#{schedulingDataManager.builder.cron}" size="73"
-						required="true" requiredMessage="Cron field is required.">
+						required="true" requiredMessage="Cron field is required."
+						maxlength="64">
 						<f:validator validatorId="cronValidator" />
 					</ace:textEntry>
 					<h:message for="cronInput" errorClass="ui-state-error-text" />
@@ -123,28 +124,33 @@
 						style="font-weight: bolder" />
 					<ace:textEntry id="requestURL_input"
 						value="#{schedulingDataManager.builder.requestURL}" size="73"
-						required="true" requiredMessage="Request URL field is required." />
+						required="true" requiredMessage="Request URL field is required."
+						maxlength="400" />
 					<h:message for="requestURL_input" errorClass="ui-state-error-text" />
 
 					<h:outputLabel id="descLabel" for="descInput" value="Description: "
 						style="font-weight: bolder" />
 					<ace:textEntry id="descInput"
 						value="#{schedulingDataManager.builder.description}" size="73"
-						required="true" requiredMessage="Description field is required." />
+						maxlength="400" required="true"
+						requiredMessage="Description field is required." />
 					<h:message for="descInput" errorClass="ui-state-error-text" />
 
 					<h:outputLabel for="contactsInput" value="Contacts: "
 						style="font-weight: bolder" />
 					<ace:textEntry id="contactsInput"
 						value="#{schedulingDataManager.builder.contacts}" size="73"
-						required="true" requiredMessage="Contacts field is required." />
+						required="true" requiredMessage="Contacts field is required."
+						maxlength="400" />
 					<h:message for="contactsInput" errorClass="ui-state-error-text" />
 
 					<h:outputLabel id="commentLabel" for="commentInput"
 						value="Comment: " style="font-weight: bolder" />
 					<ace:textAreaEntry id="commentInput"
 						value="#{schedulingDataManager.builder.comment.text}" rows="3"
-						required="true" requiredMessage="Comment field is required." />
+						required="true" requiredMessage="Comment field is required.">
+						<f:validateLength maximum="4000"/>
+					</ace:textAreaEntry>
 					<h:message for="commentInput" errorClass="ui-state-error-text" />
 
 				</h:panelGrid>
@@ -152,7 +158,8 @@
 					actionListener="#{schedulingDataManager.addScheduling}">
 				</ice:commandButton>
 				<ice:commandButton id="clear_scheduling_button" value="Clear"
-					action="#{schedulingDataManager.clearScheduling}" partialSubmit="true" type="reset">
+					action="#{schedulingDataManager.clearScheduling}"
+					partialSubmit="true" type="reset">
 				</ice:commandButton>
 			</ace:accordionPane>
 		</ace:accordion>

@@ -47,6 +47,9 @@ public class SessionBean {
 	private static final int HIDDEN_TABS = 0;
 	public static final int DAYS_AFTER_INSTANCE = 40;
 
+	private boolean showDatabaseError;
+	private String databaseErrorMessage;
+
 	private User user = User.UNAUTHORISED;
 
 	@PreDestroy
@@ -130,10 +133,17 @@ public class SessionBean {
 		} catch (Exception e) {
 			handleSQLException(e);
 		}
-		return false;}
+		return false;
+	}
 
 	private void handleSQLException(Exception e) {
+		this.databaseErrorMessage = e.getCause().getMessage();
+		this.showDatabaseError = true;
+	}
 
+	public void closeDatabaseErrorDialog() {
+		this.databaseErrorMessage = "";
+		this.showDatabaseError = false;
 	}
 
 	public void refreshInstances() {
@@ -338,6 +348,22 @@ public class SessionBean {
 
 	public void setSelectedIndex(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
+	}
+
+	public boolean isShowDatabaseError() {
+		return showDatabaseError;
+	}
+
+	public void setShowDatabaseError(boolean showDatabaseError) {
+		this.showDatabaseError = showDatabaseError;
+	}
+
+	public String getDatabaseErrorMessage() {
+		return databaseErrorMessage;
+	}
+
+	public void setDatabaseErrorMessage(String databaseErrorMessage) {
+		this.databaseErrorMessage = databaseErrorMessage;
 	}
 
 }
