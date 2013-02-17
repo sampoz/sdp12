@@ -16,18 +16,20 @@
 				style="font-weight:bold;"
 				rendered="#{!schedulerServiceManager.schedulerStopped}" />
 		</ace:panel>
-		<ace:menuBar>
+		<ace:menuBar rendered="#{sessionBean.user.runRights}">>
 			<ace:menuItem id="start_all_schedulings"
 				value="Start all schedulings"
-				onclick="start_scheduler_service_conf.show()"
+				actionListener="#{schedulerServiceManager.openStartScheduling()}"
 				icon="ui-icon ui-icon-circle-triangle-e"
-				rendered="#{sessionBean.user.editRights and schedulerServiceManager.schedulerStopped}">
+				rendered="#{sessionBean.user.editRights and schedulerServiceManager.schedulerStopped}"
+				immediate="true">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
-				onclick="stop_scheduler_service_conf.show()"
+				actionListener="#{schedulerServiceManager.openStopScheduling()}"
 				icon="ui-icon ui-icon-circle-close"
-				rendered="#{sessionBean.user.editRights and !schedulerServiceManager.schedulerStopped}">
+				rendered="#{sessionBean.user.editRights and !schedulerServiceManager.schedulerStopped}"
+				immediate="true">
 				<ace:ajax event="activate" execute="@this" />
 			</ace:menuItem>
 		</ace:menuBar>

@@ -24,8 +24,8 @@ public class SchedulerServiceManager implements Serializable{
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 
-	private Comment comment = new Comment();
-	private Comment comment2 = new Comment();
+	private Comment commentStarting = new Comment();
+	private Comment commentStopping = new Comment();
 
 	private Boolean confirmButtonDisabled = false;
 
@@ -38,6 +38,11 @@ public class SchedulerServiceManager implements Serializable{
 	private boolean commentError = false;
 
 	private boolean schedulerStopped = false;
+	
+
+	private boolean stop_dialog_visible = false;
+
+	private boolean start_dialog_visible = false;
 
 	public boolean isCommentError() {
 		return commentError;
@@ -65,9 +70,25 @@ public class SchedulerServiceManager implements Serializable{
 		this.auditTrail = this.session.getAuditTrail();
 	}
 
+	public void openStartScheduling(){
+		
+		setStart_dialog_visible(true);
+		System.out.print("start"+ start_dialog_visible);
+	}
+	public void openStopScheduling(){
+		
+		setStop_dialog_visible(true);
+		System.out.print("stop"+ stop_dialog_visible);
+	}
+	public void closeStartScheduling(){
+		setStart_dialog_visible(false);
+	}
+	public void closeStopScheduling(){
+		setStop_dialog_visible(false);
+	}
 	public void stopAllSchedules() {
-		if (this.getComment2().getText().length() < 6
-				|| this.getComment2().getText().length() > 500) {
+		if (this.getCommentStopping().getText().length() < 6
+				|| this.getCommentStopping().getText().length() > 500) {
 			this.commentError = true;
 			return;
 		}
@@ -81,15 +102,16 @@ public class SchedulerServiceManager implements Serializable{
 			
 			this.refreshState();
 			this.refreshAuditTrail();
-			this.comment2.setText("Scheduler was stopped. Reason: " + this.comment2.getText());
-			if (this.submitComment(this.getComment2()))
-				this.setComment2(new Comment());
+			closeStopScheduling();
+			this.commentStopping.setText("Scheduler was stopped. Reason: " + this.commentStopping.getText());
+			if (this.submitComment(this.getCommentStopping()))
+				this.setCommentStopping(new Comment());
 		}
 	}
 
 	public void startAllSchedules() {
-		if (this.getComment().getText().length() < 6
-				|| this.getComment().getText().length() > 500) {
+		if (this.getCommentStarting().getText().length() < 6
+				|| this.getCommentStarting().getText().length() > 500) {
 			this.commentError = true;
 			return;
 		}
@@ -102,9 +124,10 @@ public class SchedulerServiceManager implements Serializable{
 			
 			this.refreshState();
 			this.refreshAuditTrail();
-			this.comment.setText("Scheduler was started. Reason: " + this.comment.getText());
-			if (this.submitComment(this.getComment()))
-				this.setComment(new Comment());
+			closeStartScheduling();
+			this.commentStarting.setText("Scheduler was started. Reason: " + this.commentStarting.getText());
+			if (this.submitComment(this.getCommentStarting()))
+				this.setCommentStarting(new Comment());
 		}
 
 	}
@@ -171,12 +194,12 @@ public class SchedulerServiceManager implements Serializable{
 		this.httpConnector = httpConnector;
 	}
 
-	public Comment getComment2() {
-		return comment2;
+	public Comment getCommentStopping() {
+		return commentStopping;
 	}
 
-	public void setComment2(Comment comment2) {
-		this.comment2 = comment2;
+	public void setCommentStopping(Comment commentStopping) {
+		this.commentStopping = commentStopping;
 	}
 
 	public Boolean getConfirmButtonDisabled() {
@@ -187,12 +210,12 @@ public class SchedulerServiceManager implements Serializable{
 		this.confirmButtonDisabled = confirmButtonDisabled;
 	}
 
-	public Comment getComment() {
-		return comment;
+	public Comment getCommentStarting() {
+		return commentStarting;
 	}
 
-	public void setComment(Comment comment) {
-		this.comment = comment;
+	public void setCommentStarting(Comment comment) {
+		this.commentStarting = comment;
 	}
 
 	public boolean isSchedulerStopped() {
@@ -201,6 +224,22 @@ public class SchedulerServiceManager implements Serializable{
 
 	public void setSchedulerStopped(boolean schedulerStopped) {
 		this.schedulerStopped = schedulerStopped;
+	}
+
+	public boolean isStop_dialog_visible() {
+		return stop_dialog_visible;
+	}
+
+	public void setStop_dialog_visible(boolean stop_dialog_visible) {
+		this.stop_dialog_visible = stop_dialog_visible;
+	}
+
+	public boolean isStart_dialog_visible() {
+		return start_dialog_visible;
+	}
+
+	public void setStart_dialog_visible(boolean start_dialog_visible) {
+		this.start_dialog_visible = start_dialog_visible;
 	}
 
 }
