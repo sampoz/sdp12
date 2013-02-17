@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
 import org.icefaces.ace.component.dialog.Dialog;
@@ -80,6 +81,10 @@ public class SchedulingDataManager implements Serializable {
 	private boolean editSchedulingSucces = false;
 
 	private boolean addSchedulingSucces = false;
+
+	private boolean parse_cron_visible = false;
+
+	private String parsed_cron;
 	
 	//http response messages
 	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
@@ -667,7 +672,24 @@ public class SchedulingDataManager implements Serializable {
 			this.runReport.add("No schedulings were run.");
 		this.responseDialogVisible = true;
 	}
+	public void updateCron(ValueChangeEvent e){
+		System.out.print(e.getNewValue().toString()+ "is a new value");
+	}
 
+	public void parseCron(SchedulingTab tab) {
+		String s = tab.getBuilder().getCron();
+		try {
+			CronExpression cron = new CronExpression(s);
+			setParsed_cron(cron.toString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		setParse_cron_visible(true);
+	}
+	public void closeParsed_cron(){
+		setParse_cron_visible(false);
+	}
 	public void closeRunReport() {
 		this.responseDialogVisible = false;
 	}
@@ -894,6 +916,22 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setAddSchedulingSucces(boolean addSchedulingSucces) {
 		this.addSchedulingSucces = addSchedulingSucces;
+	}
+
+	public boolean getParse_cron_visible() {
+		return parse_cron_visible;
+	}
+
+	public void setParse_cron_visible(boolean parse_cron_visible) {
+		this.parse_cron_visible = parse_cron_visible;
+	}
+
+	public String getParsed_cron() {
+		return parsed_cron;
+	}
+
+	public void setParsed_cron(String parsed_cron) {
+		this.parsed_cron = parsed_cron;
 	}
 
 }

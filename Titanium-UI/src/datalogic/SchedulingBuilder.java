@@ -27,6 +27,8 @@ public class SchedulingBuilder {
 	private String contacts = "";
 	private int id;
 	
+
+	
 	private Comment comment = new Comment();
 	
 	private static final String LINE_BREAK = "\n";
@@ -178,6 +180,8 @@ public class SchedulingBuilder {
 		s.setContacts(contacts);
 	}
 
+
+	
 	public String getName() {
 		return name;
 	}
@@ -283,5 +287,8 @@ public class SchedulingBuilder {
 	public void setComment(Comment comment) {
 		this.comment = comment;
 	}
+
+
+
 
 }
