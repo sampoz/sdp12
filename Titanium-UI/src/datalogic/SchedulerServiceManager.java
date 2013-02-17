@@ -68,7 +68,6 @@ public class SchedulerServiceManager implements Serializable{
 	public void stopAllSchedules() {
 		if (this.getComment2().getText().length() < 6
 				|| this.getComment2().getText().length() > 500) {
-			System.out.println("Comment cant be less than 6 or over 500");
 			this.commentError = true;
 			return;
 		}
@@ -82,6 +81,7 @@ public class SchedulerServiceManager implements Serializable{
 			
 			this.refreshState();
 			this.refreshAuditTrail();
+			this.comment2.setText("Scheduler was stopped. Reason: " + this.comment2.getText());
 			if (this.submitComment(this.getComment2()))
 				this.setComment2(new Comment());
 		}
@@ -90,7 +90,6 @@ public class SchedulerServiceManager implements Serializable{
 	public void startAllSchedules() {
 		if (this.getComment().getText().length() < 6
 				|| this.getComment().getText().length() > 500) {
-			System.out.println("Comment cant be less than 6 or over 500");
 			this.commentError = true;
 			return;
 		}
@@ -103,6 +102,7 @@ public class SchedulerServiceManager implements Serializable{
 			
 			this.refreshState();
 			this.refreshAuditTrail();
+			this.comment.setText("Scheduler was started. Reason: " + this.comment.getText());
 			if (this.submitComment(this.getComment()))
 				this.setComment(new Comment());
 		}
