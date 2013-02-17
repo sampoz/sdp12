@@ -54,7 +54,7 @@ public class SchedulerServiceManager implements Serializable{
 	}
 	
 	private void refreshState(){
-		if(this.session.getConnector().getSchedulingService().getStandby() == SchedulerService.RUNNING){
+		if(this.session.getSchedulingService().getStandby() == SchedulerService.RUNNING){
 			this.schedulerStopped = false;
 		} else
 			this.schedulerStopped  = true;
@@ -72,7 +72,7 @@ public class SchedulerServiceManager implements Serializable{
 			this.commentError = true;
 			return;
 		}
-		if (session.getConnector().stopSchedulingService(
+		if (session.stopSchedulingService(
 				ApplicationBean.SCHEDULERSERVICE)) {
 			this.commentError = false;
 			
@@ -94,7 +94,7 @@ public class SchedulerServiceManager implements Serializable{
 			this.commentError = true;
 			return;
 		}
-		if (session.getConnector().startSchedulingService(
+		if (session.startSchedulingService(
 				ApplicationBean.SCHEDULERSERVICE)) {
 			this.commentError = false;
 			System.out.println("http success "
@@ -129,7 +129,7 @@ public class SchedulerServiceManager implements Serializable{
 		// If the database connector returns true from the persisting of the
 		// comment we can safely add it to the table
 
-		if (this.session.getConnector().addComment(c)) {
+		if (this.session.addComment(c)) {
 			refreshComments();
 			return true;
 		}

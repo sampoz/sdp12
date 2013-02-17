@@ -169,7 +169,7 @@ public class SchedulingDataManager implements Serializable {
 
 			// If the database connector returns true from the persisting of
 			// Scheduling we can safely add it to the table
-			if (this.session.getConnector().addScheduling(s))
+			if (this.session.addScheduling(s))
 				this.schedulings.add(s);
 
 			/*
@@ -253,7 +253,7 @@ public class SchedulingDataManager implements Serializable {
 			this.schedulings.remove(t.getScheduling());
 			this.schedulings.add(n);
 
-			this.session.getConnector().updateScheduling(n);
+			this.session.updateScheduling(n);
 
 			// If we've gotten this far there were no errors and we can hide all
 			// error messages
@@ -316,7 +316,7 @@ public class SchedulingDataManager implements Serializable {
 		this.builder.getComment().setSchedulingID(s.getId());
 		this.builder.getComment().setCreationDate(
 				ApplicationBean.DATE_FORMAT.format(new Date()));
-		if (session.getConnector().addComment(this.builder.getComment())) {
+		if (session.addComment(this.builder.getComment())) {
 			this.builder.setComment(new Comment());
 		}
 	}
@@ -335,7 +335,7 @@ public class SchedulingDataManager implements Serializable {
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(t.getScheduling().getId());
 
-		if (this.session.getConnector().addComment(c)) {
+		if (this.session.addComment(c)) {
 			refreshComments(t);
 			return true;
 		}
@@ -343,7 +343,7 @@ public class SchedulingDataManager implements Serializable {
 	}
 
 	private void refreshComments(SchedulingTab t) {
-		t.setComments(this.session.getConnector().getComments(
+		t.setComments(this.session.getComments(
 				t.getScheduling().getId(), ApplicationBean.MAX_COMMENTS_SHOWN));
 	}
 
@@ -396,7 +396,7 @@ public class SchedulingDataManager implements Serializable {
 			if (s.getStatusID() != ApplicationBean.REMOVED) {
 				s.setStatusID(ApplicationBean.ENABLED);
 
-				this.session.getConnector().updateScheduling(s);
+				this.session.updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES
@@ -415,7 +415,7 @@ public class SchedulingDataManager implements Serializable {
 			if (s.getStatusID() != ApplicationBean.REMOVED) {
 				s.setStatusID(ApplicationBean.DISABLED);
 
-				this.session.getConnector().updateScheduling(s);
+				this.session.updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES
@@ -434,7 +434,7 @@ public class SchedulingDataManager implements Serializable {
 			if (s.getStatusID() != ApplicationBean.REMOVED) {
 				s.setStatusID(ApplicationBean.REMOVED);
 
-				this.session.getConnector().updateScheduling(s);
+				this.session.updateScheduling(s);
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES

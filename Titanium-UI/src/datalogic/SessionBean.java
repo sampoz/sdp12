@@ -24,6 +24,7 @@ import users.User;
 
 import entities.Comment;
 import entities.Instance;
+import entities.SchedulerService;
 import entities.Scheduling;
 
 @ManagedBean(name = "sessionBean")
@@ -61,18 +62,96 @@ public class SessionBean {
 	}
 
 	public void refreshSchedulings() {
-		this.schedulings.clear();
-		this.schedulings = this.connector.getSchedulings();
+		try {
+			this.schedulings.clear();
+			this.schedulings = this.connector.getSchedulings();
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+	}
+
+	public boolean addScheduling(Scheduling s) {
+		try {
+			return this.connector.addScheduling(s);
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return false;
+	}
+
+	public boolean addComment(Comment c) {
+		try {
+			return this.connector.addComment(c);
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return false;
+	}
+
+	public boolean updateScheduling(Scheduling s) {
+		try {
+			return this.connector.updateScheduling(s);
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return false;
+	}
+
+	public List<Comment> getComments(int id, int maxResults) {
+		try {
+			return this.connector.getComments(id, maxResults);
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return new ArrayList<Comment>();
+	}
+
+	public SchedulerService getSchedulingService() {
+		try {
+			return this.connector.getSchedulingService();
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return null;
+	}
+
+	public boolean stopSchedulingService(SchedulerService s) {
+		try {
+			return this.connector.stopSchedulingService(s);
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return false;
+	}
+
+	public boolean startSchedulingService(SchedulerService s) {
+		try {
+			return this.connector.startSchedulingService(s);
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
+		return false;}
+
+	private void handleSQLException(Exception e) {
+
 	}
 
 	public void refreshInstances() {
-		this.instances.clear();
-		this.instances = this.connector.getInstances();
+		try {
+			this.instances.clear();
+			this.instances = this.connector.getInstances();
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
 	}
 
 	public void refreshAuditTrail() {
-		this.auditTrail.clear();
-		this.auditTrail = this.connector.getAuditTrail();
+		try {
+			this.auditTrail.clear();
+			this.auditTrail = this.connector.getAuditTrail();
+		} catch (Exception e) {
+			handleSQLException(e);
+		}
 	}
 
 	public void indexInstances() {
@@ -120,7 +199,7 @@ public class SessionBean {
 					DAYS_AFTER_INSTANCE));
 			tabs.add(t);
 		}
-		
+
 		this.selectedIndex = tabs.indexOf(t) + STATIC_TABS;
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
@@ -190,7 +269,8 @@ public class SessionBean {
 	public void validate() {
 		if (!this.user.isAuthenticated()) {
 			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.getApplication().getNavigationHandler()
+			ctx.getApplication()
+					.getNavigationHandler()
 					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
 		}
 	}
@@ -242,14 +322,6 @@ public class SessionBean {
 
 	public void setInstancesByDate(HashMap<Date, List<Instance>> instancesByDate) {
 		this.instancesByDate = instancesByDate;
-	}
-
-	public DatabaseConnector getConnector() {
-		return connector;
-	}
-
-	public void setConnector(DatabaseConnector connector) {
-		this.connector = connector;
 	}
 
 	public List<Comment> getAuditTrail() {
