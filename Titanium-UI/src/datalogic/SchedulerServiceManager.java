@@ -35,7 +35,8 @@ public class SchedulerServiceManager implements Serializable{
 
 	private HttpConnector httpConnector = new HttpConnector();
 
-	private boolean commentError = false;
+	private boolean stopCommentError = false;
+	private boolean startCommentError = false;
 
 	private boolean schedulerStopped = false;
 	
@@ -44,13 +45,6 @@ public class SchedulerServiceManager implements Serializable{
 
 	private boolean start_dialog_visible = false;
 
-	public boolean isCommentError() {
-		return commentError;
-	}
-
-	public void setCommentError(boolean commentError) {
-		this.commentError = commentError;
-	}
 
 	@PostConstruct
 	public void init() {
@@ -71,12 +65,10 @@ public class SchedulerServiceManager implements Serializable{
 	}
 
 	public void openStartScheduling(){
-		
 		setStart_dialog_visible(true);
 		System.out.print("start"+ start_dialog_visible);
 	}
 	public void openStopScheduling(){
-		
 		setStop_dialog_visible(true);
 		System.out.print("stop"+ stop_dialog_visible);
 	}
@@ -89,12 +81,11 @@ public class SchedulerServiceManager implements Serializable{
 	public void stopAllSchedules() {
 		if (this.getCommentStopping().getText().length() < 6
 				|| this.getCommentStopping().getText().length() > 500) {
-			this.commentError = true;
-			return;
+			this.stopCommentError = true;
 		}
-		if (session.stopSchedulingService(
+		else if (session.stopSchedulingService(
 				ApplicationBean.SCHEDULERSERVICE)) {
-			this.commentError = false;
+			this.stopCommentError = false;
 			
 			System.out.println("http success "
 					+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE
@@ -112,12 +103,11 @@ public class SchedulerServiceManager implements Serializable{
 	public void startAllSchedules() {
 		if (this.getCommentStarting().getText().length() < 6
 				|| this.getCommentStarting().getText().length() > 500) {
-			this.commentError = true;
-			return;
+			this.startCommentError = true;
 		}
-		if (session.startSchedulingService(
+		else if (session.startSchedulingService(
 				ApplicationBean.SCHEDULERSERVICE)) {
-			this.commentError = false;
+			this.startCommentError = false;
 			System.out.println("http success "
 					+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE
 							.getUrl()));
@@ -165,8 +155,9 @@ public class SchedulerServiceManager implements Serializable{
 
 	}
 
-	public void closeComment() {
-		this.commentError = false;
+	public void closeComment(){
+		this.startCommentError = false;
+		this.stopCommentError = false;
 	}
 
 	// ==================== GETTERS & SETTERS ====================
@@ -240,6 +231,22 @@ public class SchedulerServiceManager implements Serializable{
 
 	public void setStart_dialog_visible(boolean start_dialog_visible) {
 		this.start_dialog_visible = start_dialog_visible;
+	}
+
+	public boolean isStartCommentError() {
+		return startCommentError;
+	}
+
+	public void setStartCommentError(boolean startCommentError) {
+		this.startCommentError = startCommentError;
+	}
+
+	public boolean isStopCommentError() {
+		return stopCommentError;
+	}
+
+	public void setStopCommentError(boolean stopCommentError) {
+		this.stopCommentError = stopCommentError;
 	}
 
 }

@@ -13,15 +13,13 @@
 		header="Confirm Start" width="350" height="350" modal="true"
 		closable="false" widgetVar="start_conf">
 		<h:outputText
-			value=" You are about to start all schedulings. Write a short comment describing your actions."
-			styleClass="red" immediate="true" />
+			value=" You are about to start all schedulings. Write a short comment describing your actions." />
 		<ace:textAreaEntry id="description"
 			value="#{schedulerServiceManager.commentStarting.text}">
 		</ace:textAreaEntry>
 		<h:panelGrid columns="2">
 			<h:commandButton id="start_scheduler_button" value="Confirm"
-				actionListener="#{schedulerServiceManager.startAllSchedules()}"
-				 />
+				actionListener="#{schedulerServiceManager.startAllSchedules()}"/>
 			<h:commandButton value="Cancel"
 				actionListener="#{schedulerServiceManager.closeStartScheduling()}" />
 		</h:panelGrid>
@@ -32,34 +30,33 @@
 		rendered="#{schedulerServiceManager.stop_dialog_visible}"
 		header="Confirm Stop" width="350" height="350" modal="true"
 		closable="false" widgetVar="stop_conf">
-		<h:panelGrid columns="1"> 
-		<h:outputText
-			value=" You are about to stop all schedulings. Write a short comment describing your actions."
-			styleClass="red" immediate="true" />
-		<ace:textAreaEntry id="description2"
-			value="#{schedulerServiceManager.commentStopping.text}">
-		</ace:textAreaEntry>
+		<h:panelGrid columns="1">
+			<h:outputText
+				value=" You are about to stop all schedulings. Write a short comment describing your actions." />
+			<ace:textAreaEntry id="description2"
+				value="#{schedulerServiceManager.commentStopping.text}">
+			</ace:textAreaEntry>
 		</h:panelGrid>
 		<h:panelGrid columns="2">
 			<h:commandButton id="stop_scheduler_button" value="Confirm"
 				actionListener="#{schedulerServiceManager.stopAllSchedules()}"
-				 />
+				/>
 			<h:commandButton value="Cancel"
 				actionListener="#{schedulerServiceManager.closeStopScheduling()}" />
 		</h:panelGrid>
 	</ace:dialog>
 
-	<!-- 	<ace:dialog visible="#{schedulerServiceManager.commentError}" -->
-	<!-- 		rendered="#{schedulerServiceManager.commentError}" modal="true" -->
-	<!-- 		resizable="false" header="Report" closable="false"> -->
-	<!-- 		<h:panelGrid columns="1"> -->
-	<!-- 			<h:outputText -->
-	<!-- 				value="Comment field can't be empty. Nothing was done. Please open dialog again and fill in comment" -->
-	<!-- 				styleClass="red" immediate="true"/> -->
-	<!-- 		</h:panelGrid> -->
-	<!-- 		<ice:commandButton value="Close" -->
-	<!-- 			actionListener="#{schedulerServiceManager.closeComment}" /> -->
-	<!-- 	</ace:dialog> -->
+		<ace:dialog visible="#{schedulerServiceManager.startCommentError or schedulerServiceManager.stopCommentError}"
+			rendered="#{schedulerServiceManager.startCommentError or schedulerServiceManager.stopCommentError}" modal="true"
+			resizable="false" header="Report" closable="false">
+			<h:panelGrid columns="1">
+				<h:outputText
+					value="Comment field must be at least 6 chars and 500 at most"
+					styleClass="red" immediate="true"/>
+			</h:panelGrid>
+			<ice:commandButton value="Close"
+				actionListener="#{schedulerServiceManager.closeComment}" />
+		</ace:dialog>
 
 	<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 		message="Are you sure you want to run following schedulings?"
