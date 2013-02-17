@@ -96,10 +96,11 @@
 		<ace:confirmationDialog id="start_scheduler_service"
 			widgetVar="start_scheduler_service_conf"
 			message="You are about to start all schedulings. Write a short comment describing your actions."
-			header="Confirm Start" width="330" height="300" modal="true">
+			header="Confirm Start" width="350" height="350" modal="true">
 			<ace:textAreaEntry id="description"
 				value="#{schedulerServiceManager.comment.text}"
-				validator="#{schedulerServiceManager.ValidateInput}">
+				validator="#{schedulerServiceManager.ValidateInput}"
+				rows= "7">
 				<ace:ajax render="@this start_scheduler_service" event="blur" />
 			</ace:textAreaEntry>
 			<h:panelGrid width="100%">
@@ -118,10 +119,11 @@
 		<ace:confirmationDialog id="stop_scheduler_service"
 			widgetVar="stop_scheduler_service_conf"
 			message="You are about to stop all schedulings. Write a short comment describing your actions."
-			header="Confirm Stop" width="330" height="300" modal="true">
+			header="Confirm Stop" width="350" height="350" modal="true">
 			<ace:textAreaEntry id="description2"
 				value="#{schedulerServiceManager.comment2.text}"
-				validator="#{schedulerServiceManager.ValidateInput}">
+				validator="#{schedulerServiceManager.ValidateInput}"
+				rows= "7">
 				<ace:ajax render="@this stop_scheduler_service" event="blur" />
 			</ace:textAreaEntry>
 			<h:panelGrid width="100%">
