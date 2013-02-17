@@ -99,8 +99,7 @@
 			header="Confirm Start" width="350" height="350" modal="true">
 			<ace:textAreaEntry id="description"
 				value="#{schedulerServiceManager.comment.text}"
-				validator="#{schedulerServiceManager.ValidateInput}"
-				rows= "7">
+				validator="#{schedulerServiceManager.ValidateInput}" rows="7">
 				<ace:ajax render="@this start_scheduler_service" event="blur" />
 			</ace:textAreaEntry>
 			<h:panelGrid width="100%">
@@ -110,7 +109,8 @@
 				<h:commandButton id="start_scheduler_button" value="Confirm"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
 					onclick="start_scheduler_service_conf.hide()"
-					actionListener="#{schedulerServiceManager.startAllSchedules}" immediate="true"/>
+					actionListener="#{schedulerServiceManager.startAllSchedules}"
+					immediate="true" />
 				<h:commandButton value="Cancel"
 					onclick="start_scheduler_service_conf.hide()" />
 			</h:panelGrid>
@@ -122,8 +122,7 @@
 			header="Confirm Stop" width="350" height="350" modal="true">
 			<ace:textAreaEntry id="description2"
 				value="#{schedulerServiceManager.comment2.text}"
-				validator="#{schedulerServiceManager.ValidateInput}"
-				rows= "7">
+				validator="#{schedulerServiceManager.ValidateInput}" rows="7">
 				<ace:ajax render="@this stop_scheduler_service" event="blur" />
 			</ace:textAreaEntry>
 			<h:panelGrid width="100%">
@@ -133,7 +132,8 @@
 				<h:commandButton id="stop_scheduler_button" value="Confirm"
 					onclick="stop_scheduler_service_conf.hide()"
 					disabled="#{schedulerServiceManager.confirmButtonDisabled}"
-					actionListener="#{schedulerServiceManager.stopAllSchedules}" immediate="true"/>
+					actionListener="#{schedulerServiceManager.stopAllSchedules}"
+					immediate="true" />
 				<h:commandButton value="Cancel"
 					onclick="stop_scheduler_service_conf.hide()" />
 			</h:panelGrid>
@@ -159,7 +159,8 @@
 			<h:panelGrid columns="2">
 				<h:commandButton id="run_schedulings_button" value="Yes"
 					onclick="run_conf.hide()"
-					actionListener="#{schedulingDataManager.runSelectedSchedules}" immediate="true"/>
+					actionListener="#{schedulingDataManager.runSelectedSchedules}"
+					immediate="true" />
 				<h:commandButton value="No" onclick="run_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
@@ -172,7 +173,8 @@
 				escape="false" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Yes" onclick="resume_conf.hide()"
-					actionListener="#{schedulingDataManager.resumeSelected}" immediate="true"/>
+					actionListener="#{schedulingDataManager.resumeSelected}"
+					immediate="true" />
 				<h:commandButton value="No" onclick="resume_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
@@ -184,7 +186,8 @@
 				escape="false" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Yes" onclick="hold_conf.hide()"
-					actionListener="#{schedulingDataManager.holdSelected}" immediate="true"/>
+					actionListener="#{schedulingDataManager.holdSelected}"
+					immediate="true" />
 				<h:commandButton value="No" onclick="hold_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
@@ -197,7 +200,8 @@
 				escape="false" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Yes" onclick="remove_conf.hide()"
-					actionListener="#{schedulingDataManager.removeSelected}" immediate="true"/>
+					actionListener="#{schedulingDataManager.removeSelected}"
+					immediate="true" />
 				<h:commandButton value="No" onclick="remove_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
@@ -211,7 +215,8 @@
 				</c:forEach>
 			</h:panelGrid>
 			<ice:commandButton value="Close"
-				actionListener="#{schedulingDataManager.closeRunReport}" immediate="true"/>
+				actionListener="#{schedulingDataManager.closeRunReport}"
+				immediate="true" />
 		</ace:dialog>
 
 		<ace:confirmationDialog id="re_run_confirmation"
@@ -223,7 +228,8 @@
 			<h:panelGrid columns="2">
 				<h:commandButton id="re_run_schedulings_button" value="Yes"
 					onclick="re_run_conf.hide()"
-					actionListener="#{schedulingDataManager.runSelectedRuns}" immediate="true"/>
+					actionListener="#{schedulingDataManager.runSelectedRuns}"
+					immediate="true" />
 				<h:commandButton value="No" onclick="re_run_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
@@ -237,7 +243,8 @@
 			<h:panelGrid columns="2">
 				<h:commandButton id="re_run_all_button" value="Yes"
 					onclick="re_run_all_conf.hide()"
-					actionListener="#{schedulingDataManager.runAllRuns}" immediate="true"/>
+					actionListener="#{schedulingDataManager.runAllRuns}"
+					immediate="true" />
 				<h:commandButton value="No" onclick="re_run_all_conf.hide()" />
 			</h:panelGrid>
 		</ace:confirmationDialog>
@@ -254,7 +261,8 @@
 				rendered="#{!schedulingDataManager.addSchedulingSucces}" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Ok"
-					actionListener="#{schedulingDataManager.closeAddSchedulingInf}" immediate="true"/>
+					actionListener="#{schedulingDataManager.closeAddSchedulingInf}"
+					immediate="true" />
 			</h:panelGrid>
 		</ace:dialog>
 
@@ -272,7 +280,20 @@
 				rendered="#{!schedulingDataManager.editSchedulingSucces}" />
 			<h:panelGrid columns="2">
 				<h:commandButton value="Ok"
-					actionListener="#{schedulingDataManager.closeEditSchedulingInf}" immediate="true"/>
+					actionListener="#{schedulingDataManager.closeEditSchedulingInf}"
+					immediate="true" />
+			</h:panelGrid>
+		</ace:dialog>
+
+		<ace:dialog visible="#{sessionBean.showDatabaseError}"
+			rendered="#{sessionBean.showDatabaseError}" header="Database Error"
+			width="330" height="150">
+
+			<h:outputText value="#{sessionBean.databaseErrorMessage}" />
+			<h:panelGrid columns="2">
+				<h:commandButton value="Ok"
+					actionListener="#{sessionBean.closeDatabaseErrorDialog}"
+					immediate="true" />
 			</h:panelGrid>
 		</ace:dialog>
 	</h:form>

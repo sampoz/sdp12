@@ -60,14 +60,16 @@
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_name_input" value="#{tab.builder.name}"
 							size="73" required="true"
-							requiredMessage="Name field is required." />
+							requiredMessage="Name field is required.">
+							<f:validateLength minimum="4" maximum="200" />
+						</ace:textEntry>
 						<h:message for="tab_name_input" errorClass="ui-state-error-text" />
 
 						<h:outputLabel for="tab_cron_input" value="Cron: "
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_cron_input" value="#{tab.builder.cron}"
 							size="73" required="true"
-							requiredMessage="Cron field is required.">
+							requiredMessage="Cron field is required." maxlength="64">
 							<f:validator validatorId="cronValidator" />
 						</ace:textEntry>
 						<h:message for="tab_cron_input" errorClass="ui-state-error-text" />
@@ -155,7 +157,7 @@
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_requestURL_input"
 							value="#{tab.builder.requestURL}" size="73" required="true"
-							requiredMessage="Request URL field is required." />
+							requiredMessage="Request URL field is required." maxlength="400" />
 						<h:message for="tab_requestURL_input"
 							errorClass="ui-state-error-text" />
 
@@ -163,14 +165,14 @@
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_desc_input"
 							value="#{tab.builder.description}" size="73" required="true"
-							requiredMessage="Description field is required." />
+							requiredMessage="Description field is required." maxlength="400" />
 						<h:message for="tab_desc_input" errorClass="ui-state-error-text" />
 
 						<h:outputLabel for="tab_contacts_input" value="Contacts: "
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_contacts_input"
 							value="#{tab.builder.contacts}" size="73" required="true"
-							requiredMessage="Contacts field is required." />
+							requiredMessage="Contacts field is required." maxlength="400" />
 						<h:message for="tab_contacts_input"
 							errorClass="ui-state-error-text" />
 
@@ -178,7 +180,9 @@
 							style="font-weight: bolder" />
 						<ace:textAreaEntry id="tab_edit_comment_input"
 							value="#{tab.builder.comment.text}" rows="3" required="true"
-							requiredMessage="Comment field is required."/>
+							requiredMessage="Comment field is required.">
+							<f:validateLength maximum="4000" />
+						</ace:textAreaEntry>
 						<h:message for="tab_edit_comment_input"
 							errorClass="ui-state-error-text" />
 
@@ -187,7 +191,8 @@
 					<ice:commandButton id="tab_confirm_edit" value="Update"
 						actionListener="#{schedulingDataManager.confirmEdit(tab)}" />
 					<ice:commandButton id="tab_reset_edit" value="Reset"
-						actionListener="#{schedulingDataManager.resetEdit(tab)}" partialSubmit="true" type="reset">
+						actionListener="#{schedulingDataManager.resetEdit(tab)}"
+						partialSubmit="true" type="reset">
 					</ice:commandButton>
 
 				</ace:panel>

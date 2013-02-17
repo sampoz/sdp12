@@ -73,21 +73,20 @@ public class SchedulingDataManager implements Serializable {
 
 	private boolean addSchedulingInf = false;
 	private boolean EditSchedulingInf = false;
-	
+
 	private String addSchedulingMessage;
 	private String EditSchedulingMessage;
 
 	private boolean editSchedulingSucces = false;
 
 	private boolean addSchedulingSucces = false;
-	
-	//http response messages
+
+	// http response messages
 	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
 	public static String ADD_SUCCESS_MSG = "Scheduling was added succesfully.";
 	public static String EMPTYPARAMETER_ERROR_MSG = "The Scheduling Service received empty parameter.";
-	public static String INTERNAL_ERROR_MSG =  "Error 500 - Internal Server Error";
-	public static String UNKNOWN_ERROR_MSG =  "ClientProtocolException or an IOException";
-
+	public static String INTERNAL_ERROR_MSG = "Error 500 - Internal Server Error";
+	public static String UNKNOWN_ERROR_MSG = "ClientProtocolException or an IOException";
 
 	@PostConstruct
 	private void init() {
@@ -103,8 +102,8 @@ public class SchedulingDataManager implements Serializable {
 
 		this.schedulings = this.session.getSchedulings();
 	}
-	
-	public void clearScheduling(){
+
+	public void clearScheduling() {
 		this.builder = new SchedulingBuilder();
 		System.out.println(this.builder.getContacts());
 	}
@@ -169,34 +168,27 @@ public class SchedulingDataManager implements Serializable {
 
 			// If the database connector returns true from the persisting of
 			// Scheduling we can safely add it to the table
-			if (this.session.addScheduling(s))
+			if (this.session.addScheduling(s)) {
 				this.schedulings.add(s);
 
-			/*
-			 * If there is some text in addComment, we'll add it straight away.
-			 * It will be connected by the ID of previously added Scheduling so
-			 * its important to add the Comment after the Scheduling has been
-			 * persisted and an ID has been assigned to it.
-			 */
+				/*
+				 * If there is some text in addComment, we'll add it straight
+				 * away. It will be connected by the ID of previously added
+				 * Scheduling so its important to add the Comment after the
+				 * Scheduling has been persisted and an ID has been assigned to
+				 * it.
+				 */
 
-			this.submitCommentFromAdd(s);
+				this.submitCommentFromAdd(s);
 
-			this.builder = new SchedulingBuilder();
+				// Http request, consult Hanzki for any details
+				int http_response = httpConnector.addId(
+						ApplicationBean.COMPOSITES.get(s.getServiceID())
+								.getDestinationURL(), s.getId());
 
-			// If we've gotten this far, there were no errors and we can hide
-			// all error messages
-			showAddError = false;
+				System.out.println("HttpConnector returned: " + http_response);
 
-			// Http request, consult Hanzki for any details
-			int http_response = httpConnector.addId(
-					ApplicationBean.COMPOSITES.get(s.getServiceID())
-							.getDestinationURL(), s.getId());
-			
-			System.out.println("HttpConnector returned: "
-					+ http_response);
-		
-			switch (http_response)
-			{
+				switch (http_response) {
 				case HttpConnector.RESPONSE_OK:
 					setAddSchedulingMessage(ADD_SUCCESS_MSG);
 					setAddSchedulingSucces(true);
@@ -216,9 +208,17 @@ public class SchedulingDataManager implements Serializable {
 				default:
 					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
 					break;
+				}
+				setAddSchedulingInf(true);
+
+				this.builder = new SchedulingBuilder();
+
+				// If we've gotten this far, there were no errors and we can
+				// hide
+				// all error messages
+				showAddError = false;
+
 			}
-			setAddSchedulingInf(true);
-			
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -253,25 +253,19 @@ public class SchedulingDataManager implements Serializable {
 			this.schedulings.remove(t.getScheduling());
 			this.schedulings.add(n);
 
-			this.session.updateScheduling(n);
+			if (this.session.updateScheduling(n)) {
 
-			// If we've gotten this far there were no errors and we can hide all
-			// error messages
-			t.setShowEditError(false);
-			this.submitCommentFromEdit(t);
+				this.submitCommentFromEdit(t);
 
-			t.setScheduling(n);
-			// Http request, consult Hanzki for any details
-			
-			int http_response = httpConnector.editId(
-					ApplicationBean.COMPOSITES.get(
-							t.getScheduling().getServiceID())
-							.getDestinationURL(), t.getScheduling()
-							.getId());
-			System.out.println("HttpConnector returned: "
-					+ http_response);
-			switch (http_response)
-			{
+				t.setScheduling(n);
+				// Http request, consult Hanzki for any details
+
+				int http_response = httpConnector
+						.editId(ApplicationBean.COMPOSITES.get(
+								t.getScheduling().getServiceID())
+								.getDestinationURL(), t.getScheduling().getId());
+				System.out.println("HttpConnector returned: " + http_response);
+				switch (http_response) {
 				case HttpConnector.RESPONSE_OK:
 					setEditSchedulingMessage(EDIT_SUCCESS_MSG);
 					setEditSchedulingSucces(true);
@@ -292,9 +286,14 @@ public class SchedulingDataManager implements Serializable {
 					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
 					setEditSchedulingSucces(false);
 					break;
+				}
+				setEditSchedulingInf(true);
+
+				// If we've gotten this far there were no errors and we can hide
+				// all
+				// error messages
+				t.setShowEditError(false);
 			}
-			setEditSchedulingInf(true);
-			
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -343,8 +342,8 @@ public class SchedulingDataManager implements Serializable {
 	}
 
 	private void refreshComments(SchedulingTab t) {
-		t.setComments(this.session.getComments(
-				t.getScheduling().getId(), ApplicationBean.MAX_COMMENTS_SHOWN));
+		t.setComments(this.session.getComments(t.getScheduling().getId(),
+				ApplicationBean.MAX_COMMENTS_SHOWN));
 	}
 
 	/**
@@ -672,13 +671,14 @@ public class SchedulingDataManager implements Serializable {
 		this.responseDialogVisible = false;
 	}
 
-	public void closeAddSchedulingInf(){
+	public void closeAddSchedulingInf() {
 		this.addSchedulingInf = false;
 	}
-	public void closeEditSchedulingInf(){
+
+	public void closeEditSchedulingInf() {
 		this.EditSchedulingInf = false;
 	}
-	
+
 	// ==================== GETTERS & SETTERS ====================
 	public SessionBean getSession() {
 		return session;
