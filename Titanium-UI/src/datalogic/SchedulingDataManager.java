@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,12 +15,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 
 import org.icefaces.ace.component.datatable.DataTable;
-import org.icefaces.ace.component.dialog.Dialog;
 import org.icefaces.ace.model.table.RowState;
 import org.icefaces.ace.model.table.RowStateMap;
 import org.quartz.CronExpression;
-
-import datalogic.SchedulingTab;
 
 import entities.Backend;
 import entities.Comment;
@@ -392,12 +388,16 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
-	// TODO Comments
+	/**
+	 * called when the run_schedulings_button in the run_confirmation dialog is pressed.
+	 */
 	public void runSelectedSchedules() {
 		run(stateMap.getSelected());
 	}
 
-	// TODO comments
+	/**
+	 * called from the resume_confirmation dialog.
+	 */
 	public void resumeSelected() {
 
 		for (Object rowData : stateMap.getSelected()) {
@@ -416,7 +416,9 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
-	// TODO comments
+	/**
+	 * called from the hold_confirmation dialog.
+	 */
 	public void holdSelected() {
 
 		for (Object rowData : stateMap.getSelected()) {
@@ -435,7 +437,9 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
-	// TODO comments
+	/**
+	 * called from the remove_confirmation dialog.
+	 */
 	public void removeSelected() {
 
 		for (Object rowData : stateMap.getSelected()) {

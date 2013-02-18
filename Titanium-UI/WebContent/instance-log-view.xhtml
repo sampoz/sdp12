@@ -90,6 +90,7 @@
 				<h:outputText id="i_statusCell" value="#{instance.statusValue}"
 					styleClass="#{instance.statusValue}"
 					rendered="#{not (instance.statusValue eq 'ManualHandling')}" />
+<!--		 this link is opened when user presses the manual handling link -->
 				<h:outputLink rendered="#{instance.statusValue eq 'ManualHandling'}"
 					value="http://iambrony.jsmart.web.id/mlp/gif/pinkmailbox_hellobye.gif"
 					target="blank">
