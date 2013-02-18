@@ -10,7 +10,10 @@ import org.hibernate.annotations.GenericGenerator;
 import datalogic.ApplicationBean;
 
 import javax.persistence.Id;
-
+/**
+ * SchedulerService entity is for Schduling_config table.
+ * Scheduling_config tells only whether the Scheduler is running or not.
+ */
 @Entity
 @Table(name = "SCHEDULING_CONFIG")
 public class SchedulerService {
