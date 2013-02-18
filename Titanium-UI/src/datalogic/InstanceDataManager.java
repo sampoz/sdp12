@@ -66,10 +66,6 @@ public class InstanceDataManager implements Serializable {
 		filterInstances();
 	}
 
-	public void runInstances() {
-		System.out.println("run instances");
-	}
-
 	public DataTable getI_dataTable() {
 		return i_dataTable;
 	}
