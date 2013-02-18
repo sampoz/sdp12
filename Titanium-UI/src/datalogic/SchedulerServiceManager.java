@@ -40,7 +40,7 @@ public class SchedulerServiceManager implements Serializable{
 	private boolean stopCommentError = false;
 	private boolean startCommentError = false;
 
-	//are the schedulers stopped
+	//are the schedulers stopped or running
 	private boolean schedulerStopped = false;
 
 	private boolean stop_dialog_visible = false;

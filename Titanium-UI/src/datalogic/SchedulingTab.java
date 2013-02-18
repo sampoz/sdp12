@@ -6,7 +6,12 @@ import java.util.List;
 import entities.Comment;
 import entities.Instance;
 import entities.Scheduling;
-
+/**
+ * SchedulingTab is for handling several tabs in UI.
+ * SchedulingTab contains information about one {@link Scheduling}
+ * 
+ *
+ */
 public class SchedulingTab {
 	
 	private String name;
@@ -18,7 +23,9 @@ public class SchedulingTab {
 	private String targetName;
 	private String compositeText;
 	
+	//List of instances related to this Scheduling
 	private List<Instance> instances = new ArrayList<Instance>();
+	//List of comments related to this Scheduling
 	private List<Comment> comments = new ArrayList<Comment>();
 	
 	private Comment addComment = new Comment();
@@ -38,6 +45,11 @@ public class SchedulingTab {
 		this.builder = new SchedulingBuilder(this.scheduling);
 	}
 	
+	/**
+	 * Set {@link Scheduling} for the tab.
+	 * Name of the tab is first four letters of scheduling name
+	 * @param scheduling
+	 */
 	public void setScheduling(Scheduling scheduling) {
 		this.scheduling = scheduling;
 		this.name = scheduling.getName().substring(0,4);
@@ -76,6 +88,11 @@ public class SchedulingTab {
 		this.builder = builder;
 	}
 	
+	/**
+	 * Get the modevalue corresponding to the statusid.
+	 * 
+	 * @return 
+	 */
 	public String getModeValue() {
 		this.modeValue = ApplicationBean.MODES.get(this.scheduling.getStatusID()).getValue();
 		return modeValue;
@@ -85,6 +102,11 @@ public class SchedulingTab {
 		this.modeValue = modeValue;
 	}
 
+	/**
+	 * Get the source of files for the Scheduling.
+	 * 
+	 * @return 
+	 */
 	public String getSourceName() {
 		if(this.scheduling.getSource() != null)
 			this.sourceName = ApplicationBean.BACKENDS.get(this.scheduling.getSource()).getBackend();
@@ -95,6 +117,11 @@ public class SchedulingTab {
 		this.sourceName = sourceName;
 	}
 
+	/**
+	 * Get the target of files for the Scheduling.
+	 * 
+	 * @return 
+	 */
 	public String getTargetName() {
 		if(this.scheduling.getTarget() != null)
 			this.targetName = ApplicationBean.BACKENDS.get(this.scheduling.getTarget()).getBackend();
@@ -138,6 +165,10 @@ public class SchedulingTab {
 		this.editErrorMessage = editErrorMessage;
 	}
 
+	/**
+	 * Check if Scheduling are equal. In case trying to open Schedulingtab
+	 * that is already open.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

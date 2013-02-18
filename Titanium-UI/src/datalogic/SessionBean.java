@@ -154,7 +154,11 @@ public class SessionBean {
 			handleSQLException(e);
 		}
 	}
-
+	/**
+	 *  Called from {@link SchedulerServiceManaver} when updating audit trail in UI, when user start or stops Scheduler.
+	 *  Gets via {@link DatabaseConnector} all comments that have id SchedulerServiceManaver.SCHEDULINGSERVICECOMMENT
+	 */
+	 
 	public void refreshAuditTrail() {
 		try {
 			this.auditTrail.clear();
@@ -164,6 +168,7 @@ public class SessionBean {
 		}
 	}
 
+	//TODO comments
 	public void indexInstances() {
 		this.instancesByDate.clear();
 		long time = System.currentTimeMillis();
@@ -186,7 +191,7 @@ public class SessionBean {
 				+ " instances indexed. Time spent was: " + time
 				+ " milliseconds. ");
 	}
-
+	//TODO comments
 	public boolean authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
 
@@ -197,7 +202,23 @@ public class SessionBean {
 		this.init();
 		return true;
 	}
+	//TODO comments
+	public void validate() {
+		if (!this.user.isAuthenticated()) {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.getApplication()
+					.getNavigationHandler()
+					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
+		}
+	}
 
+	/**
+	 * Create new {@link SchedulingTab} instance for given Scheduling.
+	 * Get maximum amount of comments and instances visible.
+	 * Set new tab as opened tab.
+	 * @param s
+	 * @throws ParseException
+	 */
 	public void addTab(Scheduling s) throws ParseException {
 		SchedulingTab t = new SchedulingTab();
 		t.setScheduling(s);
@@ -209,11 +230,22 @@ public class SessionBean {
 					DAYS_AFTER_INSTANCE));
 			tabs.add(t);
 		}
-
 		this.selectedIndex = tabs.indexOf(t) + STATIC_TABS;
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
+	/**
+	 * Get all instances for the given {@link Scheduling}.
+	 * Used when constructing {@link SchedulingTab} when user opens the tab in UI.
+	 * 
+	 * @param s
+	 * 		Given Scheduling
+	 * @param daysAgo
+	 * 		From now to how many days to past the instaces are returned
+	 * @return
+	 * 		List of instances for the given Scheduling for the given time range
+	 * @throws ParseException
+	 */
 	private List<Instance> getInstancesForScheduling(Scheduling s, int daysAgo)
 			throws ParseException {
 
@@ -232,7 +264,13 @@ public class SessionBean {
 		}
 		return temp;
 	}
-
+	/**
+	 * Remove current tab from UI and tabslist.
+	 * Set the first static tab Scheduling tab as current tab
+	 * Called from UI when user closes tab.
+	 * @param t
+	 * 		index of the tab to close
+	 */
 	public void removeCurrent(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
 		TabPane pane = (TabPane) this.tabSet.getChildren().get(
@@ -240,7 +278,10 @@ public class SessionBean {
 		pane.setInView(false);
 		tabs.remove(t);
 	}
-
+	/**
+	 * Remove (close) all Scheduling tabs and set the first static tab as current tab.
+	 * Called from UI when user closes all the tabs.
+	 */
 	public void removeAllTabs() {
 		this.tabSet.setSelectedIndex(0);
 		List<UIComponent> panes = this.tabSet.getChildren();
@@ -250,6 +291,10 @@ public class SessionBean {
 		tabs.clear();
 	}
 
+	/**
+	 * Remove(close) all Scheduling tabs, but the current and set the first static tab as current tab.
+	 * Called from UI when user closes all the tabs.
+	 */
 	public void removeOtherTabs(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
 		List<UIComponent> panes = this.tabSet.getChildren();
@@ -265,6 +310,13 @@ public class SessionBean {
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
+	/**
+	 * Update the selected index in backend when tab is changed in frontend.
+	 * 
+	 * If tab is changed to logout. Logout is handled in faces-config.xml
+	 * @param e
+	 * @throws IOException
+	 */
 	public void tabChange(ValueChangeEvent e) throws IOException {
 		this.selectedIndex = (Integer) e.getNewValue();
 		if ((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1
@@ -276,14 +328,7 @@ public class SessionBean {
 		}
 	}
 
-	public void validate() {
-		if (!this.user.isAuthenticated()) {
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.getApplication()
-					.getNavigationHandler()
-					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
-		}
-	}
+	
 
 	// ==================== GETTERS & SETTERS ====================
 	public User getUser() {

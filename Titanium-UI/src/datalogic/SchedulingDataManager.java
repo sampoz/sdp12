@@ -72,18 +72,19 @@ public class SchedulingDataManager implements Serializable {
 
 	private static final int SCHEDULING_NAME_LEN = 30;
 
+	//Should addScheduling or EditScheduling dialog box be visible
 	private boolean addSchedulingInf = false;
 	private boolean EditSchedulingInf = false;
 
+	//What is the error message
 	private String addSchedulingMessage;
 	private String EditSchedulingMessage;
 
+	// Was the adding or editing scheduling succesfull
 	private boolean editSchedulingSucces = false;
-
 	private boolean addSchedulingSucces = false;
 
-
-
+    // Http error messages
 	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
 	public static String ADD_SUCCESS_MSG = "Scheduling was added succesfully.";
 	public static String EMPTYPARAMETER_ERROR_MSG = "The Scheduling Service received empty parameter.";
@@ -189,7 +190,7 @@ public class SchedulingDataManager implements Serializable {
 								.getDestinationURL(), s.getId());
 
 				System.out.println("HttpConnector returned: " + http_response);
-
+				//Check the http response and open a dialog with corresponding message
 				switch (http_response) {
 				case HttpConnector.RESPONSE_OK:
 					setAddSchedulingMessage(ADD_SUCCESS_MSG);
@@ -233,6 +234,12 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
+	/**
+	 * Method to be called from the UI when editing {@link Scheduling}. 
+	 * New scheduling with the same constructed using the {@link SchedulingBuilder}
+	 * and then the old scheduling is replaced with new 
+	 * 
+	 */
 	public void confirmEdit(SchedulingTab t) {
 
 		try {

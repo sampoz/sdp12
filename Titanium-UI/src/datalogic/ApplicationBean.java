@@ -15,6 +15,7 @@ import entities.Backend;
 import entities.Composite;
 import entities.Mode;
 import entities.SchedulerService;
+import entities.Scheduling;
 import entities.Status;
 
 @ManagedBean(name = "applicationBean", eager = true)
@@ -71,7 +72,13 @@ public class ApplicationBean implements Serializable {
 	public static final DateFormat ORACLE_DATE_FORMAT = new SimpleDateFormat(
 			"yyyy-dd-MM HH:mm:ss");
 
+	/**
+	 * Constructor for ApplicationBean. ApplicationBean holds static information for the application run.
+	 * List of all possible Scheduling modes, Backends, Instance statuses, used time zone and Schedulerservice.
+	 * 
+	 */
 	public ApplicationBean() {
+
 
 		DatabaseConnector tempConnector = new DatabaseConnector();
 
@@ -96,6 +103,7 @@ public class ApplicationBean implements Serializable {
 
 		this.timezone = Calendar.getInstance().getTimeZone();
 		
+		//SchedulerService is used to stop or start all Schedulings
 		SCHEDULERSERVICE = tempConnector.getSchedulingService();
 		
 		tempConnector.close();
