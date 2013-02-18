@@ -1,0 +1,405 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+	<ace:tabPane id="schedulings" label="Schedulings"
+		rendered="#{sessionBean.user.authenticated}">
+		<ace:accordion collapsible="true" autoHeight="false" activeIndex="1"
+			rendered="#{sessionBean.user.addRights}">
+			<ace:accordionPane id="add_scheduling" title="Add Scheduling">
+
+				<h:panelGrid columns="3" id="add_grid">
+
+					<h:outputLabel id="nameLabel" for="nameInput" value="Name: "
+						style="font-weight: bolder" />
+					<ace:textEntry id="nameInput"
+						value="#{schedulingDataManager.builder.name}" size="73"
+						required="true" requiredMessage="Name field is required.">
+						<f:validateLength minimum="4" maximum="200" />
+					</ace:textEntry>
+					<h:message for="nameInput" errorClass="ui-state-error-text" />
+
+					<h:outputLabel id="cronLabel" for="cronInput" value="Cron: "
+						style="font-weight: bolder" />
+					<ace:textEntry id="cronInput"
+						value="#{schedulingDataManager.builder.cron}" size="73"
+						required="true" requiredMessage="Cron field is required."
+						maxlength="64">
+						<f:validator validatorId="cronValidator" />
+					</ace:textEntry>
+					<h:message for="cronInput" errorClass="ui-state-error-text" />
+
+					<h:outputLabel id="modeLabel" for="modeInput" value="Mode: "
+						style="font-weight: bolder" />
+					<h:selectOneMenu id="modeInput"
+						value="#{schedulingDataManager.builder.mode}">
+						<f:selectItems value="#{schedulingDataManager.modes}" />
+						<f:converter converterId="entityConverter" />
+					</h:selectOneMenu>
+
+					<h:outputText />
+
+					<h:outputLabel id="sourceLabel" for="sourceInput" value="Source: "
+						style="font-weight: bolder" />
+					<ice:selectOneMenu id="sourceInput"
+						value="#{schedulingDataManager.builder.source}"
+						partialSubmit="true">
+						<f:selectItems value="#{schedulingDataManager.backends}" />
+						<f:converter converterId="entityConverter" />
+					</ice:selectOneMenu>
+
+					<h:outputText />
+					<h:outputText />
+
+					<ace:panel>
+						<h:panelGrid columns="2">
+							<ice:outputText value="Description: " style="font-weight: bolder" />
+
+							<ice:outputText
+								value="#{schedulingDataManager.builder.source.description}" />
+							<ice:outputText value="Contacts: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.source.contacts}" />
+						</h:panelGrid>
+					</ace:panel>
+
+					<h:outputText />
+
+					<h:outputLabel id="targetLabel" for="targetInput" value="Target: "
+						style="font-weight: bolder" />
+					<ice:selectOneMenu id="targetInput"
+						value="#{schedulingDataManager.builder.target}"
+						partialSubmit="true">
+						<f:selectItems value="#{schedulingDataManager.backends}" />
+						<f:converter converterId="entityConverter" />
+					</ice:selectOneMenu>
+
+					<h:outputText />
+					<h:outputText />
+
+					<ace:panel>
+						<h:panelGrid columns="2">
+							<ice:outputText value="Description: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.target.description}" />
+							<ice:outputText value="Contacts: " style="font-weight: bolder" />
+							<ice:outputText
+								value="#{schedulingDataManager.builder.target.contacts}" />
+						</h:panelGrid>
+					</ace:panel>
+
+					<h:outputText />
+
+					<h:outputLabel id="compositeLabel" for="compositeInput"
+						value="Composite: " style="font-weight: bolder" />
+					<ice:selectOneMenu id="compositeInput"
+						value="#{schedulingDataManager.builder.composite}"
+						partialSubmit="true">
+						<f:selectItems value="#{schedulingDataManager.composites}" />
+						<f:converter converterId="entityConverter" />
+					</ice:selectOneMenu>
+
+					<h:outputText />
+					<h:outputText />
+
+					<h:panelGrid columns="4">
+						<h:outputLabel id="bankLabel" for="bankInput"
+							value="Bank Days Only:" />
+						<h:selectBooleanCheckbox id="bankInput"
+							value="#{schedulingDataManager.builder.bankHolidayOnly}" />
+						<h:outputLabel id="javaLabel" for="javaInput"
+							value="File Pollable: " />
+						<h:selectBooleanCheckbox id="javaInput"
+							value="#{schedulingDataManager.builder.javaAgentPollable}"
+							disabled="#{schedulingDataManager.builder.composite.javaAgentPollable eq 0}" />
+					</h:panelGrid>
+
+					<h:outputText />
+
+					<h:outputLabel for="requestURL_input" value="Request URL: "
+						style="font-weight: bolder" />
+					<ace:textEntry id="requestURL_input"
+						value="#{schedulingDataManager.builder.requestURL}" size="73"
+						required="true" requiredMessage="Request URL field is required."
+						maxlength="400" />
+					<h:message for="requestURL_input" errorClass="ui-state-error-text" />
+
+					<h:outputLabel id="descLabel" for="descInput" value="Description: "
+						style="font-weight: bolder" />
+					<ace:textEntry id="descInput"
+						value="#{schedulingDataManager.builder.description}" size="73"
+						maxlength="400" required="true"
+						requiredMessage="Description field is required." />
+					<h:message for="descInput" errorClass="ui-state-error-text" />
+
+					<h:outputLabel for="contactsInput" value="Contacts: "
+						style="font-weight: bolder" />
+					<ace:textEntry id="contactsInput"
+						value="#{schedulingDataManager.builder.contacts}" size="73"
+						required="true" requiredMessage="Contacts field is required."
+						maxlength="400" />
+					<h:message for="contactsInput" errorClass="ui-state-error-text" />
+
+					<h:outputLabel id="commentLabel" for="commentInput"
+						value="Comment: " style="font-weight: bolder" />
+					<ace:textAreaEntry id="commentInput"
+						value="#{schedulingDataManager.builder.comment.text}" rows="3"
+						required="true" requiredMessage="Comment field is required.">
+						<f:validateLength maximum="4000"/>
+					</ace:textAreaEntry>
+					<h:message for="commentInput" errorClass="ui-state-error-text" />
+
+				</h:panelGrid>
+				<ice:commandButton id="add_scheduling_button" value="Confirm"
+					actionListener="#{schedulingDataManager.addScheduling}">
+				</ice:commandButton>
+				<ice:commandButton id="clear_scheduling_button" value="Clear"
+					action="#{schedulingDataManager.clearScheduling}"
+					partialSubmit="true" type="reset">
+				</ice:commandButton>
+			</ace:accordionPane>
+		</ace:accordion>
+
+		<ace:accordion collapsible="true" activeIndex="1" autoHeight="false">
+			<ace:accordionPane id="failed_runs" title="Failed Runs"
+				rendered="#{sessionBean.user.runRights}">
+
+				<h:panelGrid columns="2">
+					<h:outputLabel for="start_date_entry" value="From: " />
+					<h:outputLabel for="start_date_entry" value="To: " />
+					<ace:dateTimeEntry id="start_date_entry"
+						value="#{schedulingDataManager.startDate}"
+						timeZone="#{applicationBean.timezone}"
+						pattern="dd-MM-yyyy HH:mm:ss" navigator="true" timeOnly="false"
+						renderAsPopup="true"
+						maxdate="#{schedulingDataManager.maxStartDate}">
+					</ace:dateTimeEntry>
+					<ace:dateTimeEntry id="end_date_entry"
+						value="#{schedulingDataManager.endDate}"
+						timeZone="#{applicationBean.timezone}"
+						pattern="dd-MM-yyyy HH:mm:ss" navigator="true" timeOnly="false"
+						renderAsPopup="true" maxdate="#{schedulingDataManager.maxEndDate}">
+					</ace:dateTimeEntry>
+					<h:commandButton id="search_date" value="Search"
+						actionListener="#{schedulingDataManager.dateSubmit}"
+						immediate="true" />
+					<h:outputText value="#{schedulingDataManager.dateError}"
+						rendered="#{schedulingDataManager.showDateError}" styleClass="red" />
+				</h:panelGrid>
+
+				<ace:menuBar>
+
+					<ace:menuItem value="Run Selected" icon="ui-icon ui-icon-play"
+						onclick="re_run_conf.show()"
+						actionListener="#{schedulingDataManager.listSelectedRuns}"
+						immediate="true" />
+					<ace:menuItem value="Run All" icon="ui-icon ui-icon-seek-next"
+						onclick="re_run_all_conf.show()"
+						actionListener="#{schedulingDataManager.listAllRuns}"
+						immediate="true" />
+					<ace:menuItem value="Deselect All"
+						icon="ui-icon ui-icon-closethick"
+						actionListener="#{schedulingDataManager.deselectAllRuns}"
+						immediate="true" />
+
+				</ace:menuBar>
+				<ace:dataTable id="matching_runs"
+					value="#{schedulingDataManager.matching}" var="run"
+					paginator="true" paginatorPosition="both"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,25,50" rows="5"
+					emptyMessage="-- No Matches --"
+					stateMap="#{schedulingDataManager.runStateMap}"
+					selectionMode="multiple">
+					<ace:ajax event="select" execute="@this" />
+
+					<ace:column headerText="Name">
+
+						<h:panelGrid>
+							<h:outputText value="#{run.scheduling.name}"
+								styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+					</ace:column>
+
+
+					<ace:column headerText="Mode">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText value="#{run.scheduling.modeLabel}"
+							styleClass="#{run.scheduling.styleClass}" />
+
+					</ace:column>
+
+					<ace:column headerText="Time">
+						<h:outputText value="#{run.scheduling.cron}" />
+					</ace:column>
+
+					<ace:column headerText="Status">
+						<ice:panelGroup style="width:100px;" />
+						<h:outputText value="#{run.status}" styleClass="#{run.status}" />
+					</ace:column>
+
+					<ace:column headerText="Previous Run">
+						<ice:panelGroup style="width:120px;" />
+						<h:outputText value="#{run.prev}" />
+					</ace:column>
+
+					<ace:column headerText="Next Run">
+						<ice:panelGroup style="width:100px;" />
+						<h:outputText value="#{run.next}" />
+					</ace:column>
+
+					<ace:column headerText="Details">
+						<ice:commandButton value="Open in new tab"
+							image="resources/images/openinnewtabicon.jpg"
+							actionListener="#{sessionBean.addTab(run.scheduling)}"
+							immediate="true" />
+					</ace:column>
+				</ace:dataTable>
+			</ace:accordionPane>
+		</ace:accordion>
+
+		<ace:accordion collapsible="true" activeIndex="0" autoHeight="false">
+			<ace:accordionPane title="Schedulings">
+
+				<ace:menuBar>
+					<ace:menuItem id="select_filtered" value="Select Filtered"
+						actionListener="#{schedulingDataManager.selectFiltered}"
+						icon="ui-icon ui-icon-check"
+						rendered="#{sessionBean.user.runRights}" immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="deselect_all" value="Deselect All"
+						actionListener="#{schedulingDataManager.deselectAll}"
+						icon="ui-icon ui-icon-closethick"
+						rendered="#{sessionBean.user.runRights}" immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="run_selected" value="Run Selected"
+						onclick="run_conf.show()" icon="ui-icon ui-icon-play"
+						rendered="#{sessionBean.user.runRights}"
+						actionListener="#{schedulingDataManager.listSelected}"
+						immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+
+					<ace:menuItem id="resume_selected" value="Resume Selected"
+						onclick="resume_conf.show()"
+						icon="ui-icon ui-icon-circle-triangle-e"
+						rendered="#{sessionBean.user.editRights}"
+						actionListener="#{schedulingDataManager.listSelected}"
+						immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="hold_selected" value="Hold Selected"
+						onclick="hold_conf.show()" icon="ui-icon ui-icon-circle-close"
+						rendered="#{sessionBean.user.editRights}"
+						actionListener="#{schedulingDataManager.listSelected}"
+						immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+					<ace:menuItem id="remove_selected" value="Remove Selected"
+						onclick="remove_conf.show()" icon="ui-icon ui-icon-alert"
+						rendered="#{sessionBean.user.editRights}"
+						actionListener="#{schedulingDataManager.listSelected}"
+						immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+
+					<ace:menuItem id="refresh" value="Refresh"
+						actionListener="#{schedulingDataManager.refresh}"
+						icon="ui-icon ui-icon-refresh" immediate="true">
+						<ace:ajax event="activate" execute="@this" />
+					</ace:menuItem>
+
+
+				</ace:menuBar>
+
+				<ace:dataTable id="scheduleTable"
+					value="#{schedulingDataManager.schedulings}" var="schedule"
+					paginator="true" paginatorPosition="both"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,25,50,100" rows="25"
+					stateMap="#{schedulingDataManager.stateMap}"
+					selectionMode="multiple" resizableColumns="true"
+					binding="#{schedulingDataManager.dataTable}"
+					emptyMessage="-- No Schedulings Available --">
+					<ace:ajax event="select" execute="@this" />
+
+					<ace:column id="name" headerText="Name" sortBy="#{schedule.name}"
+						filterBy="#{schedule.name}" filterMatchMode="contains">
+
+
+						<h:panelGrid>
+							<h:outputText id="nameCell" value="#{schedule.name}"
+								styleClass="tooltipTargetStyle" />
+						</h:panelGrid>
+						<ace:tooltip id="tooltip_name_column" for="nameCell"
+							value="#{schedule.name}" showDelay="500" hideDelay="200">
+						</ace:tooltip>
+					</ace:column>
+
+
+					<ace:column id="mode" headerText="Mode"
+						sortBy="#{schedule.modeLabel}" filterBy="#{schedule.modeLabel}"
+						filterMatchMode="exact">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="modeCell" value="#{schedule.modeLabel}"
+							styleClass="#{schedule.styleClass}" />
+					</ace:column>
+
+					<ace:column id="time" headerText="Time" sortBy="#{schedule.cron}"
+						filterBy="#{schedule.cron}" filterMatchMode="contains">
+						<h:outputText id="timeCell" value="#{schedule.cron}" />
+					</ace:column>
+					<ace:column id="cron_variables" headerText="Vars">
+						<h:panelGrid id="icon_grid" columns="2">
+							<h:graphicImage id="java_image" library="images"
+								name="invisible_revert_icon.png"
+								style="height: 30px; width: 30px; "
+								rendered="#{schedule.javaAgentPollable gt 0}" />
+							<h:graphicImage id="bank_image" library="images"
+								name="bankicon.png" style="height: 30px; width: 30px; "
+								rendered="#{schedule.bankHolidayOnly gt 0}" />
+						</h:panelGrid>
+					</ace:column>
+
+					<ace:column id="source" headerText="Source"
+						sortBy="#{schedule.sourceName}" filterBy="#{schedule.sourceName}"
+						filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="sourceCell" value="#{schedule.sourceName}" />
+					</ace:column>
+
+					<ace:column id="target" headerText="Target"
+						sortBy="#{schedule.targetName}" filterBy="#{schedule.targetName}"
+						filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="targetCell" value="#{schedule.targetName}"></h:outputText>
+
+					</ace:column>
+					<ace:column id="description" headerText="Description"
+						sortBy="#{schedule.description}"
+						filterBy="#{schedule.description}" filterMatchMode="contains">
+						<ice:panelGroup style="width:100px;">
+						</ice:panelGroup>
+						<h:outputText id="descCell" value="#{schedule.description}" />
+					</ace:column>
+
+					<ace:column id="details" headerText="Details">
+						<ice:commandButton id="details_button" value="Open in new tab"
+							image="resources/images/openinnewtabicon.jpg"
+							actionListener="#{sessionBean.addTab(schedule)}" immediate="true" />
+					</ace:column>
+				</ace:dataTable>
+			</ace:accordionPane>
+		</ace:accordion>
+	</ace:tabPane>
+</ui:composition>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<h:head>
+	<title>ICEfaces 3</title>
+	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
+</h:head>
+<h:body>
+	<h:form>
+		<ace:tabSet id="login_tab_set" clientSide="false">
+
+			<ace:tabPane id="login_tab" label="Login">
+				<h:panelGrid id="login_grid" columns="2"
+					styleClass="centeredPanelWithBorderSpacingAndLeftJustifiedText">
+					<h:outputLabel id="username_label" for="username_input"
+						value="Username: " />
+					<h:inputText id="username_input" />
+					<h:outputLabel id="password_label" for="password_input"
+						value="Password: " />
+					<h:inputSecret id="password_input" />
+					<ice:commandButton id="login_button" value="Login"
+						action="second.jsf" />
+				</h:panelGrid>
+			</ace:tabPane>
+		</ace:tabSet>
+	</h:form>
+</h:body>
+</html>

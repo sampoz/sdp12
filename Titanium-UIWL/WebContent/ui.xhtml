@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<h:head>
+	<title>Titanic</title>
+	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
+	<link rel="stylesheet" type="text/css" href="resources/css/style.css" />
+</h:head>
+<h:body>
+	<h:form>
+
+		<f:view>
+			<f:event listener="#{sessionBean.validate}" type="preRenderView" />
+		</f:view>
+
+		<ace:tabSet id="sampleTabSet" clientSide="false"
+			binding="#{sessionBean.tabSet}"
+			tabChangeListener="#{sessionBean.tabChange}"
+			selectedIndex="#{sessionBean.selectedIndex}" immediate="true">
+
+			<!-- ======== SCHEDULINGS VIEW ======== -->
+
+			<ui:include src="schedulings-view.xhtml" />
+
+			<!-- ======== INSTANCE LOG VIEW ======== -->
+
+			<ui:include src="instance-log-view.xhtml" />
+
+			<!-- ======== SCHEDULER VIEW ======== -->
+
+			<ui:include src="scheduler-view.xhtml" />
+
+			<!-- divider -->
+			<ace:tabPane label="" disabled="true"
+				rendered="#{sessionBean.user.authenticated}" />
+
+			<!-- ======== DYNAMIC TABS ======== -->
+
+			<ui:include src="dynamic-tabs.xhtml" />
+
+			<!-- divider -->
+			<ace:tabPane label="" disabled="true"
+				rendered="#{sessionBean.user.authenticated}" />
+
+			<!-- ======== HELP ======== -->
+
+			<ui:include src="help.xhtml" />
+
+			<!-- ======== LOG OUT ======== -->
+
+			<ace:tabPane id="log_out" label="Log out"
+				rendered="#{sessionBean.user.authenticated}" />
+
+
+		</ace:tabSet>
+
+		<!-- ========== SUBMIT MONITORS ========= -->
+
+		<ace:submitMonitor for="refresh" activeLabel="Refreshing"
+			autoCenter="true" blockUI="@source" />
+
+		<ace:submitMonitor for="add_scheduling_monitor" activeLabel="Adding"
+			autoCenter="true" blockUI="@source" />
+
+		<ace:submitMonitor for="search_date" blockUI="@source"
+			activeLabel="Searching" />
+
+		<ace:submitMonitor for="tab_confirm_edit" activeLabel="Confirming"
+			autoCenter="true" blockUI="@source" />
+
+		<ace:submitMonitor for="run_schedulings_button" activeLabel="Running"
+			autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="start_scheduler_button" activeLabel="Starting"
+			autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="stop_scheduler_button" activeLabel="Stopping"
+			autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="re_run_schedulings_button"
+			activeLabel="Running" autoCenter="true" blockUI="@all" />
+
+		<ace:submitMonitor for="re_run_all_button" activeLabel="Running"
+			autoCenter="true" blockUI="@all" />
+
+		<!--  ========== DIALOGS ========= -->
+		<ui:include src="dialogs.xhtml" />
+
+	</h:form>
+</h:body>
+</html>

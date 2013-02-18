@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<h:head>
+	<title>Titanic</title>
+	<ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
+</h:head>
+<h:body>
+	<h:form>
+		
+		<f:view>
+			<f:event listener="#{loginManager.validate}" type="preRenderView" />
+		</f:view>
+	
+		<ace:tabSet id="login_tab_set" clientSide="false">
+
+			<ace:tabPane id="login_tab" label="Login">
+				<img src="resources/images/titaniclogo.png" alt="titanic" />
+				<h:panelGrid id="login_grid" columns="2">
+					<h:outputLabel id="username_label" for="username_input"
+						value="AD Username: " />
+					<h:inputText id="username_input" value="#{loginManager.username}" />
+					<h:outputLabel id="password_label" for="password_input"
+						value="AD Password: " />
+					<h:inputSecret id="password_input" value="#{loginManager.password}" />
+					<ice:commandButton id="login_button" value="Login"
+						action="#{loginManager.authenticate}" />
+
+					<ace:submitMonitor for="login_button" activeLabel="Logging in"
+						autoCenter="true" blockUI="@source" sessionExpiredLabel="Session Expired"/>
+				</h:panelGrid>
+			</ace:tabPane>
+		</ace:tabSet>
+	</h:form>
+</h:body>
+</html>

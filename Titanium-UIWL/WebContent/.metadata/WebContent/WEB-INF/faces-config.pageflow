@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13527435947100" configfile="/Titanium-UI/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="index.xhtml" x="770" y="380" id="pf13543845958540" referenceLink="//@navigationRule.3/@navigationCase.0/@toViewId|" outlinks="pf13556615170281 pf13556615170282" inlinks="pf13556615170283 pf13556615170284 pf13556615170285" path="/index.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="second.xhtml" x="554" y="380" id="pf13543845958542" referenceLink="//@navigationRule.3/@navigationCase.1/@toViewId|" outlinks="pf13556615170283 pf13556615170286 pf13556615170287 pf13556615170288" inlinks="pf13556615170286 pf13556615170289 pf135566151702810" path="/second.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="third.xhtml" x="338" y="178" id="pf135566151702811" referenceLink="//@navigationRule.3/@navigationCase.2/@toViewId|" outlinks="pf13556615170284 pf13556615170289 pf135566151702812 pf135566151702813" inlinks="pf13556615170281 pf13556615170287 pf135566151702812 pf135566151702814" path="/third.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="fourth.xhtml" x="122" y="401" id="pf135566151702815" referenceLink="//@navigationRule.3/@navigationCase.3/@toViewId|" outlinks="pf13556615170285 pf135566151702810 pf135566151702814 pf135566151702816" inlinks="pf13556615170282 pf13556615170288 pf135566151702813 pf135566151702816" path="/fourth.xhtml"/>
+  <links id="pf13556615170281" target="pf135566151702811" source="pf13543845958540" outcome="goto3"/>
+  <links id="pf13556615170282" target="pf135566151702815" source="pf13543845958540" outcome="goto4"/>
+  <links id="pf13556615170283" target="pf13543845958540" source="pf13543845958542" outcome="goto1"/>
+  <links id="pf13556615170287" target="pf135566151702811" source="pf13543845958542" outcome="goto3"/>
+  <links id="pf13556615170288" target="pf135566151702815" source="pf13543845958542" outcome="goto4"/>
+  <links id="pf13556615170284" target="pf13543845958540" source="pf135566151702811" outcome="goto1"/>
+  <links id="pf13556615170289" target="pf13543845958542" source="pf135566151702811" outcome="goto2"/>
+  <links id="pf135566151702813" target="pf135566151702815" source="pf135566151702811" outcome="goto4"/>
+  <links id="pf13556615170285" target="pf13543845958540" source="pf135566151702815" outcome="goto1"/>
+  <links id="pf135566151702810" target="pf13543845958542" source="pf135566151702815" outcome="goto2"/>
+  <links id="pf135566151702814" target="pf135566151702811" source="pf135566151702815" outcome="goto3"/>
+  <links id="pf13556615170286" target="pf13543845958542" source="pf13543845958542" outcome="goto2">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+  <links id="pf135566151702812" target="pf135566151702811" source="pf135566151702811" outcome="goto3">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+  <links id="pf135566151702816" target="pf135566151702815" source="pf135566151702815" outcome="goto4">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+</pageflow:Pageflow>

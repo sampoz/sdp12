@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+<!--    <persistence-unit name="manager1" transaction-type="RESOURCE_LOCAL"> -->
+<!--       <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
+<!--       <class>entities.Scheduling</class> -->
+<!--       <class>entities.Composite</class> -->
+<!--       <class>entities.Mode</class> -->
+<!--       <class>entities.Status</class> -->
+<!--       <class>entities.Instance</class> -->
+<!--       <class>entities.Comment</class> -->
+<!--       <class>entities.Backend</class> -->
+<!--       <properties> -->
+<!--       <property name="hibernate.connection.provider_class" value="org.hibernate.connection.DriverManagerConnectionProvider" /> -->
+<!--          <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/> -->
+<!--          <property name="hibernate.connection.url" -->
+<!--                  value="jdbc:oracle:thin:@tfs-sampoz.dyndns.org/XE"/> -->
+<!--        <property name="javax.persistence.jdbc.user" value="GUI_DATA"/> -->
+<!--        <property name="javax.persistence.jdbc.password" value="stalinrulaa"/>punakone.dy.fi/XE GUI_DATA punakone ; old login info -->
+<!--        <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/> -->
+<!--       <property name="hibernate.show_sql" value="true"/> -->
+      
+<!--       </properties> -->
+<!--    </persistence-unit> -->
+
+<persistence-unit name="manager1" transaction-type="JTA">
+  <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+  <jta-data-source>Titanic</jta-data-source>
+  <non-jta-data-source>Titanic</non-jta-data-source>
+  
+  
+  <!-- By default your mappings can be defined in orm.xml file, -->
+  <!-- which is discovered automatically.                       -->                                     
+
+  <!-- Enables auto discovery of persistent classes, -->
+  <!-- otherwise they must be listed using <class>
+  -->
+      <class>entities.Scheduling</class>
+      <class>entities.Composite</class>
+      <class>entities.Mode</class>
+      <class>entities.Status</class>
+      <class>entities.Instance</class>
+      <class>entities.Comment</class>
+      <class>entities.Backend</class>
+      <class>entities.SchedulerService</class>
+<!--    <properties>
+        <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+        <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@tfs-sampoz.dyndns.org/XE"/>
+        <property name="javax.persistence.jdbc.password" value="stalinrulaa"/>
+        <property name="javax.persistence.jdbc.user" value="GUI_DATA"/>
+  </properties> -->
+</persistence-unit>
+
+</persistence>

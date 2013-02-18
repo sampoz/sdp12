@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+        xmlns:ace="http://www.icefaces.org/icefaces/components"
+        xmlns:ice="http://www.icesoft.com/icefaces/component"
+    >
+    <h:head>
+        <title>ICEfaces 3</title>
+        <ice:outputStyle href="./xmlhttp/css/rime/rime.css" />
+    </h:head>
+    <h:body>
+       
+             <h:form id="lol">
+    
+           <ace:dataTable id="carTable"
+                          value="#{dataTableBean.carsData}"
+                          var="car"
+                          paginator="true"
+                          paginatorPosition="bottom"
+                          rows="10">
+                <ace:column id="id" headerText="ID" sortBy="#{car.id}"
+                            filterBy="#{car.id}" filterMatchMode="contains">
+                    <h:outputText id="idCell" value="#{car.id}"/>
+                </ace:column>
+                <ace:column id="name" headerText="Name" sortBy="#{car.name}"
+                            filterBy="#{car.name}" filterMatchMode="contains">
+                    <h:outputText id="nameCell" value="#{car.name}"/>
+                </ace:column>
+                <ace:column id="time" headerText="Time" sortBy="#{car.time}"
+                            filterBy="#{car.time}" filterMatchMode="contains">
+                    <h:outputText id="chassisCell" value="#{car.time}"/>
+                </ace:column>
+                <ace:column id="comment" headerText="Comment" sortBy="#{car.comment}"
+                            filterBy="#{car.comment}" filterMatchMode="contains">
+                    <h:outputText id="weightCell" value="#{car.comment}"/>
+                </ace:column>
+                <ace:column id="server" headerText="Server" sortBy="#{car.server}"
+                            filterBy="#{car.server}" filterMatchMode="contains">
+                    <h:outputText id="accelerationCell" value="#{car.server}"/>
+                </ace:column>
+                
+            </ace:dataTable>
+   
+       			</h:form>
+    </h:body>
+</html>

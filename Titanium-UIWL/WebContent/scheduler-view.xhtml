@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:icecore="http://www.icefaces.org/icefaces/core"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+	<ace:tabPane id="scheduler" label="Scheduler Service"
+		rendered="#{sessionBean.user.authenticated}">
+		<ace:panel header="Status">
+			<h:outputText value="All schedulings are currently stopped."
+				style="font-weight:bold; color:red;"
+				rendered="#{schedulerServiceManager.schedulerStopped}" />
+			<h:outputText value="All schedulings are currently running."
+				style="font-weight:bold;"
+				rendered="#{!schedulerServiceManager.schedulerStopped}" />
+		</ace:panel>
+		<ace:menuBar rendered="#{sessionBean.user.runRights}">>
+			<ace:menuItem id="start_all_schedulings"
+				value="Start all schedulings"
+				actionListener="#{schedulerServiceManager.openStartScheduling()}"
+				icon="ui-icon ui-icon-circle-triangle-e"
+				rendered="#{sessionBean.user.editRights and schedulerServiceManager.schedulerStopped}"
+				immediate="true">
+				<ace:ajax event="activate" execute="@this" />
+			</ace:menuItem>
+			<ace:menuItem id="stop_all_schedulings" value="Stop all schedulings"
+				actionListener="#{schedulerServiceManager.openStopScheduling()}"
+				icon="ui-icon ui-icon-circle-close"
+				rendered="#{sessionBean.user.editRights and !schedulerServiceManager.schedulerStopped}"
+				immediate="true">
+				<ace:ajax event="activate" execute="@this" />
+			</ace:menuItem>
+		</ace:menuBar>
+
+		<ace:dataTable value="#{schedulerServiceManager.auditTrail}"
+			var="audit" paginator="true" paginatorPosition="both"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,25,50,100" rows="10"
+			emptyMessage="-- No Audit Trail --">
+			<ace:column id="audit_creation_date" headerText="Date">
+				<ice:outputText value="#{audit.creationDate}" />
+			</ace:column>
+			<ace:column id="audit_text" headerText="Comment">
+				<h:outputText value="#{audit.text}" />
+			</ace:column>
+		</ace:dataTable>
+	</ace:tabPane>
+</ui:composition>
