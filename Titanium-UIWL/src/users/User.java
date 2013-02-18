@@ -2,7 +2,7 @@ package users;
 
 public interface User {
 	
-	public static final User UNAUTHORISED = new Unauthorised();
+	public static final User UNAUTHORIZED = new Unauthorised();
 	public static final User ADMINISTRATOR = new Administrator();
 	public static final User BUSINESS = new Business();
 

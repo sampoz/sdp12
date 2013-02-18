@@ -1,17 +1,14 @@
 package datalogic;
 
-
-
 import entities.Backend;
 import entities.Comment;
 import entities.Composite;
 import entities.Mode;
 import entities.Scheduling;
 
-/*
+/**
  * Builder class for creating a new scheduling.
  */
-
 public class SchedulingBuilder {
 
 	private String name;
@@ -26,13 +23,11 @@ public class SchedulingBuilder {
 	private String description = "";
 	private String contacts = "";
 	private int id;
-	
 
-	
 	private Comment comment = new Comment();
-	
-	private static final String LINE_BREAK = "\n";
 
+	// Upon creation we need to initialize the composite and backends to avoid
+	// errors in the UI drop down menus
 	public SchedulingBuilder() {
 		initComposite();
 		initBackends();
@@ -41,17 +36,17 @@ public class SchedulingBuilder {
 	private void initComposite() {
 		Composite c = null;
 		int i = 0;
-		while(c == null){
+		while (c == null) {
 			c = ApplicationBean.COMPOSITES.get(i);
 			i++;
 		}
 		this.composite = c;
 	}
-	
-	private void initBackends(){
+
+	private void initBackends() {
 		Backend b = null;
 		int i = 0;
-		while(b == null){
+		while (b == null) {
 			b = ApplicationBean.BACKENDS.get(i);
 			i++;
 		}
@@ -59,13 +54,16 @@ public class SchedulingBuilder {
 		this.source = b;
 	}
 
+	// A scheduling may be passed to the constructor to initialize the fields
+	// accordingly
 	public SchedulingBuilder(Scheduling s) {
 		this.name = s.getName();
 		this.mode = ApplicationBean.MODES.get(s.getStatusID());
 		this.composite = ApplicationBean.COMPOSITES.get(s.getServiceID());
 		this.source = ApplicationBean.BACKENDS.get(s.getSource());
 		this.target = ApplicationBean.BACKENDS.get(s.getTarget());
-		if (this.composite.getJavaAgentPollable() == 1 && s.getJavaAgentPollable() == 1)
+		if (this.composite.getJavaAgentPollable() == 1
+				&& s.getJavaAgentPollable() == 1)
 			this.javaAgentPollable = true;
 
 		if (s.getBankHolidayOnly() == 1)
@@ -77,8 +75,13 @@ public class SchedulingBuilder {
 		this.id = s.getId();
 	}
 
+	/**
+	 * Builds the {@link Scheduling} out of the values in the fields. Values are not
+	 * validated as they are expected to be checked by the form validation.
+	 * 
+	 * @return the new scheduling object
+	 */
 	public Scheduling build() {
-
 		Scheduling s = new Scheduling();
 		s.setName(name);
 		s.setId(id);
@@ -88,7 +91,8 @@ public class SchedulingBuilder {
 			s.setBankHolidayOnly(1);
 		else
 			s.setBankHolidayOnly(0);
-		if (this.composite.getJavaAgentPollable() == 1 && this.javaAgentPollable)
+		if (this.composite.getJavaAgentPollable() == 1
+				&& this.javaAgentPollable)
 			s.setJavaAgentPollable(1);
 		else
 			s.setJavaAgentPollable(0);
@@ -103,31 +107,7 @@ public class SchedulingBuilder {
 		return s;
 	}
 
-	public void sync(Scheduling s) throws IllegalOperationException {
-		s.setName(name);
-		s.setId(id);
-
-		if (this.bankHolidayOnly)
-			s.setBankHolidayOnly(1);
-		else
-			s.setBankHolidayOnly(0);
-		if (this.composite.getJavaAgentPollable() == 1 && this.javaAgentPollable)
-			s.setJavaAgentPollable(1);
-		else
-			s.setJavaAgentPollable(0);
-
-		s.setCron(cron);
-		s.setDescription(description);
-		s.setRequestURL(requestURL);
-		s.setServiceID(this.composite.getId());
-		s.setStatusID(this.mode.getId());
-		s.setSource(this.source.getId());
-		s.setTarget(this.target.getId());
-		s.setContacts(contacts);
-	}
-
-
-	
+	// ==================== GETTERS & SETTERS ====================
 	public String getName() {
 		return name;
 	}
@@ -173,7 +153,7 @@ public class SchedulingBuilder {
 	}
 
 	public void setJavaAgentPollable(boolean javaAgentPollable) {
-			this.javaAgentPollable = javaAgentPollable;
+		this.javaAgentPollable = javaAgentPollable;
 	}
 
 	public boolean isBankHolidayOnly() {
@@ -198,7 +178,7 @@ public class SchedulingBuilder {
 
 	public void setComposite(Composite composite) {
 		this.composite = composite;
-		if(this.composite.getJavaAgentPollable() == 0)
+		if (this.composite.getJavaAgentPollable() == 0)
 			this.javaAgentPollable = false;
 	}
 
@@ -233,8 +213,5 @@ public class SchedulingBuilder {
 	public void setComment(Comment comment) {
 		this.comment = comment;
 	}
-
-
-
 
 }

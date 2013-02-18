@@ -46,9 +46,7 @@
 			paginator="true" paginatorPosition="both"
 			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="10,25,50,100" rows="25"
-			stateMap="#{instanceDataManager.i_stateMap}" selectionMode="multiple"
 			resizableColumns="true" binding="#{instanceDataManager.i_dataTable}" emptyMessage="-- No Instances Available --">
-			<ace:ajax event="select" execute="@this" />
 
 			<ace:column headerText="Details">
 				<ace:expansionToggler />

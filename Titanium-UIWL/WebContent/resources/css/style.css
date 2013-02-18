@@ -1,0 +1,83 @@
+.ui-datatable-odd {
+	background-color: lightgray !important;
+}
+
+.red {
+	color: red;
+	float: left;
+	text-align: left;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.activated {
+	color: green;
+	font-weight: bolder;
+}
+
+.deactivated {
+	color: grey;
+	font-weight: bolder;
+}
+
+.removed {
+	color: red;
+	font-weight: bolder;
+}
+
+.grey {
+	color: grey;
+}
+
+.instanceleft {
+	float: left;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.tabbutton {
+	float: right;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.Skipped {
+	color: grey;
+	font-weight: bolder;
+}
+
+.Failed {
+	color: red;
+	font-weight: bolder;
+}
+
+.ManualHandling {
+	color: orange;
+	font-weight: bolder;
+}
+
+.Running {
+	color: blue;
+	font-weight: bolder;
+}
+
+.Started {
+	color: blue;
+	font-weight: bolder;
+}
+
+.Completed {
+	color: green;
+	font-weight: bolder;
+}
+
+.None {
+	color: grey;
+	font-weight: bolder;
+}
+
+a:link {
+	text-decoration: underline;
+}

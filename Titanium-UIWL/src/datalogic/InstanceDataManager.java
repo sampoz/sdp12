@@ -26,34 +26,48 @@ import entities.Composite;
 import entities.Instance;
 import entities.Mode;
 
+/**
+ * Class for handling data related to {@link Instance} objects and the instance
+ * log view.
+ * 
+ */
 @ManagedBean(name = "instanceDataManager")
 @ViewScoped
 public class InstanceDataManager implements Serializable {
 
+	// Injected bean for the current session
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 
+	/*
+	 * List of instances, instances filtered by status and the binding of the
+	 * corresponding data table
+	 */
 	private DataTable i_dataTable;
-
 	private List<Instance> instances = new ArrayList<Instance>();
-
 	private List<Instance> filteredInstances = new ArrayList<Instance>();
 
-	private RowStateMap i_stateMap = new RowStateMap();
-
+	// Do we show the skipped instances in the UI
 	private boolean showSkipped;
 
+	// Dates for searching instances in between
 	private Date startDate;
 	private Date endDate;
 
-	private Date maxStartDate ;
+	// The most recent dates allowed for start and end
+	private Date maxStartDate;
 	private Date maxEndDate = new Date();
 
+	// Date error visibility and the message
 	private boolean showDateError;
 	private String dateError;
 
+	/*
+	 * After bean creation, initialize the limits for date selections, retrieve
+	 * the list of instances from the session bean and filter them accordingly.
+	 */
 	@PostConstruct
-	public void init() {
+	private void init() {
 
 		Calendar c = Calendar.getInstance();
 		c.setTime(maxEndDate);
@@ -61,13 +75,71 @@ public class InstanceDataManager implements Serializable {
 		this.maxStartDate = c.getTime();
 		this.startDate = this.maxStartDate;
 		this.endDate = this.maxEndDate;
-		
+
 		this.instances = this.session.getInstances();
 		filterInstances();
 	}
 
-	public void runInstances() {
-		System.out.println("run instances");
+	/**
+	 * Refreshes the instances of the session and retrieves them, then filters
+	 * them accordingly.
+	 */
+	public void refreshInstances() {
+		this.instances.clear();
+		this.session.refreshInstances();
+		this.instances = this.session.getInstances();
+		filterInstances();
+	}
+
+	// Filter instances that are shown in the UI
+	private void filterInstances() {
+		if (this.showSkipped)
+			this.filteredInstances = this.instances;
+		else {
+			this.filteredInstances = new ArrayList<Instance>();
+			for (Instance i : this.instances) {
+				if (i.getStatusID() != 6)
+					this.filteredInstances.add(i);
+			}
+		}
+	}
+
+	/**
+	 * Filter the instances specifically by the interval given by the user
+	 */
+	public void filterInstancesByDate() {
+		this.filteredInstances = new ArrayList<Instance>();
+		Map<Date, List<Instance>> map = this.session.getInstancesByDate();
+		for (Date d : map.keySet()) {
+			if (d.after(this.startDate) && d.before(this.endDate)) {
+				for (Instance i : map.get(d)) {
+					if (showSkipped || i.getStatusID() != 6) {
+						this.filteredInstances.add(i);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Called when the boolean check box for showing/hiding skipped instances is changed. Filters the instances in the UI accodringly.
+	 */
+	public void showSkippedMethod(ValueChangeEvent e) {
+		this.showSkipped = Boolean.parseBoolean(e.getNewValue().toString());
+		this.filterInstances();
+	}
+
+	// ==================== GETTERS & SETTERS ====================
+	public void setInstances(List<Instance> instances) {
+		this.instances = instances;
+	}
+
+	public List<Instance> getFilteredInstances() {
+		return filteredInstances;
+	}
+
+	public void setFilteredInstances(List<Instance> filteredInstances) {
+		this.filteredInstances = filteredInstances;
 	}
 
 	public DataTable getI_dataTable() {
@@ -88,64 +160,6 @@ public class InstanceDataManager implements Serializable {
 
 	public List<Instance> getInstances() {
 		return instances;
-	}
-
-	public void refreshInstances() {
-		this.instances.clear();
-		this.session.refreshInstances();
-		this.instances = this.session.getInstances();
-		filterInstances();
-	}
-
-	public void filterInstances() {
-		if (this.showSkipped)
-			this.filteredInstances = this.instances;
-		else {
-			this.filteredInstances = new ArrayList<Instance>();
-			for (Instance i : this.instances) {
-				if (i.getStatusID() != 6)
-					this.filteredInstances.add(i);
-			}
-		}
-	}
-
-	public void filterInstancesByDate() {
-		this.filteredInstances = new ArrayList<Instance>();
-		Map<Date, List<Instance>> map = this.session.getInstancesByDate();
-		for (Date d : map.keySet()) {
-			if (d.after(this.startDate) && d.before(this.endDate)) {
-				for (Instance i : map.get(d)) {
-					if (showSkipped || i.getStatusID() != 6) {
-						this.filteredInstances.add(i);
-					}
-				}
-			}
-		}
-	}
-
-	public void setInstances(List<Instance> instances) {
-		this.instances = instances;
-	}
-
-	public List<Instance> getFilteredInstances() {
-		return filteredInstances;
-	}
-
-	public void setFilteredInstances(List<Instance> filteredInstances) {
-		this.filteredInstances = filteredInstances;
-	}
-
-	public RowStateMap getI_stateMap() {
-		return i_stateMap;
-	}
-
-	public void setI_stateMap(RowStateMap i_stateMap) {
-		this.i_stateMap = i_stateMap;
-	}
-
-	public void showSkippedMethod(ValueChangeEvent e) {
-		this.showSkipped = Boolean.parseBoolean(e.getNewValue().toString());
-		this.filterInstances();
 	}
 
 	public boolean isShowSkipped() {

@@ -31,7 +31,7 @@ import entities.Mode;
 import entities.Scheduling;
 
 /**
- * This class is responsible for all of the actions regarding schedulings and
+ * This class is responsible for all of the actions regarding {@link Scheduling} objects and
  * the scheduling view.
  * 
  */
@@ -520,7 +520,7 @@ public class SchedulingDataManager implements Serializable {
 	public void dateSubmit() {
 
 		try {
-			if (validateDates(this.startDate, this.endDate))
+			if (validateDates(this.startDate, this.endDate));
 				;
 			this.showDateError = false;
 		} catch (IllegalOperationException e) {

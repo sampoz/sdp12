@@ -27,13 +27,13 @@ import entities.Comment;
 import entities.Instance;
 import entities.SchedulerService;
 import entities.Scheduling;
+
 /**
- * This bean holds data the is session spesific or changes often.
- * User authorisation is handled here and also dynamic tabs.
- * These are session spefic information.
- * Schedulings and instances change often during session.
+ * This bean holds data the is session spesific or changes often. User
+ * authorisation is handled here and also dynamic tabs. These are session spefic
+ * information. Schedulings and instances change often during session.
  * 
- *
+ * 
  */
 @ManagedBean(name = "sessionBean")
 @SessionScoped
@@ -42,32 +42,39 @@ public class SessionBean {
 	// Connector to SQL database
 	private DatabaseConnector connector = new DatabaseConnector();
 
-	//lists for schedulings, instances and audittrail
+	// Lists for schedulings, instances and audit trail
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 	private List<Instance> instances = new ArrayList<Instance>();
 	private HashMap<Date, List<Instance>> instancesByDate = new HashMap<Date, List<Instance>>();
 	private List<Comment> auditTrail = new ArrayList<Comment>();
 
-	//Dynamic tab controls
+	// Dynamic tab controls
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
 	private TabSet tabSet;
 	private int selectedIndex = 0;
 
-	// Static tabs are tabs that are always visible: Scheduling tab, Istances tab, Audit log
+	// Static tabs are tabs will always be placed to indexes before any dynamic
+	// tabs: Scheduling tab, Instances
+	// tab and Scheduler Service and a divider tab
 	private static final int STATIC_TABS = 4;
-	private static final int HIDDEN_TABS = 0;
+
+	// Maximum amount of days between this date and the date of an instance for
+	// it to be shown in the instances table
 	public static final int DAYS_AFTER_INSTANCE = 40;
 
+	// Database error visibility and the message
 	private boolean showDatabaseError;
 	private String databaseErrorMessage;
 
-	private User user = User.UNAUTHORISED;
+	// User of this session. Defaults to unauthorized;
+	private User user = User.UNAUTHORIZED;
 
-	/**
-	 * Init SessionBean by loading all Schedulings, Instances and AuditTrail -comments
-	 * to list in SessionBean. These are used handling these items in UI.
-	 * SessionBean calls {@link DatabaseConnector} when editing or adding Schedulings and Comments
-	 * or when updating values in UI.
+	/*
+	 * Init SessionBean by loading all Schedulings, Instances and AuditTrail
+	 * -comments to list in SessionBean. These are used handling these items in
+	 * UI. SessionBean calls {@link DatabaseConnector} when editing or adding
+	 * Schedulings and Comments or when updating values in UI. The instances are
+	 * indexed by their start date to make certain operations in the UI faster.
 	 */
 	private void init() {
 		refreshSchedulings();
@@ -77,9 +84,7 @@ public class SessionBean {
 	}
 
 	/**
-	 * Get all schdedulings from database using 
-	 *  {@link DatabaseConnector}
-	 * 
+	 * Get all schdedulings from database using {@link DatabaseConnector}
 	 */
 	public void refreshSchedulings() {
 		try {
@@ -91,10 +96,11 @@ public class SessionBean {
 	}
 
 	/**
-	 * Add Scheduling using  {@link DatabaseConnector} when user adds scheduling from UI.
+	 * Add Scheduling using {@link DatabaseConnector} when user adds scheduling
+	 * from UI.
 	 * 
 	 * @param s
-	 * @return
+	 * @return true if successful
 	 */
 	public boolean addScheduling(Scheduling s) {
 		try {
@@ -106,10 +112,11 @@ public class SessionBean {
 	}
 
 	/**
-	 * Add comment to database using  {@link DatabaseConnector}
-	 * when user creates new comment
+	 * Add comment to database using {@link DatabaseConnector} when user creates
+	 * new comment
+	 * 
 	 * @param c
-	 * @return
+	 * @return true if successful
 	 */
 	public boolean addComment(Comment c) {
 		try {
@@ -121,10 +128,11 @@ public class SessionBean {
 	}
 
 	/**
-	 * Update Scheduling using  {@link DatabaseConnector} when user edit scheduling from UI.
+	 * Update Scheduling using {@link DatabaseConnector} when user edit
+	 * scheduling from UI.
 	 * 
 	 * @param s
-	 * @return
+	 * @return true if successful
 	 */
 	public boolean updateScheduling(Scheduling s) {
 		try {
@@ -139,10 +147,10 @@ public class SessionBean {
 	 * Get comments from database using {@link DatabaseConnector}
 	 * 
 	 * @param id
-	 * 		Given schedulingId to find matching comment ids
+	 *            Given schedulingId to find matching comment ids
 	 * @param maxResults
-	 * 		Maximium amount of results that will be returned
-	 * @return
+	 *            Maximum amount of results that will be returned
+	 * @return list of retrieved objects
 	 */
 	public List<Comment> getComments(int id, int maxResults) {
 		try {
@@ -152,10 +160,11 @@ public class SessionBean {
 		}
 		return new ArrayList<Comment>();
 	}
+
 	/**
 	 * Get the {@link SchedulergService} using {@link DatabaseConnector}
 	 * 
-	 * @return
+	 * @return the retrieved scheduling service
 	 */
 	public SchedulerService getSchedulingService() {
 		try {
@@ -167,10 +176,12 @@ public class SessionBean {
 	}
 
 	/**
-	 * Changes the SchedulerService state to stopped using {@link DatabaseConnector}
-	 * Called from {@link SchedulerServiceManager}, when users stops Schdeduler from UI
+	 * Changes the SchedulerService state to stopped using
+	 * {@link DatabaseConnector} Called from {@link SchedulerServiceManager},
+	 * when users stops Schdeduler from UI
+	 * 
 	 * @param s
-	 * @return
+	 * @return true if successful
 	 */
 	public boolean stopSchedulingService(SchedulerService s) {
 		try {
@@ -182,10 +193,12 @@ public class SessionBean {
 	}
 
 	/**
-	 * Changes the SchedulerService state to running using {@link DatabaseConnector}
-	 * Called from {@link SchedulerServiceManager}, when users starts Schdeduler from UI
+	 * Changes the SchedulerService state to running using
+	 * {@link DatabaseConnector} Called from {@link SchedulerServiceManager},
+	 * when users starts Schdeduler from UI
+	 * 
 	 * @param s
-	 * @return
+	 * @return true if successful
 	 */
 	public boolean startSchedulingService(SchedulerService s) {
 		try {
@@ -197,7 +210,10 @@ public class SessionBean {
 	}
 
 	/**
-	 * Shows errormessage that tells user about database error.
+	 * Shows error message that tells the user about the database error. Rolls
+	 * back the transaction to allow further database transactions to take
+	 * place.
+	 * 
 	 * @param e
 	 */
 	private void handleSQLException(Exception e) {
@@ -205,7 +221,7 @@ public class SessionBean {
 		this.showDatabaseError = true;
 		this.connector.getManager().getTransaction().rollback();
 	}
-	
+
 	/**
 	 * Closes database error message from UI
 	 */
@@ -225,11 +241,14 @@ public class SessionBean {
 			handleSQLException(e);
 		}
 	}
+
 	/**
-	 *  Called from {@link SchedulerServiceManaver} when updating audit trail in UI, when user start or stops Scheduler.
-	 *  Gets via {@link DatabaseConnector} all comments that have id SchedulerServiceManaver.SCHEDULINGSERVICECOMMENT
+	 * Called from {@link SchedulerServiceManaver} when updating audit trail in
+	 * UI, when user start or stops Scheduler. Gets via
+	 * {@link DatabaseConnector} all comments that have id
+	 * SchedulerServiceManaver.SCHEDULINGSERVICECOMMENT
 	 */
-	 
+
 	public void refreshAuditTrail() {
 		try {
 			this.auditTrail.clear();
@@ -239,8 +258,13 @@ public class SessionBean {
 		}
 	}
 
-	//TODO comments
-	public void indexInstances() {
+	/*
+	 * Method for indexing all the instances of the session by their start date.
+	 * Certain operations such as searching for failed runs and instances in a
+	 * certain interval are much faster when they can retrieve a list of
+	 * instances by each date. Time should be always O(n).
+	 */
+	private void indexInstances() {
 		this.instancesByDate.clear();
 		long time = System.currentTimeMillis();
 		System.out.println("Indexing instances for optimization...");
@@ -262,11 +286,13 @@ public class SessionBean {
 				+ " instances indexed. Time spent was: " + time
 				+ " milliseconds. ");
 	}
+
 	/**
-	 * Authenticat user and set user type with {@link User} interface
+	 * Authenticate user and set user type with {@link User} interface
+	 * 
 	 * @param username
 	 * @param password
-	 * @return
+	 * @return true if successful
 	 */
 	public boolean authenticate(String username, String password) {
 
@@ -278,9 +304,9 @@ public class SessionBean {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Check if user is authenticad. If not redirect to login page
+	 * Check if user is authenticated. If not, redirect to login page.
 	 */
 	public void validate() {
 		if (!this.user.isAuthenticated()) {
@@ -290,10 +316,12 @@ public class SessionBean {
 					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
 		}
 	}
+
 	/**
-	 * Create new {@link SchedulingTab} instance for given Scheduling.
-	 * Get maximum amount of comments and instances visible.
-	 * Set new tab as opened tab.
+	 * Create new {@link SchedulingTab} instance for given Scheduling. Get
+	 * maximum amount of comments and instances visible. Set new tab as opened
+	 * tab.
+	 * 
 	 * @param s
 	 * @throws ParseException
 	 */
@@ -314,15 +342,15 @@ public class SessionBean {
 	}
 
 	/**
-	 * Get all instances for the given {@link Scheduling}.
-	 * Used when constructing {@link SchedulingTab} when user opens the tab in UI.
+	 * Get all instances for the given {@link Scheduling}. Used when
+	 * constructing {@link SchedulingTab} when user opens the tab in UI.
 	 * 
 	 * @param s
-	 * 		Given Scheduling
+	 *            Given Scheduling
 	 * @param daysAgo
-	 * 		From now to how many days to past the instaces are returned
-	 * @return
-	 * 		List of instances for the given Scheduling for the given time range
+	 *            From now to how many days to past the instaces are returned
+	 * @return List of instances for the given Scheduling for the given time
+	 *         range
 	 * @throws ParseException
 	 */
 	private List<Instance> getInstancesForScheduling(Scheduling s, int daysAgo)
@@ -343,12 +371,13 @@ public class SessionBean {
 		}
 		return temp;
 	}
+
 	/**
-	 * Remove current tab from UI and tabslist.
-	 * Set the first static tab Scheduling tab as current tab
-	 * Called from UI when user closes tab.
+	 * Remove current tab from UI and tabslist. Set the first static tab
+	 * Scheduling tab as current tab Called from UI when user closes tab.
+	 * 
 	 * @param t
-	 * 		index of the tab to close
+	 *            index of the tab to close
 	 */
 	public void removeCurrent(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
@@ -357,9 +386,10 @@ public class SessionBean {
 		pane.setInView(false);
 		tabs.remove(t);
 	}
+
 	/**
-	 * Remove (close) all Scheduling tabs and set the first static tab as current tab.
-	 * Called from UI when user closes all the tabs.
+	 * Remove (close) all Scheduling tabs and set the first static tab as
+	 * current tab. Called from UI when user closes all the tabs.
 	 */
 	public void removeAllTabs() {
 		this.tabSet.setSelectedIndex(0);
@@ -371,8 +401,8 @@ public class SessionBean {
 	}
 
 	/**
-	 * Remove(close) all Scheduling tabs, but the current and set the first static tab as current tab.
-	 * Called from UI when user closes all the tabs.
+	 * Remove(close) all Scheduling tabs, but the current and set the first
+	 * static tab as current tab. Called from UI when user closes all the tabs.
 	 */
 	public void removeOtherTabs(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
@@ -393,21 +423,19 @@ public class SessionBean {
 	 * Update the selected index in backend when tab is changed in frontend.
 	 * 
 	 * If tab is changed to logout. Logout is handled in faces-config.xml
+	 * 
 	 * @param e
 	 * @throws IOException
 	 */
 	public void tabChange(ValueChangeEvent e) throws IOException {
 		this.selectedIndex = (Integer) e.getNewValue();
-		if ((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1
-				- HIDDEN_TABS) {
+		if ((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1) {
 
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.getApplication().getNavigationHandler()
 					.handleNavigation(ctx, null, ApplicationBean.LOGOUT);
 		}
 	}
-
-
 
 	// ==================== GETTERS & SETTERS ====================
 	public User getUser() {
