@@ -53,6 +53,12 @@ public class SessionBean {
 
 	private User user = User.UNAUTHORISED;
 
+	/**
+	 * Init SessionBean by loading all Schedulings, Instances and AuditTrail -comments
+	 * to list in SessionBean. These are used handling these items in UI.
+	 * SessionBean calls {@link DatabaseConnector} when editing or adding Schedulings and Comments
+	 * or when updating values in UI.
+	 */
 	private void init() {
 		refreshSchedulings();
 		refreshInstances();
@@ -60,6 +66,11 @@ public class SessionBean {
 		indexInstances();
 	}
 
+	/**
+	 * Get all schdedulings from database using 
+	 *  {@link DatabaseConnector}
+	 * 
+	 */
 	public void refreshSchedulings() {
 		try {
 			this.schedulings.clear();
@@ -69,6 +80,12 @@ public class SessionBean {
 		}
 	}
 
+	/**
+	 * Add Scheduling using  {@link DatabaseConnector} when user adds scheduling from UI.
+	 * 
+	 * @param s
+	 * @return
+	 */
 	public boolean addScheduling(Scheduling s) {
 		try {
 			return this.connector.addScheduling(s);
@@ -78,6 +95,12 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Add comment to database using  {@link DatabaseConnector}
+	 * when user creates new comment
+	 * @param c
+	 * @return
+	 */
 	public boolean addComment(Comment c) {
 		try {
 			return this.connector.addComment(c);
@@ -87,6 +110,12 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Update Scheduling using  {@link DatabaseConnector} when user edit scheduling from UI.
+	 * 
+	 * @param s
+	 * @return
+	 */
 	public boolean updateScheduling(Scheduling s) {
 		try {
 			return this.connector.updateScheduling(s);
@@ -96,6 +125,15 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Get comments from database using {@link DatabaseConnector}
+	 * 
+	 * @param id
+	 * 		Given schedulingId to find matching comment ids
+	 * @param maxResults
+	 * 		Maximium amount of results that will be returned
+	 * @return
+	 */
 	public List<Comment> getComments(int id, int maxResults) {
 		try {
 			return this.connector.getComments(id, maxResults);
@@ -104,7 +142,11 @@ public class SessionBean {
 		}
 		return new ArrayList<Comment>();
 	}
-
+	/**
+	 * Get the {@link SchedulergService} using {@link DatabaseConnector}
+	 * 
+	 * @return
+	 */
 	public SchedulerService getSchedulingService() {
 		try {
 			return this.connector.getSchedulingService();
