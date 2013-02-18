@@ -7,7 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
+/**
+ * Status entity is for Soa_composite_status -table.
+ * Table holds only so many rows that there is different statuses.
+ * Value is a string that is shown in UI for corresponding id.
+ * 
+ *
+ */
 @Entity
 @Table(name="SOA_COMPOSITE_STATUS")
 public class Status {
@@ -20,9 +26,11 @@ public class Status {
 	@Column(name="VALUE")
 	private String value;
 	
+	//Not used in application
 	@Column(name="ORDER_NUM")
 	private int orderNum;
 	
+	//Not used in application
 	@Column(name="IMAGE")
 	private String image;
 
