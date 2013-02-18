@@ -83,10 +83,6 @@ public class SchedulingDataManager implements Serializable {
 	private boolean addSchedulingSucces = false;
 
 
-	private boolean parse_cron_visible = false;
-
-	private String parsed_cron;
-	
 
 	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
 	public static String ADD_SUCCESS_MSG = "Scheduling was added succesfully.";
@@ -271,6 +267,8 @@ public class SchedulingDataManager implements Serializable {
 								t.getScheduling().getServiceID())
 								.getDestinationURL(), t.getScheduling().getId());
 				System.out.println("HttpConnector returned: " + http_response);
+				
+				//Check the http response and open a dialog with corresponding message
 				switch (http_response) {
 				case HttpConnector.RESPONSE_OK:
 					setEditSchedulingMessage(EDIT_SUCCESS_MSG);
@@ -676,20 +674,7 @@ public class SchedulingDataManager implements Serializable {
 		System.out.print(e.getNewValue().toString()+ "is a new value");
 	}
 
-	public void parseCron(SchedulingTab tab) {
-		String s = tab.getBuilder().getCron();
-		try {
-			CronExpression cron = new CronExpression(s);
-			setParsed_cron(cron.toString());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		setParse_cron_visible(true);
-	}
-	public void closeParsed_cron(){
-		setParse_cron_visible(false);
-	}
+
 	public void closeRunReport() {
 		this.responseDialogVisible = false;
 	}
@@ -919,20 +904,6 @@ public class SchedulingDataManager implements Serializable {
 		this.addSchedulingSucces = addSchedulingSucces;
 	}
 
-	public boolean getParse_cron_visible() {
-		return parse_cron_visible;
-	}
 
-	public void setParse_cron_visible(boolean parse_cron_visible) {
-		this.parse_cron_visible = parse_cron_visible;
-	}
-
-	public String getParsed_cron() {
-		return parsed_cron;
-	}
-
-	public void setParsed_cron(String parsed_cron) {
-		this.parsed_cron = parsed_cron;
-	}
 
 }

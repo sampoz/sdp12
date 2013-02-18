@@ -203,13 +203,4 @@
 	</ace:dialog>
 
 
-	<ace:dialog visible="#{schedulingDataManager.parse_cron_visible}"
-		rendered="#{schedulingDataManager.parse_cron_visible}" id="parse_cron"
-		widgetVar="parse_cron" header="Parsed Cron" width="330" height="150"
-		closable="false">
-		<ice:outputText value="#{schedulingDataManager.parsed_cron}"
-			escape="false" />
-		<h:commandButton value="Ok" immediate="true"
-			actionListener="#{schedulingDataManager.closeParsed_cron}" />
-	</ace:dialog>
 </ui:composition>

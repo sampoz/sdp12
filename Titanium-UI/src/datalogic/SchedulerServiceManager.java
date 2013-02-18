@@ -17,6 +17,7 @@ import javax.faces.validator.ValidatorException;
 import entities.Comment;
 import entities.SchedulerService;
 
+
 @ManagedBean(name = "schedulerServiceManager")
 @ViewScoped
 public class SchedulerServiceManager implements Serializable{
@@ -24,13 +25,14 @@ public class SchedulerServiceManager implements Serializable{
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 
+	//comment when starting/stopping scheduler
 	private Comment commentStarting = new Comment();
 	private Comment commentStopping = new Comment();
 
-	private Boolean confirmButtonDisabled = false;
-
+	//scheduling comment are saved with number 0
 	private static int SCHEDULINGSERVICECOMMENT;
 
+	//all comments that belong to stopping or starting schedulings
 	private List<Comment> auditTrail;
 
 	private HttpConnector httpConnector = new HttpConnector();
@@ -38,11 +40,10 @@ public class SchedulerServiceManager implements Serializable{
 	private boolean stopCommentError = false;
 	private boolean startCommentError = false;
 
+	//are the schedulers stopped
 	private boolean schedulerStopped = false;
-	
 
 	private boolean stop_dialog_visible = false;
-
 	private boolean start_dialog_visible = false;
 
 
@@ -52,6 +53,9 @@ public class SchedulerServiceManager implements Serializable{
 		this.refreshState();
 	}
 	
+	/**
+	 * Ask {@link SchedulerService} is the scheduler running or not and update the state.
+	 */
 	private void refreshState(){
 		if(this.session.getSchedulingService().getStandby() == SchedulerService.RUNNING){
 			this.schedulerStopped = false;
@@ -64,13 +68,12 @@ public class SchedulerServiceManager implements Serializable{
 		this.auditTrail = this.session.getAuditTrail();
 	}
 
+	//Methods for controlling dialogs
 	public void openStartScheduling(){
 		setStart_dialog_visible(true);
-		System.out.print("start"+ start_dialog_visible);
 	}
 	public void openStopScheduling(){
 		setStop_dialog_visible(true);
-		System.out.print("stop"+ stop_dialog_visible);
 	}
 	public void closeStartScheduling(){
 		setStart_dialog_visible(false);
@@ -78,6 +81,11 @@ public class SchedulerServiceManager implements Serializable{
 	public void closeStopScheduling(){
 		setStop_dialog_visible(false);
 	}
+	
+	/** Stop all schedulings. 
+ 	* If comment is less than 6 or more than 500 chars open a error dialog.
+	* If comment is okay, change the value of {@link SchedulerService} -table and make http-call 
+	*/
 	public void stopAllSchedules() {
 		if (this.getCommentStopping().getText().length() < 6
 				|| this.getCommentStopping().getText().length() > 500) {
@@ -85,21 +93,28 @@ public class SchedulerServiceManager implements Serializable{
 		}
 		else if (session.stopSchedulingService(
 				ApplicationBean.SCHEDULERSERVICE)) {
+			
+			// Close dialog
 			this.stopCommentError = false;
-			
-			System.out.println("http success "
-					+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE
-							.getUrl()));
-			
+			closeStopScheduling();
+
+			// Set state and refresh audit trail
 			this.refreshState();
 			this.refreshAuditTrail();
-			closeStopScheduling();
+			
+			//Create new comment 
 			this.commentStopping.setText("Scheduler was stopped. Reason: " + this.commentStopping.getText());
 			if (this.submitComment(this.getCommentStopping()))
 				this.setCommentStopping(new Comment());
 		}
 	}
 
+/**
+ * 
+ * Start all schedulings. 
+ * If comment is less than 6 or more than 500 chars open a error dialog.
+ * If comment is okay, change the value of {@link SchedulerService} -table and make http-call 
+ */
 	public void startAllSchedules() {
 		if (this.getCommentStarting().getText().length() < 6
 				|| this.getCommentStarting().getText().length() > 500) {
@@ -122,25 +137,16 @@ public class SchedulerServiceManager implements Serializable{
 
 	}
 
-	public void ValidateInput(FacesContext context, UIComponent component,
-			Object value) {
-		if (value.toString().length() >= 6 || value.toString().length() > 500) {
-			this.confirmButtonDisabled = false;
-		} else {
-			this.confirmButtonDisabled = true;
-			FacesMessage msg = new FacesMessage(
-					"Text must be at least 6 chars long but less than 500");
-			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-			throw new ValidatorException(msg);
-		}
-	}
 
+
+	/**
+	 * Add date and SCHEDULINGSERVICECOMMENT -id to comment.
+	 * If the database connector returns true from the persisting of the
+	 * comment we can safely add it to the table
+	 */
 	private boolean submitComment(Comment c) {
 		c.setCreationDate(ApplicationBean.DATE_FORMAT.format(new Date()));
 		c.setSchedulingID(SCHEDULINGSERVICECOMMENT);
-
-		// If the database connector returns true from the persisting of the
-		// comment we can safely add it to the table
 
 		if (this.session.addComment(c)) {
 			refreshComments();
@@ -191,14 +197,6 @@ public class SchedulerServiceManager implements Serializable{
 
 	public void setCommentStopping(Comment commentStopping) {
 		this.commentStopping = commentStopping;
-	}
-
-	public Boolean getConfirmButtonDisabled() {
-		return confirmButtonDisabled;
-	}
-
-	public void setConfirmButtonDisabled(Boolean confirmButtonDisabled) {
-		this.confirmButtonDisabled = confirmButtonDisabled;
 	}
 
 	public Comment getCommentStarting() {
