@@ -9,7 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
+/**
+ * Mode entity is for the Scheduling_status table.
+ * Scheduling_status gives the labels for the scheduling_Status ints.
+ * Labels are easier for the user than Status (magic) numbers.
+ * 
+ *
+ */
 @Entity
 @Table(name="SCHEDULING_STATUS")
 public class Mode implements Serializable {

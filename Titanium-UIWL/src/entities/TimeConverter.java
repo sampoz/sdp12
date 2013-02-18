@@ -3,7 +3,11 @@ package entities;
 import java.text.ParseException;
 
 import org.quartz.impl.triggers.CronTriggerImpl;
-
+/**
+ *  
+ *
+ *
+ */
 public class TimeConverter {
 
 	public static String convertCronToTime(String Cron) {
