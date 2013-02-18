@@ -13,6 +13,10 @@ import javax.persistence.Id;
 @Entity
 @Table(name = "SCHEDULING")
 public class Scheduling implements Serializable {
+	
+	public static final int ENABLED = 1;
+	public static final int DISABLED = 2;
+	public static final int REMOVED = 3;
 
 	@Id
 	@GeneratedValue(generator = "increment")

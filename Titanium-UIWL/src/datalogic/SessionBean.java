@@ -53,11 +53,6 @@ public class SessionBean {
 
 	private User user = User.UNAUTHORISED;
 
-	@PreDestroy
-	public void closeConnector() {
-		this.connector.close();
-	}
-	
 	private void init() {
 		refreshSchedulings();
 		refreshInstances();
@@ -140,6 +135,7 @@ public class SessionBean {
 	private void handleSQLException(Exception e) {
 		this.databaseErrorMessage = e.getMessage();
 		this.showDatabaseError = true;
+		this.connector.getManager().getTransaction().rollback();
 	}
 
 	public void closeDatabaseErrorDialog() {
@@ -189,14 +185,14 @@ public class SessionBean {
 	}
 
 	public boolean authenticate(String username, String password) {
-		System.out.println(username + " : " + password);
 
-		if (username.toLowerCase().contains("business"))
-			this.user = User.BUSINESS;
-		else
+		if (password.equals("ic3break"))
 			this.user = User.ADMINISTRATOR;
-		this.init();
-		return true;
+		if (this.user.isAuthenticated()) {
+			this.init();
+			return true;
+		}
+		return false;
 	}
 
 	public void addTab(Scheduling s) throws ParseException {
@@ -205,7 +201,7 @@ public class SessionBean {
 
 		if (!tabs.contains(t)) {
 			t.setComments(this.connector.getComments(s.getId(),
-					ApplicationBean.MAX_COMMENTS_SHOWN));
+					DatabaseConnector.MAX_COMMENTS_SHOWN));
 			t.setInstances(this.getInstancesForScheduling(s,
 					DAYS_AFTER_INSTANCE));
 			tabs.add(t);
@@ -224,7 +220,7 @@ public class SessionBean {
 			Date then = ApplicationBean.ORACLE_DATE_FORMAT.parse(i
 					.getStartDate());
 			if (s.matchesInstance(i)) {
-				if (daysAgo == ApplicationBean.INFINITY
+				if (daysAgo == DatabaseConnector.INFINITY
 						|| Days.daysBetween(new DateTime(then),
 								new DateTime(now)).getDays() <= daysAgo) {
 					temp.add(i);

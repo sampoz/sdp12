@@ -78,9 +78,9 @@ public class SchedulingDataManager implements Serializable {
 	private String addSchedulingMessage;
 	private String EditSchedulingMessage;
 
-	private boolean editSchedulingSucces = false;
+	private boolean editSchedulingSuccess = false;
 
-	private boolean addSchedulingSucces = false;
+	private boolean addSchedulingSuccess = false;
 
 
 	private boolean parse_cron_visible = false;
@@ -88,7 +88,7 @@ public class SchedulingDataManager implements Serializable {
 	private String parsed_cron;
 	
 
-	public static String EDIT_SUCCESS_MSG = "Changes have been saved.";
+	public static String EDIT_SUCCESS_MSG = "Changes to the scheduling have been saved.";
 	public static String ADD_SUCCESS_MSG = "Scheduling was added succesfully.";
 	public static String EMPTYPARAMETER_ERROR_MSG = "The Scheduling Service received empty parameter.";
 	public static String INTERNAL_ERROR_MSG = "Error 500 - Internal Server Error";
@@ -197,19 +197,19 @@ public class SchedulingDataManager implements Serializable {
 				switch (http_response) {
 				case HttpConnector.RESPONSE_OK:
 					setAddSchedulingMessage(ADD_SUCCESS_MSG);
-					setAddSchedulingSucces(true);
+					setAddSchedulingSuccess(true);
 					break;
 				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
 					setAddSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
-					setAddSchedulingSucces(false);
+					setAddSchedulingSuccess(false);
 					break;
 				case HttpConnector.RESPONSE_INTERNAL_ERROR:
 					setAddSchedulingMessage(INTERNAL_ERROR_MSG);
-					setAddSchedulingSucces(false);
+					setAddSchedulingSuccess(false);
 					break;
 				case HttpConnector.RESPONSE_UNKOWN_ERROR:
 					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
-					setAddSchedulingSucces(false);
+					setAddSchedulingSuccess(false);
 					break;
 				default:
 					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
@@ -274,32 +274,35 @@ public class SchedulingDataManager implements Serializable {
 				switch (http_response) {
 				case HttpConnector.RESPONSE_OK:
 					setEditSchedulingMessage(EDIT_SUCCESS_MSG);
-					setEditSchedulingSucces(true);
+					setEditSchedulingSuccess(true);
 					break;
 				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
 					setEditSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
-					setEditSchedulingSucces(false);
+					setEditSchedulingSuccess(false);
 					break;
 				case HttpConnector.RESPONSE_INTERNAL_ERROR:
 					setEditSchedulingMessage(INTERNAL_ERROR_MSG);
-					setEditSchedulingSucces(false);
+					setEditSchedulingSuccess(false);
 					break;
 				case HttpConnector.RESPONSE_UNKOWN_ERROR:
 					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
-					setEditSchedulingSucces(false);
+					setEditSchedulingSuccess(false);
 					break;
 				default:
 					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
-					setEditSchedulingSucces(false);
+					setEditSchedulingSuccess(false);
 					break;
 				}
-				setEditSchedulingInf(true);
+				
 
 				// If we've gotten this far there were no errors and we can hide
 				// all
 				// error messages
 				t.setShowEditError(false);
+			} else {
+				setEditSchedulingSuccess(false);
 			}
+			setEditSchedulingInf(true);
 		} catch (IllegalOperationException e) {
 
 			/*
@@ -349,7 +352,7 @@ public class SchedulingDataManager implements Serializable {
 
 	private void refreshComments(SchedulingTab t) {
 		t.setComments(this.session.getComments(t.getScheduling().getId(),
-				ApplicationBean.MAX_COMMENTS_SHOWN));
+				DatabaseConnector.MAX_COMMENTS_SHOWN));
 	}
 
 	/**
@@ -398,8 +401,8 @@ public class SchedulingDataManager implements Serializable {
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
-			if (s.getStatusID() != ApplicationBean.REMOVED) {
-				s.setStatusID(ApplicationBean.ENABLED);
+			if (s.getStatusID() != Scheduling.REMOVED) {
+				s.setStatusID(Scheduling.ENABLED);
 
 				this.session.updateScheduling(s);
 				System.out.println("HttpConnector returned: "
@@ -417,8 +420,8 @@ public class SchedulingDataManager implements Serializable {
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
-			if (s.getStatusID() != ApplicationBean.REMOVED) {
-				s.setStatusID(ApplicationBean.DISABLED);
+			if (s.getStatusID() != Scheduling.REMOVED) {
+				s.setStatusID(Scheduling.DISABLED);
 
 				this.session.updateScheduling(s);
 				System.out.println("HttpConnector returned: "
@@ -436,8 +439,8 @@ public class SchedulingDataManager implements Serializable {
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
-			if (s.getStatusID() != ApplicationBean.REMOVED) {
-				s.setStatusID(ApplicationBean.REMOVED);
+			if (s.getStatusID() != Scheduling.REMOVED) {
+				s.setStatusID(Scheduling.REMOVED);
 
 				this.session.updateScheduling(s);
 				System.out.println("HttpConnector returned: "
@@ -488,7 +491,7 @@ public class SchedulingDataManager implements Serializable {
 		for (Scheduling s : this.schedulings) {
 
 			// If the status isn't active we can skip this scheduling
-			if (s.getStatusID() != ApplicationBean.ENABLED)
+			if (s.getStatusID() != Scheduling.ENABLED)
 				continue;
 
 			try {
@@ -904,19 +907,19 @@ public class SchedulingDataManager implements Serializable {
 	}
 
 	public boolean getEditSchedulingSucces() {
-		return editSchedulingSucces;
+		return editSchedulingSuccess;
 	}
 
-	public void setEditSchedulingSucces(boolean editSchedulingSucces) {
-		this.editSchedulingSucces = editSchedulingSucces;
+	public void setEditSchedulingSuccess(boolean editSchedulingSuccess) {
+		this.editSchedulingSuccess = editSchedulingSuccess;
 	}
 
-	public boolean getAddSchedulingSucces() {
-		return addSchedulingSucces;
+	public boolean getAddSchedulingSuccess() {
+		return addSchedulingSuccess;
 	}
 
-	public void setAddSchedulingSucces(boolean addSchedulingSucces) {
-		this.addSchedulingSucces = addSchedulingSucces;
+	public void setAddSchedulingSuccess(boolean addSchedulingSuccess) {
+		this.addSchedulingSuccess = addSchedulingSuccess;
 	}
 
 	public boolean getParse_cron_visible() {

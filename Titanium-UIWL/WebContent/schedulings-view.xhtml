@@ -46,59 +46,28 @@
 					<h:outputLabel id="sourceLabel" for="sourceInput" value="Source: "
 						style="font-weight: bolder" />
 					<ice:selectOneMenu id="sourceInput"
-						value="#{schedulingDataManager.builder.source}"
-						partialSubmit="true">
+						value="#{schedulingDataManager.builder.source}">
 						<f:selectItems value="#{schedulingDataManager.backends}" />
 						<f:converter converterId="entityConverter" />
 					</ice:selectOneMenu>
-
-					<h:outputText />
-					<h:outputText />
-
-					<ace:panel>
-						<h:panelGrid columns="2">
-							<ice:outputText value="Description: " style="font-weight: bolder" />
-
-							<ice:outputText
-								value="#{schedulingDataManager.builder.source.description}" />
-							<ice:outputText value="Contacts: " style="font-weight: bolder" />
-							<ice:outputText
-								value="#{schedulingDataManager.builder.source.contacts}" />
-						</h:panelGrid>
-					</ace:panel>
 
 					<h:outputText />
 
 					<h:outputLabel id="targetLabel" for="targetInput" value="Target: "
 						style="font-weight: bolder" />
 					<ice:selectOneMenu id="targetInput"
-						value="#{schedulingDataManager.builder.target}"
-						partialSubmit="true">
+						value="#{schedulingDataManager.builder.target}">
 						<f:selectItems value="#{schedulingDataManager.backends}" />
 						<f:converter converterId="entityConverter" />
 					</ice:selectOneMenu>
 
 					<h:outputText />
-					<h:outputText />
 
-					<ace:panel>
-						<h:panelGrid columns="2">
-							<ice:outputText value="Description: " style="font-weight: bolder" />
-							<ice:outputText
-								value="#{schedulingDataManager.builder.target.description}" />
-							<ice:outputText value="Contacts: " style="font-weight: bolder" />
-							<ice:outputText
-								value="#{schedulingDataManager.builder.target.contacts}" />
-						</h:panelGrid>
-					</ace:panel>
-
-					<h:outputText />
 
 					<h:outputLabel id="compositeLabel" for="compositeInput"
 						value="Composite: " style="font-weight: bolder" />
 					<ice:selectOneMenu id="compositeInput"
-						value="#{schedulingDataManager.builder.composite}"
-						partialSubmit="true">
+						value="#{schedulingDataManager.builder.composite}">
 						<f:selectItems value="#{schedulingDataManager.composites}" />
 						<f:converter converterId="entityConverter" />
 					</ice:selectOneMenu>
@@ -149,7 +118,7 @@
 					<ace:textAreaEntry id="commentInput"
 						value="#{schedulingDataManager.builder.comment.text}" rows="3"
 						required="true" requiredMessage="Comment field is required.">
-						<f:validateLength maximum="4000"/>
+						<f:validateLength maximum="4000" />
 					</ace:textAreaEntry>
 					<h:message for="commentInput" errorClass="ui-state-error-text" />
 
