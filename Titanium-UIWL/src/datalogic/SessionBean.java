@@ -27,18 +27,28 @@ import entities.Comment;
 import entities.Instance;
 import entities.SchedulerService;
 import entities.Scheduling;
-
+/**
+ * This bean holds data the is session spesific or changes often.
+ * User authorisation is handled here and also dynamic tabs.
+ * These are session spefic information.
+ * Schedulings and instances change often during session.
+ * 
+ *
+ */
 @ManagedBean(name = "sessionBean")
 @SessionScoped
 public class SessionBean {
 
+	// Connector to SQL database
 	private DatabaseConnector connector = new DatabaseConnector();
 
+	//lists for schedulings, instances and audittrail
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 	private List<Instance> instances = new ArrayList<Instance>();
 	private HashMap<Date, List<Instance>> instancesByDate = new HashMap<Date, List<Instance>>();
 	private List<Comment> auditTrail = new ArrayList<Comment>();
 
+	//Dynamic tab controls
 	private List<SchedulingTab> tabs = new ArrayList<SchedulingTab>();
 	private TabSet tabSet;
 	private int selectedIndex = 0;
