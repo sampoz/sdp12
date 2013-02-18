@@ -19,7 +19,7 @@
 		</ace:textAreaEntry>
 		<h:panelGrid columns="2">
 			<h:commandButton id="start_scheduler_button" value="Confirm"
-				actionListener="#{schedulerServiceManager.startAllSchedules()}"/>
+				actionListener="#{schedulerServiceManager.startAllSchedules()}" />
 			<h:commandButton value="Cancel"
 				actionListener="#{schedulerServiceManager.closeStartScheduling()}" />
 		</h:panelGrid>
@@ -39,24 +39,24 @@
 		</h:panelGrid>
 		<h:panelGrid columns="2">
 			<h:commandButton id="stop_scheduler_button" value="Confirm"
-				actionListener="#{schedulerServiceManager.stopAllSchedules()}"
-				/>
+				actionListener="#{schedulerServiceManager.stopAllSchedules()}" />
 			<h:commandButton value="Cancel"
 				actionListener="#{schedulerServiceManager.closeStopScheduling()}" />
 		</h:panelGrid>
 	</ace:dialog>
 
-		<ace:dialog visible="#{schedulerServiceManager.startCommentError or schedulerServiceManager.stopCommentError}"
-			rendered="#{schedulerServiceManager.startCommentError or schedulerServiceManager.stopCommentError}" modal="true"
-			resizable="false" header="Report" closable="false">
-			<h:panelGrid columns="1">
-				<h:outputText
-					value="Comment field must be at least 6 chars and 500 at most"
-					styleClass="red" immediate="true"/>
-			</h:panelGrid>
-			<ice:commandButton value="Close"
-				actionListener="#{schedulerServiceManager.closeComment}" />
-		</ace:dialog>
+	<ace:dialog
+		visible="#{schedulerServiceManager.startCommentError or schedulerServiceManager.stopCommentError}"
+		rendered="#{schedulerServiceManager.startCommentError or schedulerServiceManager.stopCommentError}"
+		modal="true" resizable="false" header="Report" closable="false">
+		<h:panelGrid columns="1">
+			<h:outputText
+				value="Comment field must be at least 6 chars and 500 at most"
+				styleClass="red" immediate="true" />
+		</h:panelGrid>
+		<ice:commandButton value="Close"
+			actionListener="#{schedulerServiceManager.closeComment}" />
+	</ace:dialog>
 
 	<ace:confirmationDialog id="run_confirmation" widgetVar="run_conf"
 		message="Are you sure you want to run following schedulings?"
@@ -159,7 +159,7 @@
 	<ace:dialog visible="#{schedulingDataManager.addSchedulingInf}"
 		rendered="#{schedulingDataManager.addSchedulingInf}"
 		id="add_confirmation" widgetVar="add_conf" header="Adding scheduling"
-		width="330" height="150" closable="false">
+		width="330" height="150" closable="false" resizable="false">
 		<ice:outputText value="#{schedulingDataManager.addSchedulingMessage}"
 			escape="false"
 			rendered="#{schedulingDataManager.addSchedulingSucces}" />
@@ -175,7 +175,7 @@
 
 	<ace:dialog visible="#{schedulingDataManager.editSchedulingInf}"
 		rendered="#{schedulingDataManager.editSchedulingInf}"
-		id="edit_confirmation" widgetVar="edit_conf"
+		resizable="false" id="edit_confirmation" widgetVar="edit_conf"
 		header="Editing scheduling" width="330" height="150" closable="false">
 		<ice:outputText value="#{schedulingDataManager.editSchedulingMessage}"
 			escape="false"
@@ -192,7 +192,7 @@
 
 	<ace:dialog visible="#{sessionBean.showDatabaseError}"
 		rendered="#{sessionBean.showDatabaseError}" header="Database Error"
-		width="330" height="150">
+		width="330" height="150" closable="false">
 
 		<h:outputText value="#{sessionBean.databaseErrorMessage}" />
 		<h:panelGrid columns="2">

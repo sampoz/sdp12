@@ -4,7 +4,7 @@
     <wls:context-root>Titanium-UIWL</wls:context-root>
     <wls:jsp-descriptor>
         <wls:keepgenerated>true</wls:keepgenerated>
-        <wls:working-dir>C:\sdp1\.metadata\.plugins\org.eclipse.wst.server.core\tmp5\test\work\Titanium-UIWL</wls:working-dir>
+        <wls:working-dir>D:\oepe\workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\heppulogic\work\Titanium-UIWL</wls:working-dir>
         <wls:debug>true</wls:debug>
     </wls:jsp-descriptor>
 </wls:weblogic-web-app>

@@ -69,17 +69,10 @@
 							style="font-weight: bolder" />
 						<ace:textEntry id="tab_cron_input" value="#{tab.builder.cron}"
 							size="73" required="true"  maxlength="64"
-							requiredMessage="Cron field is required."
-							immediate="true">
-
-
+							requiredMessage="Cron field is required."							>
 							<f:validator validatorId="cronValidator" />
 						</ace:textEntry>
-						<ice:commandButton id="parse_cron" value="Show date"
-						actionListener="#{schedulingDataManager.parseCron(tab)}" immediate="true"/>
-						<h:outputText />
 						<h:message for="tab_cron_input" errorClass="ui-state-error-text" />
-						<h:outputText />
 						
 						<h:outputLabel for="tab_mode_input" value="Mode: "
 							style="font-weight: bolder" />

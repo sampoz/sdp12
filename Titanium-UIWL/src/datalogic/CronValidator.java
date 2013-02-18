@@ -10,14 +10,19 @@ import javax.faces.validator.ValidatorException;
 
 import org.quartz.impl.triggers.CronTriggerImpl;
 
-public class CronValidator implements Validator{
+/**
+ * 
+ * Simple class for validating Crons from the UI.
+ * 
+ */
+public class CronValidator implements Validator {
 
 	@Override
-	public void validate(FacesContext context, UIComponent component, Object value)
-			throws ValidatorException {
+	public void validate(FacesContext context, UIComponent component,
+			Object value) throws ValidatorException {
 		try {
 			CronTriggerImpl triggerImpl = new CronTriggerImpl();
-			triggerImpl.setCronExpression((String)value);
+			triggerImpl.setCronExpression((String) value);
 		} catch (ParseException e) {
 			FacesMessage msg = new FacesMessage();
 			msg.setDetail("Invalid Cron");

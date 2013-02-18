@@ -17,54 +17,48 @@ import entities.Mode;
 import entities.SchedulerService;
 import entities.Status;
 
+/**
+ * The purpose of this bean is to hold all data that is shared among the users
+ * and is changed rarely. Thread safety of the hash maps is not a concern since
+ * they are never edited outside of this class.
+ * 
+ */
 @ManagedBean(name = "applicationBean", eager = true)
 @ApplicationScoped
 public class ApplicationBean implements Serializable {
 
+	/*
+	 * Entities that are rarely changed are retrieved from the database during
+	 * the startup of the application and stored here in hash maps to reduce SQL
+	 * queries. Retrieval is done in O(1) time.
+	 */
 	public static final HashMap<Integer, Backend> BACKENDS = new HashMap<Integer, Backend>();
 	public static final HashMap<Integer, Mode> MODES = new HashMap<Integer, Mode>();
 	public static final HashMap<Integer, Composite> COMPOSITES = new HashMap<Integer, Composite>();
 	public static final HashMap<Integer, Status> STATUSES = new HashMap<Integer, Status>();
 
-	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
-	
+	// Strings used by navigation rules in faces-config.xml
 	public static final String UI_REDIRECT = "redirect_to_ui";
 	public static final String LOGIN_REDIRECT = "redirect_to_login";
 	public static final String LOGIN = "login";
 	public static final String LOGOUT = "logout";
-	public static SchedulerService SCHEDULERSERVICE;
-	
+
+	public static SchedulerService SCHEDULER_SERVICE;
+
 	public TimeZone timezone;
-	// Hard coded styleClasses for different modes
+
+	// Style classes for different modes in the UI. Defines the coloring for
+	// mode letters.
+	public static final HashMap<Integer, String> MODE_STYLES = new HashMap<Integer, String>();
+
+	// Hard coding styleClasses for different modes
 	{
 		MODE_STYLES.put(1, "activated");
 		MODE_STYLES.put(2, "deactivated");
 		MODE_STYLES.put(3, "removed");
 	}
 
-	public static final int ENABLED = 1;
-	public static final int DISABLED = 2;
-	public static final int REMOVED = 3;
-	
-	public static final int INFINITY = -1;
-	public static final int MAX_COMMENTS_SHOWN = 5;
-
-	// PLACEHOLDER
-	public String html = "<object>"
-			+ "<param name=\"movie\"value=\"http://myinstants.com/media/bt/genericInstant_event.swf\" />"
-			+ "<param name=\"wmode\" value=\"transparent\">"
-			+ "<param name=\"flashVars\"	value=\"color=ff0000&sound=http://myinstants.com/media/sounds/inceptionbutton.mp3\">"
-			+ "<embed src=\"http://myinstants.com/media/bt/genericInstant_event.swf\" flashVars=\"color=ff0000&sound=http://myinstants.com/media/sounds/inceptionbutton.mp3\" wmode=\"transparent\" width=\"100\" height=\"100\" />"
-			+ "</object>";
-
-	public String getHtml() {
-		return html;
-	}
-
-	public void setHtml(String html) {
-		this.html = html;
-	}
-
+	// Dateformats for date conversion between the database and the UI
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"dd-MM-yyyy HH:mm:ss");
 
@@ -72,6 +66,10 @@ public class ApplicationBean implements Serializable {
 			"yyyy-dd-MM HH:mm:ss");
 
 	public ApplicationBean() {
+
+		/*
+		 * The constructor initializes the data in ApplicationBean
+		 */
 
 		DatabaseConnector tempConnector = new DatabaseConnector();
 
@@ -95,10 +93,9 @@ public class ApplicationBean implements Serializable {
 		}
 
 		this.timezone = Calendar.getInstance().getTimeZone();
-		
-		SCHEDULERSERVICE = tempConnector.getSchedulingService();
-		
-//		tempConnector.close();
+
+		SCHEDULER_SERVICE = tempConnector.getSchedulingService();
+
 	}
 
 	public TimeZone getTimezone() {

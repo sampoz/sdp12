@@ -84,11 +84,11 @@ public class SchedulerServiceManager implements Serializable{
 			this.stopCommentError = true;
 		}
 		else if (session.stopSchedulingService(
-				ApplicationBean.SCHEDULERSERVICE)) {
+				ApplicationBean.SCHEDULER_SERVICE)) {
 			this.stopCommentError = false;
 			
 			System.out.println("http success "
-					+ httpConnector.standby(ApplicationBean.SCHEDULERSERVICE
+					+ httpConnector.standby(ApplicationBean.SCHEDULER_SERVICE
 							.getUrl()));
 			
 			this.refreshState();
@@ -106,10 +106,10 @@ public class SchedulerServiceManager implements Serializable{
 			this.startCommentError = true;
 		}
 		else if (session.startSchedulingService(
-				ApplicationBean.SCHEDULERSERVICE)) {
+				ApplicationBean.SCHEDULER_SERVICE)) {
 			this.startCommentError = false;
 			System.out.println("http success "
-					+ httpConnector.runall(ApplicationBean.SCHEDULERSERVICE
+					+ httpConnector.runall(ApplicationBean.SCHEDULER_SERVICE
 							.getUrl()));
 			
 			this.refreshState();
