@@ -28,19 +28,18 @@ public class SchedulingTab {
 	//List of comments related to this Scheduling
 	private List<Comment> comments = new ArrayList<Comment>();
 	
-	private Comment addComment = new Comment();
-	
+	// Builder for the construction of edited Scheduling
 	private SchedulingBuilder builder;
 	
-	private boolean showEditError;
-	private String editErrorMessage;
-
 	public SchedulingTab(){}
 	
 	public Scheduling getScheduling() {
 		return scheduling;
 	}
 	
+	/**
+	 * Reset the builder to the state of the scheduling
+	 */
 	public void reset(){
 		this.builder = new SchedulingBuilder(this.scheduling);
 	}
@@ -56,6 +55,7 @@ public class SchedulingTab {
 		this.builder = new SchedulingBuilder(scheduling);
 	}
 	
+	// ==================== GETTERS & SETTERS ====================
 	public List<Instance> getInstances() {
 		return instances;
 	}
@@ -70,14 +70,6 @@ public class SchedulingTab {
 	
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
-	}
-
-	public Comment getAddComment() {
-		return addComment;
-	}
-
-	public void setAddComment(Comment addComment) {
-		this.addComment = addComment;
 	}
 
 	public SchedulingBuilder getBuilder() {
@@ -149,24 +141,8 @@ public class SchedulingTab {
 		this.name = name;
 	}
 	
-	public boolean isShowEditError() {
-		return showEditError;
-	}
-
-	public void setShowEditError(boolean showEditError) {
-		this.showEditError = showEditError;
-	}
-
-	public String getEditErrorMessage() {
-		return editErrorMessage;
-	}
-
-	public void setEditErrorMessage(String editErrorMessage) {
-		this.editErrorMessage = editErrorMessage;
-	}
-
 	/**
-	 * Check if Scheduling are equal. In case trying to open Schedulingtab
+	 * Check if Scheduling are equal. In case trying to open SchedulingTab
 	 * that is already open.
 	 */
 	@Override

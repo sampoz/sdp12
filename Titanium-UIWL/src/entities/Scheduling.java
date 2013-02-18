@@ -10,6 +10,13 @@ import datalogic.ApplicationBean;
 
 import javax.persistence.Id;
 
+/**
+ * Scheduling entity stands for Scheduling -table. 
+ * Scheduling holds information for its status, cron (when should it be run), target and source etc.
+ * When scheduling is run it creates {@link Instace}
+ *
+ */
+
 @Entity
 @Table(name = "SCHEDULING")
 public class Scheduling implements Serializable {
