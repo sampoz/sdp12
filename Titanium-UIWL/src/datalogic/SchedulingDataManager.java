@@ -30,70 +30,94 @@ import entities.Instance;
 import entities.Mode;
 import entities.Scheduling;
 
+/**
+ * This class is responsible for all of the actions regarding schedulings and
+ * the scheduling view.
+ * 
+ */
 @ManagedBean(name = "schedulingDataManager")
 @ViewScoped
 public class SchedulingDataManager implements Serializable {
 
+	// Injected bean for the current session
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean session;
 
+	// Builder for constructing a new scheduling in the UI
 	private SchedulingBuilder builder;
 
+	/*
+	 * List of schedulings, the selected rows and the binding of the
+	 * corresponding data table are naturally in this class.
+	 */
 	private List<Scheduling> schedulings = new ArrayList<Scheduling>();
 	private RowStateMap stateMap = new RowStateMap();
 	private DataTable dataTable;
 
+	/*
+	 * All the needed shared data is retrieved from the application and stored
+	 * in the fields of this bean so it can be used in the UI.
+	 */
 	private Collection<Mode> modes = ApplicationBean.MODES.values();
 	private Collection<Composite> composites = ApplicationBean.COMPOSITES
 			.values();
 	private Collection<Backend> backends = ApplicationBean.BACKENDS.values();
 
-	private boolean showAddError;
-	private String addErrorMessage;
-
+	// HTTP handler
 	private HttpConnector httpConnector = new HttpConnector();
 
+	// Fields for the visibility of a response dialog and the message to be
+	// shown.
 	private boolean responseDialogVisible;
 	private List<String> runReport = new ArrayList<String>();
 
+	// List of schedulings to be shown in confirmation dialogs constructed into
+	// one string.
 	private String schedulingList;
 
+	// Dates for searching failed runs in between
 	private Date startDate;
 	private Date endDate;
 
+	// The most recent dates allowed for start and end
 	private Date maxStartDate;
 	private Date maxEndDate = new Date();
 
-	private String dateError;
+	// Date error visibility and the message
 	private boolean showDateError = false;
+	private String dateError;
 
+	// List of matching runs in the failed runs section
 	private List<Run> matching = new ArrayList<Run>();
 	private RowStateMap runStateMap = new RowStateMap();
 
+	// Max number of characters of the scheduling name shown in confirmation
+	// dialogs
 	private static final int SCHEDULING_NAME_LEN = 30;
 
+	// Should addScheduling or EditScheduling dialog box be visible
 	private boolean addSchedulingInf = false;
 	private boolean EditSchedulingInf = false;
 
+	// What is the error message
 	private String addSchedulingMessage;
-	private String EditSchedulingMessage;
+	private String editSchedulingMessage;
 
+	// Was the adding or editing scheduling successful
 	private boolean editSchedulingSuccess = false;
-
 	private boolean addSchedulingSuccess = false;
 
-
-	private boolean parse_cron_visible = false;
-
-	private String parsed_cron;
-	
-
+	// Http response messages
 	public static String EDIT_SUCCESS_MSG = "Changes to the scheduling have been saved.";
 	public static String ADD_SUCCESS_MSG = "Scheduling was added succesfully.";
 	public static String EMPTYPARAMETER_ERROR_MSG = "The Scheduling Service received empty parameter.";
 	public static String INTERNAL_ERROR_MSG = "Error 500 - Internal Server Error";
 	public static String UNKNOWN_ERROR_MSG = "ClientProtocolException or an IOException";
 
+	/*
+	 * After bean creation, initialize the limits for date selections, create
+	 * the builder and retrieve the list of schedulings from the session bean.
+	 */
 	@PostConstruct
 	private void init() {
 
@@ -109,11 +133,19 @@ public class SchedulingDataManager implements Serializable {
 		this.schedulings = this.session.getSchedulings();
 	}
 
+	/**
+	 * Re-initialize the scheduling builder so the fields in the UI are cleared
+	 * as well.
+	 */
 	public void clearScheduling() {
 		this.builder = new SchedulingBuilder();
-		System.out.println(this.builder.getContacts());
 	}
 
+	/**
+	 * Whenever a confirmation dialog for selected schedulings is to be shown,
+	 * the selected schedulings are listed through this method. The list is
+	 * constructed into a single string and then used in the dialog.
+	 */
 	public void listSelected() {
 		if (stateMap.getSelected().isEmpty()) {
 			this.schedulingList = "None";
@@ -126,6 +158,11 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
+	/**
+	 * Whenever a confirmation dialog for selected runs is to be shown, the
+	 * selected runs are listed through this method. The list is constructed
+	 * into a single string and then used in the dialog.
+	 */
 	public void listSelectedRuns() {
 		if (runStateMap.getSelected().isEmpty()) {
 			this.schedulingList = "None";
@@ -138,6 +175,11 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
+	/**
+	 * Whenever a confirmation dialog for all runs is to be shown, the runs are
+	 * listed through this method. The list is constructed into a single string
+	 * and then used in the dialog.
+	 */
 	public void listAllRuns() {
 		if (this.matching.isEmpty()) {
 			this.schedulingList = "None";
@@ -150,6 +192,7 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
+	// Trims the name of the scheduling provided
 	private String getTrimmedName(String fullName) {
 		if (fullName.length() <= SCHEDULING_NAME_LEN)
 			return fullName + "<br/>";
@@ -163,94 +206,87 @@ public class SchedulingDataManager implements Serializable {
 	 */
 	public void addScheduling() {
 
-		try {
+		/*
+		 * Build the Scheduling from values inserted to the builder. Values are
+		 * validated in the UI so none of them need to be checked here.
+		 */
+		Scheduling s = this.builder.build();
+
+		// If the database connector returns true from the persisting of
+		// Scheduling we can safely add it to the table and continue
+		if (this.session.addScheduling(s)) {
+			this.schedulings.add(s);
 
 			/*
-			 * Build the Scheduling from values inserted to the builder. Values
-			 * are validated within the builder and an IllegalOperationException
-			 * will be thrown if the values are invalid
+			 * There must be a comment in the builder, which will be added right
+			 * away. It will be connected by the ID of previously added
+			 * Scheduling so its important to add the Comment after the
+			 * Scheduling has been persisted and an ID has been assigned to it.
 			 */
-			Scheduling s = this.builder.build();
+			this.submitCommentFromAdd(s);
 
-			// If the database connector returns true from the persisting of
-			// Scheduling we can safely add it to the table
-			if (this.session.addScheduling(s)) {
-				this.schedulings.add(s);
+			// HTTP request to inform the correct service about the added
+			// scheduling
+			int http_response = httpConnector.addId(ApplicationBean.COMPOSITES
+					.get(s.getServiceID()).getDestinationURL(), s.getId());
 
-				/*
-				 * If there is some text in addComment, we'll add it straight
-				 * away. It will be connected by the ID of previously added
-				 * Scheduling so its important to add the Comment after the
-				 * Scheduling has been persisted and an ID has been assigned to
-				 * it.
-				 */
-
-				this.submitCommentFromAdd(s);
-
-				// Http request, consult Hanzki for any details
-				int http_response = httpConnector.addId(
-						ApplicationBean.COMPOSITES.get(s.getServiceID())
-								.getDestinationURL(), s.getId());
-
-				System.out.println("HttpConnector returned: " + http_response);
-
-				switch (http_response) {
-				case HttpConnector.RESPONSE_OK:
-					setAddSchedulingMessage(ADD_SUCCESS_MSG);
-					setAddSchedulingSuccess(true);
-					break;
-				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
-					setAddSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
-					setAddSchedulingSuccess(false);
-					break;
-				case HttpConnector.RESPONSE_INTERNAL_ERROR:
-					setAddSchedulingMessage(INTERNAL_ERROR_MSG);
-					setAddSchedulingSuccess(false);
-					break;
-				case HttpConnector.RESPONSE_UNKOWN_ERROR:
-					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
-					setAddSchedulingSuccess(false);
-					break;
-				default:
-					setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
-					break;
-				}
-				setAddSchedulingInf(true);
-
-				this.builder = new SchedulingBuilder();
-
-				// If we've gotten this far, there were no errors and we can
-				// hide
-				// all error messages
-				showAddError = false;
-
+			// Show the correct message in the UI based on the response
+			switch (http_response) {
+			case HttpConnector.RESPONSE_OK:
+				setAddSchedulingMessage(ADD_SUCCESS_MSG);
+				setAddSchedulingSuccess(true);
+				break;
+			case HttpConnector.RESPONSE_EMPTY_PARAMETER:
+				setAddSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+				setAddSchedulingSuccess(false);
+				break;
+			case HttpConnector.RESPONSE_INTERNAL_ERROR:
+				setAddSchedulingMessage(INTERNAL_ERROR_MSG);
+				setAddSchedulingSuccess(false);
+				break;
+			case HttpConnector.RESPONSE_UNKOWN_ERROR:
+				setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+				setAddSchedulingSuccess(false);
+				break;
+			default:
+				setAddSchedulingMessage(UNKNOWN_ERROR_MSG);
+				break;
 			}
-		} catch (IllegalOperationException e) {
 
-			/*
-			 * An error was thrown during the validation of the Scheduling: we
-			 * set the error message to be shown in Add Scheduling section and
-			 * set the visibility to true
-			 */
-			addErrorMessage = e.getMessage();
-			showAddError = true;
+			// Initialize a new builder
+			this.builder = new SchedulingBuilder();
+
+		} else {
+			// Something went wrong with the persisting of the scheduling
+			setAddSchedulingSuccess(false);
 		}
+
+		// Set message visible
+		setAddSchedulingInf(true);
 	}
 
+	/**
+	 * Method to be called from the UI when a {@link Scheduling} is to be edited
+	 * within a {@link SchedulingTab}
+	 */
 	public void confirmEdit(SchedulingTab t) {
 
-		try {
+		/*
+		 * Build the new version of the Scheduling from values inserted to the
+		 * builder. Values are validated in the UI so none of them need to be
+		 * checked here.
+		 */
+		Scheduling n = t.getBuilder().build();
 
-			/*
-			 * Retrieve the SchedulingBuilder corresponding to the id of
-			 * Scheduling passed as a parameter from the UI and build it.
-			 * Validation is carried out normally within the builder
-			 */
-			Scheduling n = t.getBuilder().build();
-			if (n.equals(t.getScheduling())) {
-				System.out.println("No changes");
-				return;
-			}
+		if (n.equals(t.getScheduling())) {
+			// No changes
+			return;
+		}
+
+		// If the database connector returns true from the persisting of
+		// Scheduling we can safely continue
+		if (this.session.updateScheduling(n)) {
+
 			/*
 			 * In order to refresh the DataTable we need to "brute force" the
 			 * change by removing the unedited Scheduling and adding the newly
@@ -259,67 +295,63 @@ public class SchedulingDataManager implements Serializable {
 			this.schedulings.remove(t.getScheduling());
 			this.schedulings.add(n);
 
-			if (this.session.updateScheduling(n)) {
-
-				this.submitCommentFromEdit(t);
-
-				t.setScheduling(n);
-				// Http request, consult Hanzki for any details
-
-				int http_response = httpConnector
-						.editId(ApplicationBean.COMPOSITES.get(
-								t.getScheduling().getServiceID())
-								.getDestinationURL(), t.getScheduling().getId());
-				System.out.println("HttpConnector returned: " + http_response);
-				switch (http_response) {
-				case HttpConnector.RESPONSE_OK:
-					setEditSchedulingMessage(EDIT_SUCCESS_MSG);
-					setEditSchedulingSuccess(true);
-					break;
-				case HttpConnector.RESPONSE_EMPTY_PARAMETER:
-					setEditSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
-					setEditSchedulingSuccess(false);
-					break;
-				case HttpConnector.RESPONSE_INTERNAL_ERROR:
-					setEditSchedulingMessage(INTERNAL_ERROR_MSG);
-					setEditSchedulingSuccess(false);
-					break;
-				case HttpConnector.RESPONSE_UNKOWN_ERROR:
-					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
-					setEditSchedulingSuccess(false);
-					break;
-				default:
-					setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
-					setEditSchedulingSuccess(false);
-					break;
-				}
-				
-
-				// If we've gotten this far there were no errors and we can hide
-				// all
-				// error messages
-				t.setShowEditError(false);
-			} else {
-				setEditSchedulingSuccess(false);
-			}
-			setEditSchedulingInf(true);
-		} catch (IllegalOperationException e) {
-
 			/*
-			 * An error was thrown during the validation of the edited
-			 * Scheduling: we set the error message to be shown in Edit section
-			 * and set the visibility to true
+			 * There must be a comment in the builder, which will be added right
+			 * away. It will be connected by the ID of previously edited
+			 * Scheduling
 			 */
-			t.setEditErrorMessage(e.getMessage());
-			t.setShowEditError(true);
+			this.submitCommentFromEdit(t);
+
+			// Set the scheduling of the tab to the edited one
+			t.setScheduling(n);
+
+			// HTTP request to inform the correct service about the edited
+			// scheduling
+			int http_response = httpConnector.editId(ApplicationBean.COMPOSITES
+					.get(t.getScheduling().getServiceID()).getDestinationURL(),
+					t.getScheduling().getId());
+
+			switch (http_response) {
+			case HttpConnector.RESPONSE_OK:
+				setEditSchedulingMessage(EDIT_SUCCESS_MSG);
+				setEditSchedulingSuccess(true);
+				break;
+			case HttpConnector.RESPONSE_EMPTY_PARAMETER:
+				setEditSchedulingMessage(EMPTYPARAMETER_ERROR_MSG);
+				setEditSchedulingSuccess(false);
+				break;
+			case HttpConnector.RESPONSE_INTERNAL_ERROR:
+				setEditSchedulingMessage(INTERNAL_ERROR_MSG);
+				setEditSchedulingSuccess(false);
+				break;
+			case HttpConnector.RESPONSE_UNKOWN_ERROR:
+				setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
+				setEditSchedulingSuccess(false);
+				break;
+			default:
+				setEditSchedulingMessage(UNKNOWN_ERROR_MSG);
+				setEditSchedulingSuccess(false);
+				break;
+			}
+
+		} else {
+			// Something went wrong with the database
+			setEditSchedulingSuccess(false);
 		}
+		setEditSchedulingInf(true);
 
 	}
 
+	/**
+	 * Reset the scheduling builder in the provided tab to the initial values
+	 * 
+	 * @param t
+	 */
 	public void resetEdit(SchedulingTab t) {
 		t.reset();
 	}
 
+	// Submit a comment when a new scheduling is added
 	private void submitCommentFromAdd(Scheduling s) {
 		this.builder.getComment().setSchedulingID(s.getId());
 		this.builder.getComment().setCreationDate(
@@ -329,14 +361,10 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
+	// Submit a comment when a scheduling is edited
 	private void submitCommentFromEdit(SchedulingTab t) {
 		if (this.submitComment(t.getBuilder().getComment(), t))
 			t.getBuilder().setComment((new Comment()));
-	}
-
-	public void submitNewComment(SchedulingTab t) {
-		if (this.submitComment(t.getAddComment(), t))
-			t.setAddComment(new Comment());
 	}
 
 	private boolean submitComment(Comment c, SchedulingTab t) {
@@ -350,6 +378,7 @@ public class SchedulingDataManager implements Serializable {
 		return false;
 	}
 
+	// Refresh comments of a tab
 	private void refreshComments(SchedulingTab t) {
 		t.setComments(this.session.getComments(t.getScheduling().getId(),
 				DatabaseConnector.MAX_COMMENTS_SHOWN));
@@ -390,40 +419,52 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
-	// TODO Comments
+	/**
+	 * Method for running the selected schedules.
+	 */
 	public void runSelectedSchedules() {
 		run(stateMap.getSelected());
 	}
 
-	// TODO comments
+	/**
+	 * Method for changing the mode of the selected schedules to active unless
+	 * they have been removed.
+	 */
 	public void resumeSelected() {
 
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
+			// If the status is removed we'll skip the scheduling
 			if (s.getStatusID() != Scheduling.REMOVED) {
 				s.setStatusID(Scheduling.ENABLED);
 
 				this.session.updateScheduling(s);
-				System.out.println("HttpConnector returned: "
-						+ httpConnector.editId(
-								ApplicationBean.COMPOSITES
-										.get(s.getServiceID())
-										.getDestinationURL(), s.getId()));
+
+				// HTTP request to inform the service about the change
+				httpConnector.editId(
+						ApplicationBean.COMPOSITES.get(s.getServiceID())
+								.getDestinationURL(), s.getId());
 			}
 		}
 	}
 
-	// TODO comments
+	/**
+	 * Method for changing the mode of the selected schedules to deactivated
+	 * unless they have been removed.
+	 */
 	public void holdSelected() {
 
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
+			// If the status is removed we'll skip the scheduling
 			if (s.getStatusID() != Scheduling.REMOVED) {
 				s.setStatusID(Scheduling.DISABLED);
 
 				this.session.updateScheduling(s);
+
+				// HTTP request to inform the service about the change
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES
@@ -433,16 +474,21 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
-	// TODO comments
+	/**
+	 * Method for changing the mode of the selected schedules to removed.
+	 */
 	public void removeSelected() {
 
 		for (Object rowData : stateMap.getSelected()) {
 			Scheduling s = (Scheduling) rowData;
 
+			// If the status is removed we'll skip the scheduling
 			if (s.getStatusID() != Scheduling.REMOVED) {
 				s.setStatusID(Scheduling.REMOVED);
 
 				this.session.updateScheduling(s);
+
+				// HTTP request to inform the service about the change
 				System.out.println("HttpConnector returned: "
 						+ httpConnector.editId(
 								ApplicationBean.COMPOSITES
@@ -564,12 +610,14 @@ public class SchedulingDataManager implements Serializable {
 				}
 
 			} catch (ParseException e) {
-				// The CRON was invalid
+				// The CRON was invalid, just ignore it as it has been manually
+				// imported (UI doesn't allow invalid Crons to be added)
 			}
 		}
 
 	}
 
+	// Validate that the given interval is valid
 	private boolean validateDates(Date start, Date end)
 			throws IllegalOperationException {
 		boolean error = false;
@@ -617,6 +665,9 @@ public class SchedulingDataManager implements Serializable {
 			return null;
 	}
 
+	/**
+	 * Deselect all selected runs in the failed runs section
+	 */
 	public void deselectAllRuns() {
 		Collection<RowState> allRows = runStateMap.values();
 
@@ -625,6 +676,10 @@ public class SchedulingDataManager implements Serializable {
 		}
 	}
 
+	/**
+	 * Run all schedulings corresponding to selected runs in the failed runs
+	 * section
+	 */
 	public void runSelectedRuns() {
 		List<Scheduling> schedulings = new ArrayList<Scheduling>();
 		for (Object r : runStateMap.getSelected()) {
@@ -634,6 +689,9 @@ public class SchedulingDataManager implements Serializable {
 		run(schedulings);
 	}
 
+	/**
+	 * Run all schedulings corresponding to all runs in the failed runs section
+	 */
 	public void runAllRuns() {
 		List<Scheduling> schedulings = new ArrayList<Scheduling>();
 		for (Run r : this.matching) {
@@ -643,6 +701,8 @@ public class SchedulingDataManager implements Serializable {
 		run(schedulings);
 	}
 
+	// Run the list of schedulings provided and construct a response message for
+	// the dialog.
 	private void run(List<Scheduling> schedulings) {
 		this.runReport.clear();
 		int succesfulRuns = 0;
@@ -675,32 +735,24 @@ public class SchedulingDataManager implements Serializable {
 			this.runReport.add("No schedulings were run.");
 		this.responseDialogVisible = true;
 	}
-	public void updateCron(ValueChangeEvent e){
-		System.out.print(e.getNewValue().toString()+ "is a new value");
-	}
-
-	public void parseCron(SchedulingTab tab) {
-		String s = tab.getBuilder().getCron();
-		try {
-			CronExpression cron = new CronExpression(s);
-			setParsed_cron(cron.toString());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		setParse_cron_visible(true);
-	}
-	public void closeParsed_cron(){
-		setParse_cron_visible(false);
-	}
+	
+	/**
+	 * Close run report dialog.
+	 */
 	public void closeRunReport() {
 		this.responseDialogVisible = false;
 	}
-
+	
+	/**
+	 * Close add new scheduling report dialog.
+	 */
 	public void closeAddSchedulingInf() {
 		this.addSchedulingInf = false;
 	}
-
+	
+	/**
+	 * Close edit scheduling report dialog.
+	 */
 	public void closeEditSchedulingInf() {
 		this.EditSchedulingInf = false;
 	}
@@ -738,20 +790,8 @@ public class SchedulingDataManager implements Serializable {
 		this.stateMap = stateMap;
 	}
 
-	public boolean isShowAddError() {
-		return showAddError;
-	}
-
 	public void setShowAddError(boolean addError) {
 		// Cannot be set from the UI but the setter has to exist
-	}
-
-	public String getAddErrorMessage() {
-		return addErrorMessage;
-	}
-
-	public void setAddErrorMessage(String addErrorMessage) {
-		this.addErrorMessage = addErrorMessage;
 	}
 
 	public DataTable getDataTable() {
@@ -899,11 +939,11 @@ public class SchedulingDataManager implements Serializable {
 	}
 
 	public String getEditSchedulingMessage() {
-		return EditSchedulingMessage;
+		return editSchedulingMessage;
 	}
 
 	public void setEditSchedulingMessage(String editSchedulingMessage) {
-		EditSchedulingMessage = editSchedulingMessage;
+		this.editSchedulingMessage = editSchedulingMessage;
 	}
 
 	public boolean getEditSchedulingSucces() {
@@ -920,22 +960,6 @@ public class SchedulingDataManager implements Serializable {
 
 	public void setAddSchedulingSuccess(boolean addSchedulingSuccess) {
 		this.addSchedulingSuccess = addSchedulingSuccess;
-	}
-
-	public boolean getParse_cron_visible() {
-		return parse_cron_visible;
-	}
-
-	public void setParse_cron_visible(boolean parse_cron_visible) {
-		this.parse_cron_visible = parse_cron_visible;
-	}
-
-	public String getParsed_cron() {
-		return parsed_cron;
-	}
-
-	public void setParsed_cron(String parsed_cron) {
-		this.parsed_cron = parsed_cron;
 	}
 
 }

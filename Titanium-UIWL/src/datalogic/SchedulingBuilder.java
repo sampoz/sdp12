@@ -77,60 +77,7 @@ public class SchedulingBuilder {
 		this.id = s.getId();
 	}
 
-	public boolean validate() throws IllegalOperationException {
-		String message = "";
-		boolean error = false;
-		if (this.name == null || this.name.isEmpty() || this.name.length() < 4) {
-			error = true;
-			message += "Name must be at least four characters long." + LINE_BREAK;
-		}
-		
-		if (this.name != null && !this.name.isEmpty() && this.name.length() < 4) {
-			error = true;
-			message += "Name has to be at least 4 characters!" + LINE_BREAK;
-		}
-		
-		if (this.mode == null) {
-			error = true;
-			message += "Mode was not selected!" + LINE_BREAK;
-		}
-		if (this.composite == null) {
-			error = true;
-			message += "Composite was not selected!" + LINE_BREAK;
-		}
-		if (this.source == null) {
-			error = true;
-			message += "Source was not selected!" + LINE_BREAK;
-		}
-		if (this.target == null) {
-			error = true;
-			message += "Target was not selected!" + LINE_BREAK;
-		}
-		if (this.cron == null || this.cron.isEmpty()) {
-			error = true;
-			message += "CRON cannot be empty!" + LINE_BREAK;
-		}
-		if (this.description == null || this.description.isEmpty()) {
-			error = true;
-			message += "Description cannot be empty!" + LINE_BREAK;
-		}
-		if(this.requestURL == null || this.requestURL.isEmpty()){
-			error = true;
-			message += "Request URL cannot be empty!" + LINE_BREAK;
-		}
-		if(this.comment.getText() == null || this.comment.getText().isEmpty()){
-			error = true;
-			message += "Please provide a comment." + LINE_BREAK;
-		}
-		
-		if (error)
-			throw new IllegalOperationException(message);
-
-		return true;
-	}
-
-	public Scheduling build() throws IllegalOperationException {
-		this.validate();
+	public Scheduling build() {
 
 		Scheduling s = new Scheduling();
 		s.setName(name);
@@ -157,7 +104,6 @@ public class SchedulingBuilder {
 	}
 
 	public void sync(Scheduling s) throws IllegalOperationException {
-		this.validate();
 		s.setName(name);
 		s.setId(id);
 
