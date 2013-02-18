@@ -118,6 +118,12 @@ public class SessionBean {
 		return null;
 	}
 
+	/**
+	 * Changes the SchedulerService state to stopped using {@link DatabaseConnector}
+	 * Called from {@link SchedulerServiceManager}, when users stops Schdeduler from UI
+	 * @param s
+	 * @return
+	 */
 	public boolean stopSchedulingService(SchedulerService s) {
 		try {
 			return this.connector.stopSchedulingService(s);
@@ -127,6 +133,12 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Changes the SchedulerService state to running using {@link DatabaseConnector}
+	 * Called from {@link SchedulerServiceManager}, when users starts Schdeduler from UI
+	 * @param s
+	 * @return
+	 */
 	public boolean startSchedulingService(SchedulerService s) {
 		try {
 			return this.connector.startSchedulingService(s);
@@ -136,16 +148,26 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Shows errormessage that tells user about database error.
+	 * @param e
+	 */
 	private void handleSQLException(Exception e) {
 		this.databaseErrorMessage = e.getCause().getMessage();
 		this.showDatabaseError = true;
 	}
-
+	
+	/**
+	 * Closes database error message from UI
+	 */
 	public void closeDatabaseErrorDialog() {
 		this.databaseErrorMessage = "";
 		this.showDatabaseError = false;
 	}
 
+	/**
+	 * Get instances from database using {@link DatabaseConnector}
+	 */
 	public void refreshInstances() {
 		try {
 			this.instances.clear();
@@ -191,7 +213,12 @@ public class SessionBean {
 				+ " instances indexed. Time spent was: " + time
 				+ " milliseconds. ");
 	}
-	//TODO comments
+	/**
+	 * Authenticat user and set user type with {@link User} interface
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	public boolean authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
 
@@ -202,7 +229,10 @@ public class SessionBean {
 		this.init();
 		return true;
 	}
-	//TODO comments
+	
+	/**
+	 * Check if user is authenticad. If not redirect to login page
+	 */
 	public void validate() {
 		if (!this.user.isAuthenticated()) {
 			FacesContext ctx = FacesContext.getCurrentInstance();

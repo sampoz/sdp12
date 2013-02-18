@@ -43,7 +43,7 @@ public class SessionBean {
 	private TabSet tabSet;
 	private int selectedIndex = 0;
 
-	// Magic numbers
+	// Static tabs are tabs that are always visible: Scheduling tab, Istances tab, Audit log
 	private static final int STATIC_TABS = 4;
 	private static final int HIDDEN_TABS = 0;
 	public static final int DAYS_AFTER_INSTANCE = 40;
@@ -119,6 +119,12 @@ public class SessionBean {
 		return null;
 	}
 
+	/**
+	 * Changes the SchedulerService state to stopped using {@link DatabaseConnector}
+	 * Called from {@link SchedulerServiceManager}, when users stops Schdeduler from UI
+	 * @param s
+	 * @return
+	 */
 	public boolean stopSchedulingService(SchedulerService s) {
 		try {
 			return this.connector.stopSchedulingService(s);
@@ -128,6 +134,12 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Changes the SchedulerService state to running using {@link DatabaseConnector}
+	 * Called from {@link SchedulerServiceManager}, when users starts Schdeduler from UI
+	 * @param s
+	 * @return
+	 */
 	public boolean startSchedulingService(SchedulerService s) {
 		try {
 			return this.connector.startSchedulingService(s);
@@ -137,16 +149,26 @@ public class SessionBean {
 		return false;
 	}
 
+	/**
+	 * Shows errormessage that tells user about database error.
+	 * @param e
+	 */
 	private void handleSQLException(Exception e) {
-		this.databaseErrorMessage = e.getMessage();
+		this.databaseErrorMessage = e.getCause().getMessage();
 		this.showDatabaseError = true;
 	}
-
+	
+	/**
+	 * Closes database error message from UI
+	 */
 	public void closeDatabaseErrorDialog() {
 		this.databaseErrorMessage = "";
 		this.showDatabaseError = false;
 	}
 
+	/**
+	 * Get instances from database using {@link DatabaseConnector}
+	 */
 	public void refreshInstances() {
 		try {
 			this.instances.clear();
@@ -155,7 +177,11 @@ public class SessionBean {
 			handleSQLException(e);
 		}
 	}
-
+	/**
+	 *  Called from {@link SchedulerServiceManaver} when updating audit trail in UI, when user start or stops Scheduler.
+	 *  Gets via {@link DatabaseConnector} all comments that have id SchedulerServiceManaver.SCHEDULINGSERVICECOMMENT
+	 */
+	 
 	public void refreshAuditTrail() {
 		try {
 			this.auditTrail.clear();
@@ -165,6 +191,7 @@ public class SessionBean {
 		}
 	}
 
+	//TODO comments
 	public void indexInstances() {
 		this.instancesByDate.clear();
 		long time = System.currentTimeMillis();
@@ -187,7 +214,12 @@ public class SessionBean {
 				+ " instances indexed. Time spent was: " + time
 				+ " milliseconds. ");
 	}
-
+	/**
+	 * Authenticat user and set user type with {@link User} interface
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	public boolean authenticate(String username, String password) {
 		System.out.println(username + " : " + password);
 
@@ -198,7 +230,25 @@ public class SessionBean {
 		this.init();
 		return true;
 	}
-
+	
+	/**
+	 * Check if user is authenticad. If not redirect to login page
+	 */
+	public void validate() {
+		if (!this.user.isAuthenticated()) {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.getApplication()
+					.getNavigationHandler()
+					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
+		}
+	}
+	/**
+	 * Create new {@link SchedulingTab} instance for given Scheduling.
+	 * Get maximum amount of comments and instances visible.
+	 * Set new tab as opened tab.
+	 * @param s
+	 * @throws ParseException
+	 */
 	public void addTab(Scheduling s) throws ParseException {
 		SchedulingTab t = new SchedulingTab();
 		t.setScheduling(s);
@@ -215,6 +265,18 @@ public class SessionBean {
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
+	/**
+	 * Get all instances for the given {@link Scheduling}.
+	 * Used when constructing {@link SchedulingTab} when user opens the tab in UI.
+	 * 
+	 * @param s
+	 * 		Given Scheduling
+	 * @param daysAgo
+	 * 		From now to how many days to past the instaces are returned
+	 * @return
+	 * 		List of instances for the given Scheduling for the given time range
+	 * @throws ParseException
+	 */
 	private List<Instance> getInstancesForScheduling(Scheduling s, int daysAgo)
 			throws ParseException {
 
@@ -233,7 +295,13 @@ public class SessionBean {
 		}
 		return temp;
 	}
-
+	/**
+	 * Remove current tab from UI and tabslist.
+	 * Set the first static tab Scheduling tab as current tab
+	 * Called from UI when user closes tab.
+	 * @param t
+	 * 		index of the tab to close
+	 */
 	public void removeCurrent(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
 		TabPane pane = (TabPane) this.tabSet.getChildren().get(
@@ -241,7 +309,10 @@ public class SessionBean {
 		pane.setInView(false);
 		tabs.remove(t);
 	}
-
+	/**
+	 * Remove (close) all Scheduling tabs and set the first static tab as current tab.
+	 * Called from UI when user closes all the tabs.
+	 */
 	public void removeAllTabs() {
 		this.tabSet.setSelectedIndex(0);
 		List<UIComponent> panes = this.tabSet.getChildren();
@@ -251,6 +322,10 @@ public class SessionBean {
 		tabs.clear();
 	}
 
+	/**
+	 * Remove(close) all Scheduling tabs, but the current and set the first static tab as current tab.
+	 * Called from UI when user closes all the tabs.
+	 */
 	public void removeOtherTabs(SchedulingTab t) {
 		this.tabSet.setSelectedIndex(0);
 		List<UIComponent> panes = this.tabSet.getChildren();
@@ -266,6 +341,13 @@ public class SessionBean {
 		this.tabSet.setSelectedIndex(tabs.indexOf(t) + STATIC_TABS);
 	}
 
+	/**
+	 * Update the selected index in backend when tab is changed in frontend.
+	 * 
+	 * If tab is changed to logout. Logout is handled in faces-config.xml
+	 * @param e
+	 * @throws IOException
+	 */
 	public void tabChange(ValueChangeEvent e) throws IOException {
 		this.selectedIndex = (Integer) e.getNewValue();
 		if ((Integer) e.getNewValue() == this.tabSet.getChildren().size() - 1
@@ -277,14 +359,7 @@ public class SessionBean {
 		}
 	}
 
-	public void validate() {
-		if (!this.user.isAuthenticated()) {
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.getApplication()
-					.getNavigationHandler()
-					.handleNavigation(ctx, null, ApplicationBean.LOGIN_REDIRECT);
-		}
-	}
+
 
 	// ==================== GETTERS & SETTERS ====================
 	public User getUser() {
